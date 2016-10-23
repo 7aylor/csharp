@@ -61,7 +61,7 @@ namespace BMI
             //calculate idealweight people and store them
             IEnumerable<Person> idealweight =
                 from person in People
-                where person.CalcBMI() > 20 && person.CalcBMI() < 25
+                where person.CalcBMI() >= 20 && person.CalcBMI() <= 25
                 select person;
 
             Console.WriteLine("Ideal Weight (between 20 and 25 BMI): ");
