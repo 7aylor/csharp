@@ -10,9 +10,9 @@ namespace Caesar_Cipher
     {
         static void Main(string[] args)
         {
-            //prompt user
+            //welcome to the Caesar Cipher!
             Console.WriteLine("\t\t*****Welcome to Caesar's Cipher*****\n\n");
-            Console.Write("To Encrypt a message, press 1. To Decrypt a message, press 2:");
+            Console.Write("To Encrypt a message, press 1. To Decrypt a message, press 2: ");
 
             //choice of encryption or decryption
             int choice;
@@ -29,26 +29,53 @@ namespace Caesar_Cipher
             }
 
             //prompt for encryption key
-            Console.WriteLine("What is the key?");
+            Console.Write("What is the key? ");
             choiceString = Console.ReadLine();
 
             int key;
 
             //check input and if its good, convert to an integer
-            while (!Int32.TryParse(choiceString, out key) || key < 1 || key > 2)
+            while (!Int32.TryParse(choiceString, out key))
             {
                 Console.WriteLine("Not a valid number, try again.");
+                choiceString = Console.ReadLine();
+            }
 
+            //prompt to use a file instead of console
+            Console.Write("Read from file? (y/n): ");
+            choiceString = Console.ReadLine();
+
+            char fileChar;
+
+            //check input and if its good, convert to char
+            while(!Char.TryParse(choiceString, out fileChar) && (fileChar != 'y' || fileChar != 'n'))
+            {
+                Console.WriteLine("Please type y for yes or n for no");
                 choiceString = Console.ReadLine();
             }
 
             if (choice == 1)
             {
-                Encrypt(key);
+                if(fileChar == 'y')
+                {
+                    Encrypt(key, true);
+                }
+                else
+                {
+                    Encrypt(key, false);
+                }
+                
             }
             if(choice == 2)
             {
-                Decrypt(key);
+                if (fileChar == 'y')
+                {
+                    Decrypt(key, true);
+                }
+                else
+                {
+                    Decrypt(key, false);
+                }
             }
 
             //wait to close for user interaction
@@ -56,12 +83,12 @@ namespace Caesar_Cipher
             Console.ReadKey();   
         }
 
-        static void Encrypt(int key)
+        static void Encrypt(int key, bool file)
         {
 
         }
 
-        static void Decrypt(int key)
+        static void Decrypt(int key, bool file)
         {
 
         }
