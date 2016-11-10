@@ -43,9 +43,9 @@ namespace ProgrammingAssignment1
             //print out the second point's coordinates
             Console.WriteLine("Second Pair: ({0}, {1})\n", x2, y2);
 
-            //calculate distance and angle between points and print results
-            Console.WriteLine("Distance between points: " + DistanceBetweenPoints(x1, y1, x2, y2));
-            Console.WriteLine("Angle between points: " + AngleBetweenPoints(x1, y1, x2, y2));
+            //calculate distance and angle between points and print results with three floating points
+            Console.WriteLine("Distance between points: " + DistanceBetweenPoints(x1, y1, x2, y2).ToString("F3"));
+            Console.WriteLine("Angle between points: " + AngleBetweenPoints(x1, y1, x2, y2).ToString("F3"));
 
             //prompt user to press a key to exit
             Console.WriteLine("\n\nPress any key to exit...");
@@ -68,13 +68,13 @@ namespace ProgrammingAssignment1
         //caclulate distance between points
         static double DistanceBetweenPoints(double x1, double y1, double x2, double y2)
         {
-            return Math.Round(Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y2 - y1, 2)), 3);
+            return Math.Sqrt(Math.Pow(x1 - x2, 2) + Math.Pow(y2 - y1, 2));
         }
 
         //calculate angle between points
         static double AngleBetweenPoints(double x1, double y1, double x2, double y2)
         {
-            return Math.Round((Math.Atan2((y2 - y1), (x2 - x1)) * 180 / Math.PI), 3);
+            return Math.Atan2((y2 - y1), (x2 - x1)) * 180 / Math.PI;
         }
 
     }
