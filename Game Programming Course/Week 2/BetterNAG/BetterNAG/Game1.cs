@@ -1,8 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MovingTeddyBears;
 
-namespace Game1
+namespace BetterNAG
 {
     /// <summary>
     /// This is the main type for your game.
@@ -12,22 +13,10 @@ namespace Game1
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        //sprites for Teddy Bears
-        Texture2D teddyBearSprite0;
-        Texture2D teddyBearSprite1;
-        Texture2D teddyBearSprite2;
-
-        //draw rectangles for Teddy Bears
-        Rectangle drawRectangle0;
-        Rectangle drawRectangle1;
-        Rectangle drawRectangle2;
-
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 604;
-            graphics.PreferredBackBufferHeight = 425;
         }
 
         /// <summary>
@@ -38,22 +27,7 @@ namespace Game1
         /// </summary>
         protected override void Initialize()
         {
-            // load teddy bear sprites
-            teddyBearSprite0 = Content.Load<Texture2D>(@"graphics\teddybear0");
-            teddyBearSprite1 = Content.Load<Texture2D>(@"graphics\teddybear1");
-            teddyBearSprite2 = Content.Load<Texture2D>(@"graphics\teddybear2");
-
-            //build draw rectangles
-            drawRectangle0 = new Rectangle(graphics.PreferredBackBufferWidth / 4, 
-                graphics.PreferredBackBufferHeight / 4,
-                teddyBearSprite0.Width, teddyBearSprite0.Height);
-            drawRectangle1 = new Rectangle(graphics.PreferredBackBufferWidth / 2,
-                graphics.PreferredBackBufferHeight / 2,
-                teddyBearSprite1.Width, teddyBearSprite1.Height);
-            drawRectangle2 = new Rectangle(graphics.PreferredBackBufferWidth * 3 / 4,
-                graphics.PreferredBackBufferHeight * 3 / 4,
-                teddyBearSprite2.Width, teddyBearSprite2.Height);
-
+            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -102,12 +76,7 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //draw the teddy bears
-            spriteBatch.Begin();
-            spriteBatch.Draw(teddyBearSprite0, drawRectangle0, Color.White);
-            spriteBatch.Draw(teddyBearSprite1, drawRectangle1, Color.White);
-            spriteBatch.Draw(teddyBearSprite2, drawRectangle2, Color.White);
-            spriteBatch.End();
+            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
