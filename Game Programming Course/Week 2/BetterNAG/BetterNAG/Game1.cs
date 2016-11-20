@@ -13,10 +13,21 @@ namespace BetterNAG
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        //instance variables for teddy bears
+        TeddyBear bear0;
+        TeddyBear bear1;
+        TeddyBear bear2;
+
+        public const int WindowWidth = 604;
+        public const int WindowHeight = 453;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferWidth = WindowWidth;
+            graphics.PreferredBackBufferHeight = WindowHeight;
         }
 
         /// <summary>
@@ -41,7 +52,19 @@ namespace BetterNAG
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            //create the teddy bear objects
+            bear0 = new TeddyBear(Content, @"graphics\teddybear0",
+                graphics.PreferredBackBufferWidth / 4,
+                graphics.PreferredBackBufferHeight /4,
+                WindowWidth, WindowHeight);
+            bear1 = new TeddyBear(Content, @"graphics\teddybear1",
+                graphics.PreferredBackBufferWidth / 2,
+                graphics.PreferredBackBufferHeight / 2,
+                WindowWidth, WindowHeight);
+            bear2 = new TeddyBear(Content, @"graphics\teddybear2",
+                graphics.PreferredBackBufferWidth * 3 / 4,
+                graphics.PreferredBackBufferHeight * 3 / 4,
+                WindowWidth, WindowHeight);
         }
 
         /// <summary>
@@ -63,7 +86,10 @@ namespace BetterNAG
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            //update the teddy bears
+            bear0.Update();
+            bear1.Update();
+            bear2.Update();
 
             base.Update(gameTime);
         }
@@ -76,7 +102,13 @@ namespace BetterNAG
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            //draw the teddy bears
+            spriteBatch.Begin();
+            bear0.Draw(spriteBatch);
+            bear1.Draw(spriteBatch);
+            bear2.Draw(spriteBatch);
+            spriteBatch.End();
+
 
             base.Draw(gameTime);
         }
