@@ -56,6 +56,8 @@ namespace Game1
             drawRectangle2 = new Rectangle(graphics.PreferredBackBufferWidth * 3 / 4,
                 graphics.PreferredBackBufferHeight * 3 / 4,
                 teddyBearSprite2.Width, teddyBearSprite2.Height);
+
+
             base.Initialize();
         }
 
@@ -103,7 +105,12 @@ namespace Game1
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            //draw the teddy bears
+            spriteBatch.Begin();
+            spriteBatch.Draw(teddyBearSprite0, drawRectangle0, Color.White);
+            spriteBatch.Draw(teddyBearSprite1, drawRectangle1, Color.White);
+            spriteBatch.Draw(teddyBearSprite2, drawRectangle2, Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
