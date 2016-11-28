@@ -34,7 +34,7 @@ namespace ProgrammingAssignment3
         int elapsedDelayMilliseconds = 0;
 
         // random velocity support
-        const float BaseSpeed = 1f;
+        const float BaseSpeed = .15f;
         Vector2 upLeft = new Vector2(-BaseSpeed, -BaseSpeed);
         Vector2 upRight = new Vector2(BaseSpeed, -BaseSpeed);
         Vector2 downRight = new Vector2(BaseSpeed, BaseSpeed);
