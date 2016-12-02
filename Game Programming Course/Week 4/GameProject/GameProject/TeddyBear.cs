@@ -133,6 +133,8 @@ namespace GameProject
         public void Update(GameTime gameTime)
         {
             // move the teddy bear
+            drawRectangle.X += (int)(velocity.X * gameTime.ElapsedGameTime.Milliseconds);
+            drawRectangle.Y += (int)(velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
 
             // bounce as necessary
             BounceTopBottom();
@@ -149,7 +151,7 @@ namespace GameProject
         /// <param name="spriteBatch">the sprite batch to use</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-
+            spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
 
         #endregion

@@ -215,13 +215,16 @@ namespace GameProject
             int y = GetRandomLocation(GameConstants.SpawnBorderSize,
                                       GameConstants.WindowHeight - GameConstants.SpawnBorderSize);
             // generate random velocity
+            float speed = RandomNumberGenerator.NextFloat(GameConstants.BearSpeedRange) + GameConstants.MinBearSpeed;
+            float angle = RandomNumberGenerator.NextFloat(2 * (float)Math.PI);
+            Vector2 vector = new Vector2(speed * (float)Math.Sin(angle), speed * (float)Math.Cos(angle));
 
             // create new bear
-
+            TeddyBear bear = new TeddyBear(Content, @"graphics\teddybear", x, y, vector, null, null);
             // make sure we don't spawn into a collision
 
             // add new bear to list
-
+            bears.Add(bear);
         }
 
         /// <summary>
