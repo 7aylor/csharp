@@ -19,6 +19,7 @@ namespace lab11
         TeddyBear bear;
         Explosion explosion;
         Random rand = new Random();
+        ButtonState prev = ButtonState.Released;
 
         public Game1()
         {
@@ -54,7 +55,7 @@ namespace lab11
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             bear = new TeddyBear(Content, WindowWidth, WindowHeight, @"graphics\teddybear", WindowWidth / 2, WindowHeight / 2,
-                new Vector2((float)(rand.NextDouble() * 0.5), (float)(rand.NextDouble() * 0.25)));
+                new Vector2((float)(rand.NextDouble() * 0.15), (float)(rand.NextDouble() * 0.15)));
             explosion = new Explosion(Content, @"graphics\explosion");
         }
 
@@ -84,10 +85,21 @@ namespace lab11
             MouseState state = Mouse.GetState();
 
 
-            if ((state.X >= bear.DrawRectangle.X && state.X <= (bear.DrawRectangle.Width + bear.DrawRectangle.X) &&
-               (state.Y >= bear.DrawRectangle.Y && state.Y <= (bear.DrawRectangle.Height + bear.DrawRectangle.Y))))
+            if ((state.X >= bear.DrawRectangle.X && state.X <= (bear.DrawRectangle.Width + bear.DrawRectangle.X)) &&
+               (state.Y >= bear.DrawRectangle.Y && state.Y <= (bear.DrawRectangle.Height + bear.DrawRectangle.Y)) &&
+               state.LeftButton == ButtonState.Pressed)
             {
-                explosion.Play(bear.DrawRectangle.X, bear.DrawRectangle.Y);
+                explosion.Play(state.X, state.Y);
+                bear.Active = false;
+            }
+
+            if (state.LeftButton == ButtonState.Pressed)
+            {
+                prev = ButtonState.Pressed;
+            }
+            else
+            {
+                prev = ButtonState.Released;
             }
 
             base.Update(gameTime);
