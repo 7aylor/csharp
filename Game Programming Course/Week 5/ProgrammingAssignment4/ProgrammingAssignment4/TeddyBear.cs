@@ -50,8 +50,9 @@ namespace ProgrammingAssignment4
             this.location = location;
 
             // STUDENTS: set draw rectangle so teddy is centered on location
-            drawRectangle.X = (int)(location.X - drawRectangle.Width / 2);
-            drawRectangle.Y = (int)(location.Y - drawRectangle.Height / 2);
+            drawRectangle = new Rectangle((int)(location.X - sprite.Width / 2), (int)(location.Y - sprite.Height / 2),
+                                          sprite.Width, sprite.Height);
+            
             
             // STUDENTS: set halfDrawRectangleWidth and halfDrawRectangleHeight for efficiency
             halfDrawRectangleWidth = drawRectangle.Width / 2;
@@ -92,7 +93,14 @@ namespace ProgrammingAssignment4
         {
             // STUDENTS: update location based on velocity if teddy is collecting
             // Be sure to update the location field first, then center the
-			// draw rectangle on the location
+            // draw rectangle on the location
+            if (collecting)
+            {
+                location.X += (int)(velocity.X * gameTime.ElapsedGameTime.Milliseconds);
+                location.Y += (int)(velocity.Y * gameTime.ElapsedGameTime.Milliseconds);
+                drawRectangle.X = (int)(location.X - halfDrawRectangleWidth);
+                drawRectangle.Y = (int)(location.Y - halfDrawRectangleHeight);
+            }
 
             // check for mouse over teddy
             if (drawRectangle.Contains(mouse.X, mouse.Y))
@@ -146,7 +154,10 @@ namespace ProgrammingAssignment4
 			targetSet = true;
 
             // STUDENTS: set teddy velocity based on teddy center location and target
-
+            velocity.X = (target.X - location.X);
+            velocity.Y = (target.Y - location.Y);
+            velocity.Normalize();
+            velocity *= BaseSpeed;
         }
 
         /// <summary>

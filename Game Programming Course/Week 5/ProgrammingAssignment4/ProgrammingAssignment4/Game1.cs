@@ -67,8 +67,8 @@ namespace ProgrammingAssignment4
             pickupSprite = Content.Load<Texture2D>(@"graphics\pickup");
 
             // STUDENTS: create teddy object centered in window
-            Vector2 bearLocation = new Vector2(WindowWidth / 2, WindowHeight / 2);
-            teddy = new TeddyBear(teddySprite, bearLocation);
+            teddy = new TeddyBear(teddySprite, new Vector2(graphics.PreferredBackBufferWidth / 2,
+                                  graphics.PreferredBackBufferHeight / 2));
         }
 
         /// <summary>
@@ -91,42 +91,58 @@ namespace ProgrammingAssignment4
                 Exit();
 
             // STUDENTS: get current mouse state and update teddy
-            teddy.Update(gameTime, Mouse.GetState());
+            MouseState mouse = Mouse.GetState();
+            teddy.Update(gameTime, mouse);
 
             // check for right click started
-            //if (mouse.RightButton == ButtonState.Pressed &&
-            //    rightButtonReleased)
-            //{
-            //    rightClickStarted = true;
-            //    rightButtonReleased = false;
-            //}
-            //else if (mouse.RightButton == ButtonState.Released)
-            //{
-            //    rightButtonReleased = true;
+            if (mouse.RightButton == ButtonState.Pressed &&
+                rightButtonReleased)
+            {
+                rightClickStarted = true;
+                rightButtonReleased = false;
+            }
+            else if (mouse.RightButton == ButtonState.Released)
+            {
+                rightButtonReleased = true;
 
-            //    // if right click finished, add new pickup to list
-            //    if (rightClickStarted)
-            //    {
-            //        rightClickStarted = false;
+                // if right click finished, add new pickup to list
+                if (rightClickStarted)
+                {
+                    rightClickStarted = false;
 
-            //        // STUDENTS: add a new pickup to the end of the list of pickups
+                    // STUDENTS: add a new pickup to the end of the list of pickups
+                    Vector2 pickupLocation = new Vector2(mouse.X, mouse.Y);
+                    Pickup pickup = new Pickup(pickupSprite, pickupLocation);
+                    pickups.Add(pickup);
 
-
-            //        // STUDENTS: if this is the first pickup in the list, set teddy target
-
-            //    }
-            //}
+                    // STUDENTS: if this is the first pickup in the list, set teddy target
+                    if(pickups[0] == pickup)
+                    {
+                        teddy.SetTarget(pickupLocation);
+                    }
+                }
+            }
 
             // check for collision between collecting teddy and targeted pickup
             if (teddy.Collecting &&
                 teddy.CollisionRectangle.Intersects(pickups[0].CollisionRectangle))
             {
                 // STUDENTS: remove targeted pickup from list (it's always at location 0)
-
+                pickups.RemoveAt(0);
 
                 // STUDENTS: if there's another pickup to collect, set teddy target
                 // If not, clear teddy target and stop the teddy from collecting
-
+                if(pickups.Count > 0)
+                {
+                    int pickupLocationX = pickups[0].CollisionRectangle.X + pickupSprite.Width / 2;
+                    int pickupLocationY = pickups[0].CollisionRectangle.Y + pickupSprite.Height / 2;
+                    teddy.SetTarget(new Vector2(pickupLocationX, pickupLocationY));
+                }
+                else
+                {
+                    teddy.ClearTarget();
+                    teddy.Collecting = false;
+                }
             }
 
             base.Update(gameTime);

@@ -33,7 +33,8 @@ namespace ProgrammingAssignment4
             this.sprite = sprite;
 
             // STUDENTS: set draw rectangle so pickup is centered on location
-
+            drawRectangle = new Rectangle((int)(location.X - sprite.Width / 2), (int)(location.Y - sprite.Height / 2),
+                                           sprite.Width, sprite.Height);
         }
 
         #endregion
@@ -59,7 +60,7 @@ namespace ProgrammingAssignment4
         public void Draw(SpriteBatch spriteBatch)
         {
             // STUDENTS: use the sprite batch to draw the pickup
-
+            spriteBatch.Draw(sprite, drawRectangle, Color.White);
         }
 
         #endregion
