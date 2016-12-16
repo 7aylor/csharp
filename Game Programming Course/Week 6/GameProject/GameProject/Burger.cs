@@ -76,44 +76,53 @@ namespace GameProject
         public void Update(GameTime gameTime, MouseState mouse)
         {
             // burger should only respond to input if it still has health
-            if(this.health <= 0)
+            if(health <= 0)
             {
                 return;
             }
            // move burger using mouse
-            this.drawRectangle.X = mouse.X - this.sprite.Width / 2;
-            this.drawRectangle.Y = mouse.Y - this.sprite.Height / 2;
+            drawRectangle.X = mouse.X - sprite.Width / 2;
+            drawRectangle.Y = mouse.Y - sprite.Height / 2;
             // clamp burger in window
-            if((this.drawRectangle.X + this.sprite.Width) > GameConstants.WindowWidth)
+            if((drawRectangle.X + sprite.Width) > GameConstants.WindowWidth)
             {
-                this.drawRectangle.X = GameConstants.WindowWidth - this.sprite.Width;
+                drawRectangle.X = GameConstants.WindowWidth - sprite.Width;
             }
-            if(this.drawRectangle.X < 0)
+            if(drawRectangle.X < 0)
             {
-                this.drawRectangle.X = 0;
+                drawRectangle.X = 0;
             }
-            if((this.drawRectangle.Y + this.sprite.Height) > GameConstants.WindowHeight)
+            if((drawRectangle.Y + sprite.Height) > GameConstants.WindowHeight)
             {
-                this.drawRectangle.Y = GameConstants.WindowHeight - this.sprite.Height;
+                drawRectangle.Y = GameConstants.WindowHeight - sprite.Height;
             }
-            if(this.drawRectangle.Y < 0)
+            if(drawRectangle.Y < 0)
             {
-                this.drawRectangle.Y = 0;
+                drawRectangle.Y = 0;
             }
             
             // update shooting allowed
-            if(mouse.LeftButton == ButtonState.Pressed)
+            if(mouse.LeftButton == ButtonState.Pressed && canShoot)
             {
                 Projectile fry = new Projectile(ProjectileType.FrenchFries, Game1.GetProjectileSprite(ProjectileType.FrenchFries),
-                                                this.drawRectangle.X + this.sprite.Width / 2, this.drawRectangle.Y - 
+                                                drawRectangle.X + sprite.Width / 2, drawRectangle.Y - 
                                                 GameConstants.FrenchFriesProjectileOffset, GameConstants.FrenchFriesProjectileSpeed);
                 Game1.AddProjectile(fry);
+                canShoot = false;
             }
 
             // timer concept (for animations) introduced in Chapter 7
 
             // shoot if appropriate
-
+            if(!canShoot)
+            {
+                elapsedCooldownMilliseconds += gameTime.ElapsedGameTime.Milliseconds;
+                if(elapsedCooldownMilliseconds >= GameConstants.BurgerTotalCooldownMilliseconds || mouse.LeftButton == ButtonState.Released)
+                {
+                    canShoot = true;
+                    elapsedCooldownMilliseconds = 0;
+                }
+            }
         }
 
         /// <summary>
