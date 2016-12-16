@@ -53,7 +53,6 @@ namespace ProgrammingAssignment4
             drawRectangle = new Rectangle((int)(location.X - sprite.Width / 2), (int)(location.Y - sprite.Height / 2),
                                           sprite.Width, sprite.Height);
             
-            
             // STUDENTS: set halfDrawRectangleWidth and halfDrawRectangleHeight for efficiency
             halfDrawRectangleWidth = drawRectangle.Width / 2;
             halfDrawRectangleHeight = drawRectangle.Height / 2;
