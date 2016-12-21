@@ -33,11 +33,7 @@ namespace ProgrammingAssignment5
         Random rand = new Random();
 
         //values used to track random numbers
-        int teddyBearSpawner;
-        int teddyBearX;
-        int teddyBearY;
-        float vectorX;
-        float vectorY;
+        int teddyBearSpawner = 180;
 
         int timeSinceSpawn = 0;
 
@@ -65,7 +61,6 @@ namespace ProgrammingAssignment5
             // TODO: Add your initialization logic here
 
             base.Initialize();
-
         }
 
         /// <summary>
@@ -81,12 +76,6 @@ namespace ProgrammingAssignment5
             teddyBearTexture = Content.Load<Texture2D>(@"graphics\teddybear");
             mineTexture = Content.Load<Texture2D>(@"graphics\mine");
             explosionTexture = Content.Load<Texture2D>(@"graphics\explosion");
-
-            teddyBearSpawner = rand.Next(1, 4) * 1000;
-            teddyBearX = rand.Next(0, WindowWidth - teddyBearTexture.Width);
-            teddyBearY = rand.Next(0, WindowHeight - teddyBearTexture.Height);
-            vectorX = (float)rand.Next(-5, 6) * 0.1f;
-            vectorY = (float)rand.Next(-5, 6) * 0.1f;
 
         }
 
@@ -116,28 +105,83 @@ namespace ProgrammingAssignment5
             //if it has been 1-3 seconds from the last time a bear was spawned, spawn another one and reset timeSinceSpawn
             if (timeSinceSpawn == teddyBearSpawner)
             {
-                teddyBears.Add(new TeddyBear(teddyBearTexture, new Vector2(0.3f, 0.2f), 400, 400));
+                
+                teddyBears.Add(new TeddyBear(teddyBearTexture, new Vector2((float)rand.Next(-5, 6) / 10, (float)rand.Next(-5, 6) / 10), WindowWidth, WindowHeight));
+
+                teddyBearSpawner = rand.Next(60, 181);
 
                 timeSinceSpawn = 0;
-            }
-
-            //Update all of our teddybears in our list
-            foreach(TeddyBear teddyBear in teddyBears)
-            {
-                teddyBear.Update(gameTime);
             }
 
             //if the left mouse button is clicked, add a mine at the mouse pointer's x and y coordinates
             if(mouse.LeftButton == ButtonState.Pressed)
             {
                 mines.Add(new Mine(mineTexture, mouse.X, mouse.Y));
+            }
 
+            //loop through all teddybears and all mines and see if they have collided. If they have, blow them up and make them inactive
+            foreach(TeddyBear teddyBear in teddyBears)
+            {
+                foreach(Mine mine in mines)
+                {
+                    if (teddyBear.CollisionRectangle.Contains(mine.CollisionRectangle.X, mine.CollisionRectangle.Y))
+                    {
+                        explosions.Add(new Explosion(explosionTexture, mine.CollisionRectangle.X, mine.CollisionRectangle.Y));
+                        teddyBear.Active = false;
+                        mine.Active = false;
+                    }
+                }
+            }
+
+            //
+            for(int i = teddyBears.Count - 1; i >= 0; i--)
+            {
+                for(int j = mines.Count - 1; j >= 0; j--)
+                {
+                    if(teddyBears[i].CollisionRectangle.Contains(mines[j].CollisionRectangle.X, mines[j].CollisionRectangle.Y))
+                    {
+                        explosions.Add(new Explosion(explosionTexture, mines[j].CollisionRectangle.X, mines[j].CollisionRectangle.Y));
+                        teddyBears[i].Active = false;
+                        mines[j].Active = false;
+                    }
+                }
+            }
+            
+            //Update all of our teddybears and explosions
+            foreach (TeddyBear teddyBear in teddyBears)
+            {
+                teddyBear.Update(gameTime);
+            }   
+            foreach (Explosion explosion in explosions)
+            {
+                explosion.Update(gameTime);
+            }
+
+            //remove our explosions, teddybears, and mines that have been blown up
+            for (int i = explosions.Count - 1; i >= 0; i--)
+            {
+                if (!explosions[i].Playing)
+                {
+                    explosions.RemoveAt(i);
+                }
+            }
+            for (int i = teddyBears.Count - 1; i >= 0; i--)
+            {
+                if (!teddyBears[i].Active)
+                {
+                    teddyBears.RemoveAt(i);
+                }
+            }
+            for (int i = mines.Count - 1; i >= 0; i--)
+            {
+                if (!mines[i].Active)
+                {
+                    mines.RemoveAt(i);
+                }
             }
 
             //increase timeSinceSpawn every frame
-            timeSinceSpawn += gameTime.ElapsedGameTime.Milliseconds;
-
-            // TODO: Add your update logic here
+            timeSinceSpawn++;
 
             base.Update(gameTime);
         }
