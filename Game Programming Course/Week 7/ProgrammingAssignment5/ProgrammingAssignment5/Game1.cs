@@ -32,9 +32,10 @@ namespace ProgrammingAssignment5
         //initialize random variable used to randomly spawn teddy bears
         Random rand = new Random();
 
-        //values used to track random numbers
+        //initial time for teddy bear to spawn, 3 seconds since there are 60 frames per second
         int teddyBearSpawner = 180;
 
+        //keep track of the amount of time since that last teddy bear spawned.
         int timeSinceSpawn = 0;
 
         public Game1()
@@ -100,16 +101,12 @@ namespace ProgrammingAssignment5
 
             //create mouse object
             MouseState mouse = Mouse.GetState();
-
             
             //if it has been 1-3 seconds from the last time a bear was spawned, spawn another one and reset timeSinceSpawn
             if (timeSinceSpawn == teddyBearSpawner)
             {
-                
-                teddyBears.Add(new TeddyBear(teddyBearTexture, new Vector2((float)rand.Next(-5, 6) / 10, (float)rand.Next(-5, 6) / 10), WindowWidth, WindowHeight));
-
+                teddyBears.Add(new TeddyBear(teddyBearTexture, new Vector2((float)rand.Next(-5, 5) / 10, (float)rand.Next(-5, 5) / 10), WindowWidth, WindowHeight));
                 teddyBearSpawner = rand.Next(60, 181);
-
                 timeSinceSpawn = 0;
             }
 
@@ -129,20 +126,6 @@ namespace ProgrammingAssignment5
                         explosions.Add(new Explosion(explosionTexture, mine.CollisionRectangle.X, mine.CollisionRectangle.Y));
                         teddyBear.Active = false;
                         mine.Active = false;
-                    }
-                }
-            }
-
-            //
-            for(int i = teddyBears.Count - 1; i >= 0; i--)
-            {
-                for(int j = mines.Count - 1; j >= 0; j--)
-                {
-                    if(teddyBears[i].CollisionRectangle.Contains(mines[j].CollisionRectangle.X, mines[j].CollisionRectangle.Y))
-                    {
-                        explosions.Add(new Explosion(explosionTexture, mines[j].CollisionRectangle.X, mines[j].CollisionRectangle.Y));
-                        teddyBears[i].Active = false;
-                        mines[j].Active = false;
                     }
                 }
             }
@@ -197,6 +180,7 @@ namespace ProgrammingAssignment5
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             
+            //draw all of the mines, teddybears, and explosions in their corresponding lists
             foreach(Mine mine in mines)
             {
                 mine.Draw(spriteBatch);
@@ -209,6 +193,7 @@ namespace ProgrammingAssignment5
             {
                 explosion.Draw(spriteBatch);
             }
+
             spriteBatch.End();
 
 
