@@ -121,9 +121,9 @@ namespace ProgrammingAssignment5
             {
                 foreach(Mine mine in mines)
                 {
-                    if (teddyBear.CollisionRectangle.Contains(mine.CollisionRectangle.X, mine.CollisionRectangle.Y))
+                    if (teddyBear.CollisionRectangle.Contains(mine.CollisionRectangle.Center))
                     {
-                        explosions.Add(new Explosion(explosionTexture, mine.CollisionRectangle.X, mine.CollisionRectangle.Y));
+                        explosions.Add(new Explosion(explosionTexture, mine.CollisionRectangle.Center.X, mine.CollisionRectangle.Center.Y));
                         teddyBear.Active = false;
                         mine.Active = false;
                     }
