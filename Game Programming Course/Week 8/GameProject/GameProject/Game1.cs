@@ -138,6 +138,46 @@ namespace GameProject
             }
 
             // check and resolve collisions between teddy bears
+            for (int i = 0; i < bears.Count; i++)
+            {
+                for (int j = i + 1; j < bears.Count; j++)
+                {
+                    //if both bears are active, check for collision
+                    if(bears[i].Active && bears[j].Active)
+                    {
+                        //create a collision object
+                        CollisionResolutionInfo collision = CollisionUtils.CheckCollision(gameTime.ElapsedGameTime.Milliseconds,
+                            GameConstants.WindowWidth, GameConstants.WindowHeight, bears[i].Velocity, bears[i].DrawRectangle, bears[j].Velocity, bears[j].DrawRectangle);
+
+                        //if there is a collision
+                        if(collision != null)
+                        {
+                            //if the first bear is out of bounds, remove it
+                            if (collision.FirstOutOfBounds)
+                            {
+                                bears[i].Active = false;
+                            }
+                            //otherwise, change the velocity and draw rectangle
+                            else
+                            {
+                                bears[i].Velocity = collision.FirstVelocity;
+                                bears[i].DrawRectangle = collision.FirstDrawRectangle;
+                            }
+                            //if the second bear is out of bounds, remove it
+                            if (collision.SecondOutOfBounds)
+                            {
+                                bears[j].Active = false;
+                            }
+                            //otherwise, change the velocity and draw rectangle
+                            else
+                            {
+                                bears[j].Velocity = collision.SecondVelocity;
+                                bears[j].DrawRectangle = collision.SecondDrawRectangle;
+                            }
+                        }
+                    }
+                }
+            }
 
             // check and resolve collisions between burger and teddy bears
 
@@ -266,7 +306,7 @@ namespace GameProject
             int x = GetRandomLocation(GameConstants.SpawnBorderSize,
                                       GameConstants.WindowWidth - GameConstants.SpawnBorderSize);
             int y = GetRandomLocation(GameConstants.SpawnBorderSize,
-                                      GameConstants.WindowHeight - GameConstants.SpawnBorderSize);
+                                      GameConstants.WindowHeight - (GameConstants.SpawnBorderSize * 2));
             // generate random velocity
             float speed = RandomNumberGenerator.NextFloat(GameConstants.BearSpeedRange) + GameConstants.MinBearSpeed;
             float angle = RandomNumberGenerator.NextFloat(2 * (float)Math.PI);

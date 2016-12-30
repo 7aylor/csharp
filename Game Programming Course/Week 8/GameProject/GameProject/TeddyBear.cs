@@ -211,7 +211,7 @@ namespace GameProject
         {
             if (drawRectangle.X < 0)
             {
-                // bounc off left
+                // bounce off left
                 drawRectangle.X = 0;
                 velocity.X *= -1;
             }
