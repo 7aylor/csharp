@@ -68,7 +68,9 @@ namespace ProgrammingAssignment6
             Content.RootDirectory = "Content";
 
             // set resolution and show mouse
-
+            IsMouseVisible = true;
+            graphics.PreferredBackBufferHeight = WindowHeight;
+            graphics.PreferredBackBufferWidth = WindowWidth;
         }
 
         /// <summary>
@@ -94,19 +96,32 @@ namespace ProgrammingAssignment6
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // create and shuffle deck
-
+            deck = new Deck(Content, 0, 0);
+            deck.Shuffle();
+            
 
             // first player card
-
+            playerHand.Add(deck.TakeTopCard());
+            playerHand[0].X = HorizontalCardOffset;
+            playerHand[0].Y = TopCardOffset;
+            playerHand[0].FlipOver();
 
             // first dealer card
-
+            dealerHand.Add(deck.TakeTopCard());
+            dealerHand[0].X = WindowWidth - HorizontalCardOffset;
+            dealerHand[0].Y = TopCardOffset;
 
             // second player card
-
+            playerHand.Add(deck.TakeTopCard());
+            playerHand[1].X = HorizontalCardOffset;
+            playerHand[1].Y = TopCardOffset + VerticalCardSpacing;
+            playerHand[1].FlipOver();
 
             // second dealer card
-
+            dealerHand.Add(deck.TakeTopCard());
+            dealerHand[1].X = WindowWidth - HorizontalCardOffset;
+            dealerHand[1].Y = TopCardOffset + VerticalCardSpacing;
+            dealerHand[1].FlipOver();
 
             // load sprite font, create message for player score and add to list
             messageFont = Content.Load<SpriteFont>(@"fonts\Arial24");
@@ -119,7 +134,7 @@ namespace ProgrammingAssignment6
             quitButtonSprite = Content.Load<Texture2D>(@"graphics\quitbutton");
 
             // create hit button and add to list
-
+            
 
             // create stand button and add to list
 
@@ -165,7 +180,14 @@ namespace ProgrammingAssignment6
             spriteBatch.Begin();
 
             // draw hands
-
+            foreach(Card card in playerHand)
+            {
+                card.Draw(spriteBatch);
+            }
+            foreach(Card card in dealerHand)
+            {
+                card.Draw(spriteBatch);
+            }
 
             // draw messages
 
