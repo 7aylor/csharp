@@ -134,10 +134,13 @@ namespace ProgrammingAssignment6
             quitButtonSprite = Content.Load<Texture2D>(@"graphics\quitbutton");
 
             // create hit button and add to list
-            
+            menuButtons.Add(new MenuButton(Content.Load<Texture2D>(@"graphics\hitbutton"), 
+                            new Vector2((float)WindowWidth/2, (float)TopCardOffset), GameState.CheckingHandOver));
 
             // create stand button and add to list
-
+            menuButtons.Add(new MenuButton(Content.Load<Texture2D>(@"graphics\standbutton"),
+                            new Vector2((float)WindowWidth / 2, (float)(TopCardOffset + VerticalCardSpacing)), 
+                            GameState.CheckingHandOver));
         }
 
         /// <summary>
@@ -190,10 +193,17 @@ namespace ProgrammingAssignment6
             }
 
             // draw messages
+            foreach(Message message in messages)
+            {
+                message.Draw(spriteBatch);
+            }
 
 
             // draw menu buttons
-
+            foreach(MenuButton button in menuButtons)
+            {
+                button.Draw(spriteBatch);
+            }
 
             spriteBatch.End();
 
