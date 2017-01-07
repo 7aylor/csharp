@@ -135,12 +135,12 @@ namespace ProgrammingAssignment6
 
             // create hit button and add to list
             menuButtons.Add(new MenuButton(Content.Load<Texture2D>(@"graphics\hitbutton"), 
-                            new Vector2((float)WindowWidth/2, (float)TopCardOffset), GameState.CheckingHandOver));
+                            new Vector2((float)WindowWidth/2, (float)TopCardOffset), GameState.PlayerHitting));
 
             // create stand button and add to list
             menuButtons.Add(new MenuButton(Content.Load<Texture2D>(@"graphics\standbutton"),
                             new Vector2((float)WindowWidth / 2, (float)(TopCardOffset + VerticalCardSpacing)), 
-                            GameState.CheckingHandOver));
+                            GameState.WaitingForDealer));
         }
 
         /// <summary>
@@ -162,12 +162,156 @@ namespace ProgrammingAssignment6
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            MouseState mouse = Mouse.GetState();
 
             // update menu buttons as appropriate
-
+            foreach (MenuButton button in menuButtons)
+            {
+                button.Update(mouse);
+            }
 
             // game state-specific processing
+            switch (currentState)
+            {
+                //waint for player to choose
+                case (GameState.WaitingForPlayer):
+                    //if they bust, go to waiting for dealer
+                    if (GetBlockjuckScore(playerHand) > MaxHandValue)
+                    {
+                        ChangeState(GameState.WaitingForDealer);
+                    }
+                    break;
 
+                //player hitting
+                case (GameState.PlayerHitting):
+                    //take the top card and position it properly
+                    playerHand.Add(deck.TakeTopCard());
+
+                    if (playerHand.Count > 4)
+                    {
+                        playerHand[playerHand.Count - 1].X = HorizontalCardOffset + ((playerHand.Count - 5) * 100);
+                        playerHand[playerHand.Count - 1].Y = (VerticalCardSpacing * 3) + TopCardOffset;
+                    }
+                    else
+                    {
+                        playerHand[playerHand.Count - 1].X = HorizontalCardOffset + ((playerHand.Count - 3) * 100);
+                        playerHand[playerHand.Count - 1].Y = (VerticalCardSpacing * 2) + TopCardOffset;
+                    }
+
+                    
+                    playerHand[playerHand.Count - 1].FlipOver();
+
+                    //get their new score and print it
+                    playerScoreMessage.Text = ScoreMessagePrefix + GetBlockjuckScore(playerHand).ToString();
+
+                    //change game state
+                    ChangeState(GameState.WaitingForPlayer);
+                    break;
+
+                //Waiting for dealer to choose
+                case (GameState.WaitingForDealer):
+                    //get the current dealerscore
+                    int dealerScore = GetBlockjuckScore(dealerHand);
+
+                    //if it is first the dealers turn
+                    if (!dealerHand[0].FaceUp)
+                    {
+                        //flip the first card
+                        dealerHand[0].FlipOver();
+
+                        //set up the dealers score message and add it to messages
+                        dealerScoreMessage = new Message(ScoreMessagePrefix + dealerScore.ToString(), messageFont,
+                                              new Vector2(WindowWidth - HorizontalMessageOffset, ScoreMessageTopOffset));
+                        messages.Add(dealerScoreMessage);
+                    }
+
+                    //if the dealer has less than 17, dealer must hit, otherwise, get the results
+                    if (dealerScore < 17)
+                    {
+                        ChangeState(GameState.DealerHitting);
+                    }
+                    else
+                    {
+                        ChangeState(GameState.DisplayingHandResults);
+                    }
+                    break;
+
+                //dealer hitting
+                case (GameState.DealerHitting):
+                    //take the top card and position it properly
+                    dealerHand.Add(deck.TakeTopCard());
+                    
+                    if(dealerHand.Count > 4)
+                    {
+                        dealerHand[dealerHand.Count - 1].X = WindowWidth - HorizontalCardOffset - ((dealerHand.Count - 5) * 100);
+                        dealerHand[dealerHand.Count - 1].Y = (VerticalCardSpacing * 3) + TopCardOffset;
+                    }
+                    else
+                    {
+                        dealerHand[dealerHand.Count - 1].X = WindowWidth - HorizontalCardOffset - ((dealerHand.Count - 3) * 100);
+                        dealerHand[dealerHand.Count - 1].Y = (VerticalCardSpacing * 2) + TopCardOffset;
+                    }
+                    
+                    dealerHand[dealerHand.Count - 1].FlipOver();
+
+                    //get their new score and print it
+                    dealerScoreMessage.Text = ScoreMessagePrefix + GetBlockjuckScore(dealerHand).ToString();
+
+                    //change game state
+                    ChangeState(GameState.WaitingForDealer);
+                    break;
+
+                //determine results
+                case (GameState.DisplayingHandResults):
+                    //if we are still using the hit and stand buttons
+                    if(menuButtons.Count > 1)
+                    {
+                        //clear the buttons 
+                        menuButtons.Clear();
+
+                        //create the qiut button
+                        menuButtons.Add(new MenuButton(quitButtonSprite, new Vector2(WindowWidth / 2, WindowHeight - TopMenuButtonOffset), 
+                                        GameState.Exiting));
+
+                        //create the message and add it to messages
+                        winnerMessage = new Message("", messageFont, new Vector2(WindowWidth / 2, (WindowHeight / 2 - 75)));
+                        messages.Add(winnerMessage);
+                    }
+
+                    //get the current scores
+                    int pScore = GetBlockjuckScore(playerHand);
+                    int dScore = GetBlockjuckScore(dealerHand);
+
+                    //if player score is greater than dealer score but less than or equal to 21, or if dealer score is a bust
+                    if ((pScore > dScore && pScore <= MaxHandValue) || (dScore > MaxHandValue))
+                    {
+                        //player wins!
+                        winnerMessage.Text = "Player Wins!";
+                    }
+
+                    //if dealer score is greater than player score but less than or equal to 21, or if player score is a bust
+                    if ((pScore < dScore && dScore <= MaxHandValue) || (pScore > MaxHandValue))
+                    {
+                        //dealer wins!
+                        winnerMessage.Text = "Dealer Wins!";
+                    }
+
+                    //if they are equal or the both bust
+                    if(pScore == dScore || (dScore > MaxHandValue && pScore > MaxHandValue ))
+                    {
+                        //its a tie!
+                        winnerMessage.Text = "Its a tie!";
+                    }
+
+                    break;
+
+                //exit the game
+                case (GameState.Exiting):
+                    Exit();
+                    break;
+
+                
+            }
 
             base.Update(gameTime);
         }
