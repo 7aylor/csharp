@@ -321,6 +321,13 @@ namespace GameProject
             // create new bear
             TeddyBear bear = new TeddyBear(Content, @"graphics\teddybear", x, y, vector, null, null);
             // make sure we don't spawn into a collision
+            List<Rectangle> collisions = GetCollisionRectangles();
+
+            while (!CollisionUtils.IsCollisionFree(bear.CollisionRectangle, collisions))
+            {
+                bear.X = GetRandomLocation(GameConstants.SpawnBorderSize, GameConstants.WindowWidth - GameConstants.SpawnBorderSize);
+                bear.Y = GetRandomLocation(GameConstants.SpawnBorderSize, GameConstants.WindowHeight - GameConstants.SpawnBorderSize);
+            }
 
             // add new bear to list
             bears.Add(bear);

@@ -63,6 +63,18 @@ namespace GameProject
             get { return drawRectangle; }
         }
 
+        public int Health
+        {
+            get { return health; }
+            set {
+                this.health = value;
+                if(this.health < 0)
+                {
+                    this.health = 0;
+                }
+            }
+        }
+
         #endregion
 
         #region Public methods
