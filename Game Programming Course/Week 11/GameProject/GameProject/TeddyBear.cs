@@ -150,6 +150,7 @@ namespace GameProject
                                                           drawRectangle.X + sprite.Width / 2, drawRectangle.Y + sprite.Height, 
                                                           -GetProjectileYVelocity());
                 Game1.AddProjectile(teddybearFire);
+                this.shootSound.Play();
             }
 
             // timer concept (for animations) introduced in Chapter 7
@@ -196,12 +197,14 @@ namespace GameProject
                 // bounce off top
                 drawRectangle.Y = 0;
                 velocity.Y *= -1;
+                this.bounceSound.Play();
             }
             else if ((drawRectangle.Y + drawRectangle.Height) > GameConstants.WindowHeight)
             {
                 // bounce off bottom
                 drawRectangle.Y = GameConstants.WindowHeight - drawRectangle.Height;
                 velocity.Y *= -1;
+                this.bounceSound.Play();
             }
         }
         /// <summary>
@@ -214,12 +217,14 @@ namespace GameProject
                 // bounce off left
                 drawRectangle.X = 0;
                 velocity.X *= -1;
+                this.bounceSound.Play();
             }
             else if ((drawRectangle.X + drawRectangle.Width) > GameConstants.WindowWidth)
             {
                 // bounce off right
                 drawRectangle.X = GameConstants.WindowWidth - drawRectangle.Width;
                 velocity.X *= -1;
+                this.bounceSound.Play();
             }
         }
 
