@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DungeonCrawler
 {
+    //Used for Player and enemies
     class Hero
     {
         //instance variables
@@ -24,7 +25,7 @@ namespace DungeonCrawler
         //constructors
         #region
         /// <summary>
-        /// Constructor
+        /// Hero Constructor
         /// </summary>
         /// <param name="health"></param>
         /// <param name="speed"></param>
@@ -92,10 +93,10 @@ namespace DungeonCrawler
         //functions
         #region
         /// <summary>
-        /// 
+        /// Call on attacking hero, pass in Enemy hero to give damage to them
         /// </summary>
-        /// <param name="enemy"></param>
-        public int inflictDamage(Hero enemy)
+        /// <param name="Enemy"></param>
+        public int inflictDamage(Hero Enemy)
         {
 
             float hitChance = (rand.Next(0, 11)) / 10f;
@@ -103,10 +104,10 @@ namespace DungeonCrawler
             if(hitChance > 0.1)
             {
                 int attackModifier = rand.Next(0, attack + 1);
-                enemy.health -= attackModifier;
-                if(enemy.health < 0)
+                Enemy.health -= attackModifier;
+                if(Enemy.health < 0)
                 {
-                    enemy.health = 0;
+                    Enemy.health = 0;
                 }
                 return attackModifier;
             }
@@ -116,6 +117,9 @@ namespace DungeonCrawler
             }
         }
 
+        /// <summary>
+        /// prints the inventory of the Player hero
+        /// </summary>
         public void printInventory()
         {
             if(this.inventory.Count == 0)
@@ -126,23 +130,23 @@ namespace DungeonCrawler
             {
                 Console.WriteLine("Items in Inventory");
 
-                /*
+                
                 foreach (Item item in this.inventory)
                 {
                     Console.WriteLine("\tItem: " + item.Name);
-                    Console.WriteLine("\tType: " + item.Type + "\n");
+                    Console.WriteLine("\tType: " + item.Type);
 
                     
                     if(item.GetType() == typeof(Potion))
                     {
-                        Console.WriteLine("Potion Size: " item);
+                        Console.WriteLine("\tPotion Size: " + item.Size + "\n");
                     }
                     if(item.GetType() == typeof(Weapon))
                     {
-                        
+                        Console.WriteLine("\tDamange: " + item.Damage + "\n");
                     }
                     
-                }*/
+                }
                 Console.WriteLine();
             }
         }
@@ -162,10 +166,21 @@ namespace DungeonCrawler
         #endregion
     }
 
+    //item classes
+    #region
+    //base class
     abstract class Item
     {
         protected string name;
         protected string type;
+        protected int damage; //used for weapon
+        protected int size; //used for potion
+
+        public Item (string name, string type)
+        {
+            this.name = name;
+            this.type = type;
+        }
 
         public string Name
         {
@@ -182,25 +197,8 @@ namespace DungeonCrawler
                 return this.type;
             }
         }
-    }
 
-    class Weapon : Item
-    {
-        int damage;
-
-        /// <summary>
-        /// weapon constructor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="damage"></param>
-        public Weapon(string name, string type, int damage)
-        {
-            this.name = name;
-            this.type = type;
-            this.damage = damage;
-        }
-
+        //only used for weapon
         public int Damage
         {
             get
@@ -208,25 +206,7 @@ namespace DungeonCrawler
                 return this.damage;
             }
         }
-
-    }
-
-    class Potion : Item
-    {
-        int size;
-        /// <summary>
-        /// Potion constructor
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="type"></param>
-        /// <param name="size"></param>
-        public Potion(string name, string type, int size)
-        {
-            this.name = name;
-            this.type = type;
-            this.size = size;
-        }
-
+        //only used for potion
         public int Size
         {
             get
@@ -234,6 +214,41 @@ namespace DungeonCrawler
                 return this.size;
             }
         }
+    }
+
+    class Weapon : Item
+    {
+
+        /// <summary>
+        /// Weapon Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="damage"></param>
+        public Weapon(string name, string type, int damage) : base (name, type)
+        {
+            this.name = name;
+            this.type = type;
+            this.damage = damage;
+        }
 
     }
+
+    class Potion : Item
+    {
+        /// <summary>
+        /// Potion Constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <param name="size"></param>
+        public Potion(string name, string type, int size) : base(name, type)
+        {
+            this.name = name;
+            this.type = type;
+            this.size = size;
+        }
+
+    }
+    #endregion
 }

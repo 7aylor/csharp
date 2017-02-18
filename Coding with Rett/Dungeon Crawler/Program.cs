@@ -13,67 +13,89 @@ namespace DungeonCrawler
 
             //playGame();
 
+            //proof that print inventory works. Can delete this
             Weapon sword = new Weapon("Longclaw", "Sword", 5);
             Potion healthPotion = new Potion("Small Health Potion", "Health Potion", 3);
 
-            Hero player = new Hero(100, 5, 5, "player");
+            Hero Player = new Hero(100, 5, 5, "Player");
 
-            //player.printInventory();
+            Player.printInventory();
 
-            //player.addItemToInvetory(sword);
-            //player.printInventory();
+            Player.addItemToInvetory(sword);
+            Player.printInventory();
 
-            //player.addItemToInvetory(healthPotion);
-            //player.printInventory();
-
-            Console.WriteLine(sword.GetType());
-            Console.WriteLine(healthPotion.GetType());
+            Player.addItemToInvetory(healthPotion);
+            Player.printInventory();
+            
 
             Console.ReadKey();
         }
 
+        /// <summary>
+        /// Starts the game. Used as the game controller
+        /// </summary>
         static void playGame()
         {
+            //iser input character
             char choice;
-            Hero player = new Hero(100, 8, 5, "Player");
+
+            //create our Player Hero
+            Hero Player = new Hero(100, 8, 5, "Player");
+
+            //Welcome player to the game!
             Console.WriteLine("\t\t\tWelcome to Dungeon Crawler!!\n\n");
 
+            //First choice of what to do
             Console.Write("You see a gate in front of you, walk through? (y/n): ");
+
+            //get Player input and check if its y or n
             choice = Console.ReadKey().KeyChar;
 
             choice = checkChar(choice);
 
+            //if yes, fight Gorlack
             if (choice == 'y' || choice == 'Y')
             {
-                fightGorlack(player);
+                fightGorlack(Player);
             }
+            //otherwise, game is over
             else
             {
-                Console.WriteLine("\nWell, thanks for playing. Bye!");
+                Console.WriteLine("\nYou are not a curious adventurer. You turn around, leaving behind a whole world of fun!" + 
+                                  "\n\nGame Over. Press any key to Exit...");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
         }
 
-        static void fightGorlack(Hero player)
+        /// <summary>
+        /// Fighting Gorlack Scene. If player chooses not to fight, the game is over
+        /// </summary>
+        /// <param name="Player"></param>
+        static void fightGorlack(Hero Player)
         {
+            //Player's choice char
+            char choice;
+
+            //create Gorlack and write dialogue to the screen
             Hero Gorlack = new Hero(20, 4, 2, "Gorlack the Weak");
             Console.Clear();
             Console.WriteLine("\nAs you walk through the gate, A menacing figure emerges from the shadows.\n");
             Console.WriteLine("You recognize the hideous face of Gorlack the Weak.\n\n");
             Console.Write("\"You've gone far enough. Prepare to meet your death! ");
 
-            char choice;
-
+            //get input from the Player and check it
             Console.WriteLine("Fight or flee? (y/n)");
 
             choice = Console.ReadKey().KeyChar;
             choice = checkChar(choice);
 
+            //if they choose to fight, go to attackSequence
             if(choice == 'y' || choice == 'Y')
             {
-                attackSequence(player, Gorlack);
+                attackSequence(Player, Gorlack);
             }
+            //otherwise, the game is over
             else
             {
                 Console.WriteLine("You flee in terror. Game Over.");
@@ -82,47 +104,75 @@ namespace DungeonCrawler
             }
         }
 
-        static void attackSequence(Hero player, Hero enemy)
+        /// <summary>
+        /// The scaffolding of our fight mechanics
+        /// </summary>
+        /// <param name="Player"></param>
+        /// <param name="Enemy"></param>
+        static void attackSequence(Hero Player, Hero Enemy)
         {
-            Hero firstToAttack = whoGoesFirst(player, enemy);
+            //deteremine who goes first in the fight
+            Hero firstToAttack = whoGoesFirst(Player, Enemy);
 
-            if (firstToAttack == player)
+            //let the first attacker go first
+            if (firstToAttack == Player)
             {
-                attackPhase(player, enemy);
+                //player attacks Enemy
+                attackPhase(Player, Enemy);
             }
             else
             {
-                attackPhase(enemy, player);
+                //Enemy attacks player
+                attackPhase(Enemy, Player);
             }
 
-            if (player.Health <= 0)
+            //if the player has no health, they have died and the game is over
+            if (Player.Health <= 0)
             {
                 Console.WriteLine("\nYou have died... Thanks for playing.\n");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
-            else if (enemy.Health <= 0)
+            //if the Enemy has been slain, continue going forward
+            else if (Enemy.Health <= 0)
             {
-                Console.WriteLine("\nYou have slain " + enemy.Name + "! You live to fight another day...");
+                Console.WriteLine("\nYou have slain " + Enemy.Name + "! You live to fight another day...");
             }
         }
 
-        static Hero whoGoesFirst(Hero player, Hero enemy)
+        /// <summary>
+        /// A random modifer if multiplied by the Hero's speed. Whichever Hero has the bigger number goes first
+        /// </summary>
+        /// <param name="Player"></param>
+        /// <param name="Enemy"></param>
+        /// <returns></returns>
+        static Hero whoGoesFirst(Hero Player, Hero Enemy)
         {
+            //Random number
             Random randomInitiative = new Random();
-            float playerSpeedModifier = randomInitiative.Next(0, 11) / 10f;
-            float enemySpeedModifier = randomInitiative.Next(0, 11) / 10f;
 
-            if (player.Speed * playerSpeedModifier > enemy.Speed * enemySpeedModifier)
+            //players speed modifier, a number between 0.0 and 1.0
+            float PlayerSpeedModifier = randomInitiative.Next(0, 11) / 10f;
+
+            //Enemy's speed modifier, a number between 0.0 and 1.0
+            float EnemySpeedModifier = randomInitiative.Next(0, 11) / 10f;
+
+            //Whichever hero has the biggest speed * modifer goes first
+            if (Player.Speed * PlayerSpeedModifier > Enemy.Speed * EnemySpeedModifier)
             {
-                return player;
+                return Player;
             }
             else
             {
-                return enemy;
+                return Enemy;
             }
         }
 
+        /// <summary>
+        /// The specifics of the fight. Player can decide to continue fighting or flee
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
         static void attackPhase(Hero first, Hero second)
         {
             int firstDmg;
@@ -131,6 +181,7 @@ namespace DungeonCrawler
 
             while (first.Health > 0 && second.Health > 0)
             {
+                //first Hero attacks and the result is written to the screen
                 Console.Clear();
                 Console.WriteLine(first.Name + " vs. " + second.Name);
                 firstDmg = first.inflictDamage(second);
@@ -143,6 +194,7 @@ namespace DungeonCrawler
                     Console.WriteLine("\n" + first.Name + " hits " + second.Name + " for " + firstDmg + " damage.");
                 }
 
+                //second Hero attacks and the result is written to the screen
                 secDmg = second.inflictDamage(first);
 
                 if(secDmg == 0)
@@ -157,6 +209,7 @@ namespace DungeonCrawler
                 Console.WriteLine("\n" + first.Name + " Health: " + first.Health);
                 Console.WriteLine("\n" + second.Name + " Health: " + second.Health);
 
+                //If the Heroes still have health, present the option to continue the battle
                 if(first.Health > 0 && second.Health > 0)
                 {
                     Console.Write("\n\nContinue battle? (y/n)");
@@ -173,6 +226,12 @@ namespace DungeonCrawler
             }
         }
 
+
+        /// <summary>
+        /// Checks the char to ensure its a Y or N
+        /// </summary>
+        /// <param name="choice"></param>
+        /// <returns>Returns a char that is either a Y, y, N, or n</returns>
         static char checkChar(char choice)
         {
             while (choice != 'y' && choice != 'Y' && choice != 'n' && choice != 'N')
