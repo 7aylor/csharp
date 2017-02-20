@@ -10,6 +10,7 @@ namespace Scroller
     {
         const int WIDTH = 64;
         const int HEIGHT = 6;
+        const char PLAYER = '*';
 
         public struct position
         {
@@ -23,7 +24,7 @@ namespace Scroller
             char [,] level = new char[WIDTH, HEIGHT];
             position coords = new position();
 
-            coords.x = 0;
+            coords.x = 1;
             coords.y = 4;
 
             buildLevel(ref level);
@@ -31,33 +32,35 @@ namespace Scroller
 
             char key = Console.ReadKey(true).KeyChar;
 
+            addElement(ref level, '|', 4, 4);
+
             while (key != 'x')
             {
                 if (key == 'd')
                 {
                     goRight(ref level, ref coords.x, coords.y);
-                    printLevel(level, coords.x, coords.y);
                 }
                 if (key == 'a')
                 {
                     goLeft(ref level, ref coords.x, coords.y);
-                    printLevel(level, coords.x, coords.y);
                 }
                 if (key == 'w')
                 {
                     goUp(ref level, coords.x, ref coords.y);
-                    printLevel(level, coords.x, coords.y);
                 }
                 if (key == 's')
                 {
                     goDown(ref level, coords.x, ref coords.y);
-                    printLevel(level, coords.x, coords.y);
                 }
                 key = Console.ReadKey(true).KeyChar;
             }
+        }
 
-            
-
+        static void addElement(ref char[,] level, char element, int x, int y)
+        {
+            level[x, y] = element;
+            Console.SetCursorPosition(x, y);
+            Console.Write(element);
         }
 
         static void buildLevel(ref char[,] level)
@@ -85,79 +88,77 @@ namespace Scroller
 
         static void goRight(ref char[,] level, ref int x, int y)
         {
-            try
+            if (x < WIDTH - 2)
             {
                 x++;
                 level[x - 1, y] = ' ';
-                level[x, y] = '*';
+                Console.SetCursorPosition(x - 1, y);
+                Console.Write(' ');
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                level[x, y] = PLAYER;
+                Console.SetCursorPosition(x, y);
+                Console.Write(PLAYER);
             }
-            catch
-            {
-                return;
-            }
-            
         }
 
         static void goLeft(ref char[,] level, ref int x, int y)
         {
-            try
+            if (x > 1)
             {
                 x--;
                 level[x + 1, y] = ' ';
-                level[x, y] = '*';
-            }
-            catch
-            {
-                return;
+                Console.SetCursorPosition(x + 1, y);
+                Console.Write(' ');
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                level[x, y] = PLAYER;
+                Console.SetCursorPosition(x, y);
+                Console.Write(PLAYER);
             }
         }
 
         static void goUp(ref char[,] level, int x, ref int y)
         {
-            try
+            if(y > 1)
             {
                 y--;
                 level[x, y + 1] = ' ';
-                level[x, y] = '*';
-            }
-            catch
-            {
-                return;
+                Console.SetCursorPosition(x, y + 1);
+                Console.Write(' ');
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                level[x, y] = PLAYER;
+                Console.SetCursorPosition(x, y);
+                Console.Write(PLAYER);
             }
         }
 
         static void goDown(ref char[,] level, int x, ref int y)
         {
-            try
+            if (y < HEIGHT - 2)
             {
                 y++;
                 level[x, y - 1] = ' ';
-                level[x, y] = '*';
-            }
-            catch
-            {
-                return;
+                Console.SetCursorPosition(x, y - 1);
+                Console.Write(' ');
+
+                level[x, y] = PLAYER;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.SetCursorPosition(x, y);
+                Console.Write(PLAYER);
             }
         }
 
         static void printLevel(char[,] level, int x, int y)
         {
-            Console.Clear();
             for (int i = 0; i < HEIGHT; i++)
             {
                 for(int j = 0; j < WIDTH; j++)
                 {
-                    if(j == x && i == y)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    }
-                    else
-                    {
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
                     Console.Write(level[j, i]);
                 }
-                Console.WriteLine();
+                Console.Write('\n');
             } 
         }
     }
