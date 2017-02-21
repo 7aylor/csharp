@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 
 namespace DungeonCrawler
 {
+    public enum WeaponType {Axe, Sword, Bow, Pike, Staff};
+    public enum PotionType { Damage, Health, Speed };
+
     //Used for Player and enemies
     class Hero
     {
         //instance variables
         #region
-        //int strength;
-        //int intelligence;
         int health;
         int speed; //helps determine who goes first in a battle
         int attack;
@@ -34,12 +35,19 @@ namespace DungeonCrawler
         /// 
         public Hero(int health, int speed, int attack, String name)
         {
-            //this.strength = strength;
-            //this.intelligence = intelligence;
             this.health = health;
             this.speed = speed;
             this.attack = attack;
             this.name = name;
+        }
+
+        public Hero(int health, int speed, int attack, String name, List<Item> inventory)
+        {
+            this.health = health;
+            this.speed = speed;
+            this.attack = attack;
+            this.name = name;
+            this.inventory = inventory;
         }
         #endregion
 
@@ -124,33 +132,49 @@ namespace DungeonCrawler
         {
             if(this.inventory.Count == 0)
             {
-                Console.WriteLine("Your inventory is empty\n");
+                Console.WriteLine(this.name + " inventory is empty\n");
             }
             else
             {
-                Console.WriteLine("Items in Inventory");
+                Console.WriteLine("Items in " + this.name + "'s Inventory");
 
-                
                 foreach (Item item in this.inventory)
                 {
-                    Console.WriteLine("\tItem: " + item.Name);
-                    Console.WriteLine("\tType: " + item.Type);
-
-                    
-                    if(item.GetType() == typeof(Potion))
-                    {
-                        Console.WriteLine("\tPotion Size: " + item.Size + "\n");
-                    }
-                    if(item.GetType() == typeof(Weapon))
-                    {
-                        Console.WriteLine("\tDamange: " + item.Damage + "\n");
-                    }
-                    
+                    printItem(item);
                 }
                 Console.WriteLine();
             }
         }
 
+        /// <summary>
+        /// Print a specific item in the Hero's inventory
+        /// </summary>
+        /// <param name="item"></param>
+        public void printItem(Item item)
+        {
+            Console.WriteLine("\tItem Name: " + item.Name);
+            if (item.GetType() == typeof(Potion))
+            {
+                Console.WriteLine("\tPotion Type: " + item.PotionType);
+            }
+            if (item.GetType() == typeof(Weapon))
+            {
+                Console.WriteLine("\tWeapon Type: " + item.WeaponType);
+            }
+            if (item.GetType() == typeof(Potion))
+            {
+                Console.WriteLine("\tPotion Size: " + item.Size + "\n");
+            }
+            if (item.GetType() == typeof(Weapon))
+            {
+                Console.WriteLine("\tDamage: " + item.Damage + "\n");
+            }
+        } 
+
+        /// <summary>
+        /// Add item to inventory
+        /// </summary>
+        /// <param name="item"></param>
         public void addItemToInvetory(Item item)
         {
             if(inventoryCount >= 5)
@@ -163,6 +187,37 @@ namespace DungeonCrawler
                 inventoryCount++;
             }
         }
+
+        /// <summary>
+        /// Remove item from inventory
+        /// </summary>
+        /// <param name="item"></param>
+        public void removeItemFromInventory(Item item)
+        {
+            if(this.inventory.Count > 0)
+            {
+                this.inventory.RemoveAt(this.inventory.IndexOf(item));
+            }
+
+        }
+
+        /// <summary>
+        /// Sets health of Hero to 0
+        /// </summary>
+        public void killHero()
+        {
+            this.health = 0;
+            if(this.inventory.Count > 0)
+            {
+                int index = rand.Next(0, this.inventory.Count);
+                Item item = this.inventory[index];
+
+                Console.WriteLine(this.name + " dropped: ");
+                printItem(item);
+            }
+
+            //Don't forget to figure out how to pass item to player/prompt if they want to pick up item
+        }
         #endregion
     }
 
@@ -172,14 +227,14 @@ namespace DungeonCrawler
     abstract class Item
     {
         protected string name;
-        protected string type;
+        protected WeaponType weaponType; //used for weapon
+        protected PotionType potionType; //used for potion
         protected int damage; //used for weapon
         protected int size; //used for potion
 
-        public Item (string name, string type)
+        public Item (string name)
         {
             this.name = name;
-            this.type = type;
         }
 
         public string Name
@@ -190,11 +245,19 @@ namespace DungeonCrawler
             }
         }
 
-        public string Type
+        public WeaponType WeaponType
         {
             get
             {
-                return this.type;
+                return this.weaponType;
+            }
+        }
+
+        public PotionType PotionType
+        {
+            get
+            {
+                return this.potionType;
             }
         }
 
@@ -225,10 +288,10 @@ namespace DungeonCrawler
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <param name="damage"></param>
-        public Weapon(string name, string type, int damage) : base (name, type)
+        public Weapon(string name, WeaponType type, int damage) : base (name)
         {
             this.name = name;
-            this.type = type;
+            this.weaponType = type;
             this.damage = damage;
         }
 
@@ -242,10 +305,10 @@ namespace DungeonCrawler
         /// <param name="name"></param>
         /// <param name="type"></param>
         /// <param name="size"></param>
-        public Potion(string name, string type, int size) : base(name, type)
+        public Potion(string name, PotionType type, int size) : base(name)
         {
             this.name = name;
-            this.type = type;
+            this.potionType = type;
             this.size = size;
         }
 

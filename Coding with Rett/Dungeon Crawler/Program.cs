@@ -10,23 +10,15 @@ namespace DungeonCrawler
     {
         static void Main(string[] args)
         {
-
             //playGame();
 
-            //proof that print inventory works. Can delete this
-            Weapon sword = new Weapon("Longclaw", "Sword", 5);
-            Potion healthPotion = new Potion("Small Health Potion", "Health Potion", 3);
+            List<Item> RettsInventory = new List<Item>();
+            RettsInventory.Add(new Weapon("Gunbar's Heavy Axe", WeaponType.Axe, 10));
+            RettsInventory.Add(new Potion("Minor Health Potion", PotionType.Health, 10));
 
-            Hero Player = new Hero(100, 5, 5, "Player");
+            Hero Enemy = new Hero(10, 5, 5, "Rett", RettsInventory);
 
-            Player.printInventory();
-
-            Player.addItemToInvetory(sword);
-            Player.printInventory();
-
-            Player.addItemToInvetory(healthPotion);
-            Player.printInventory();
-            
+            Enemy.printInventory();
 
             Console.ReadKey();
         }
@@ -82,10 +74,10 @@ namespace DungeonCrawler
             Console.Clear();
             Console.WriteLine("\nAs you walk through the gate, A menacing figure emerges from the shadows.\n");
             Console.WriteLine("You recognize the hideous face of Gorlack the Weak.\n\n");
-            Console.Write("\"You've gone far enough. Prepare to meet your death! ");
+            Console.Write("\"You've gone far enough. Prepare to meet your death!\" ");
 
             //get input from the Player and check it
-            Console.WriteLine("Fight or flee? (y/n)");
+            Console.Write("Fight or flee? (y/n): ");
 
             choice = Console.ReadKey().KeyChar;
             choice = checkChar(choice);
@@ -98,7 +90,7 @@ namespace DungeonCrawler
             //otherwise, the game is over
             else
             {
-                Console.WriteLine("You flee in terror. Game Over.");
+                Console.WriteLine("\nYou flee in terror. Game Over.");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
@@ -160,10 +152,14 @@ namespace DungeonCrawler
             //Whichever hero has the biggest speed * modifer goes first
             if (Player.Speed * PlayerSpeedModifier > Enemy.Speed * EnemySpeedModifier)
             {
+                Console.Write("\n\n" + Player.Name + " has the upperhand and attacks first! Press any key to start the fight...");
+                Console.ReadKey();
                 return Player;
             }
             else
             {
+                Console.Write("\n\n" + Enemy.Name + " has the upperhand and attacks first! Press any key to start the fight...");
+                Console.ReadKey();
                 return Enemy;
             }
         }
@@ -178,6 +174,10 @@ namespace DungeonCrawler
             int firstDmg;
             int secDmg;
             char choice;
+
+            //Console.WriteLine(enemy.Name + "'s " + weapon.Type + " glances off your armor.")
+            //Console.WriteLine(enemy.Name + "'s " + weapon.Type + " pierces your butt.");
+            //
 
             while (first.Health > 0 && second.Health > 0)
             {
@@ -224,6 +224,18 @@ namespace DungeonCrawler
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="Hero"></param>
+        static void printCombatLog(Hero Hero)
+        {
+            string[] combatLogMeleeWeapons;
+            string[] combatLogRangedWeapons;
+
+            //combatLogMeleeWeapons[0] = Hero.Name + "'s " +  + " glances off your armor.";
         }
 
 
