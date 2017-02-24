@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Tournament_Fighter
 {
-    interface ICharacter
+    enum PlayerType { Villager, Fighter, Player };
+
+    /// <summary>
+    /// INPC Interface
+    /// </summary>
+    interface INPC
     {
         string Name
         {
             get;
             set;
         }
-    }
 
-    interface IFighter : ICharacter
-    {
         int Health
         {
             get;
@@ -36,7 +38,10 @@ namespace Tournament_Fighter
         }
     }
 
-    interface IPlayer : IFighter
+    /// <summary>
+    /// IPlayer interface, inherits from INPC interface
+    /// </summary>
+    interface IPlayer : INPC
     {
         int Gold
         {
@@ -58,57 +63,38 @@ namespace Tournament_Fighter
     }
 
     /// <summary>
-    /// Villager Class
+    /// NPC Class
     /// </summary>
-    class Villager : ICharacter
-    {
-        string name;
-        //location
-
-        /// <summary>
-        /// Villager Constructor
-        /// </summary>
-        /// <param name="name"></param>
-        public Villager(string name)
-        {
-            this.name = name;
-        }
-
-        #region //getters and setters
-        public string Name
-        {
-            get
-            {
-                return this.name;
-            }
-            set
-            {
-                this.name = value;
-            }
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Fighter Class, inherits from Villager
-    /// </summary>
-    class Fighter : IFighter
+    class NPC : INPC
     {
         string name;
         int health;
         int speed;
         int strength;
+        PlayerType type;
 
         /// <summary>
-        /// Fighter Constructor inherits from Villager Constructor
+        /// NPC Base constructor
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        public NPC(string name, PlayerType type)
+        {
+            this.name = name;
+            this.type = type;
+        }
+
+        /// <summary>
+        /// NPC Constructor, overrides base constructor for villager type character
         /// </summary>
         /// <param name="name"></param>
         /// <param name="health"></param>
         /// <param name="speed"></param>
         /// <param name="strength"></param>
-        public Fighter(string name, int health, int speed, int strength)
+        public NPC(string name, PlayerType type, int health, int speed, int strength)
         {
             this.name = name;
+            this.type = type;
             this.health = health;
             this.speed = speed;
             this.strength = strength;
@@ -126,6 +112,7 @@ namespace Tournament_Fighter
                 this.name = value;
             }
         }
+
 
         public int Health
         {
@@ -168,16 +155,16 @@ namespace Tournament_Fighter
     }
 
     /// <summary>
-    /// Player Class, inherits from Fighter 
+    /// Player Class, inherits from NPC
     /// </summary>
-    class Player : Fighter, IPlayer
+    class Player : NPC, IPlayer
     {
         int gold;
         int rank;
         int actionPoints;
 
-        public Player(string name, int health, int speed, int strength, int gold, int rank, int actionPoints) 
-            : base(name, health, speed, strength)
+        public Player(string name, PlayerType type ,int health, int speed, int strength, int gold, int rank, int actionPoints) 
+            : base(name, type, health, speed, strength)
         {
             this.gold = gold;
             this.rank = rank;
