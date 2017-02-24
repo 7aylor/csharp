@@ -11,54 +11,65 @@ namespace Scroller
         const int WIDTH = 64;
         const int HEIGHT = 6;
         const char PLAYER = '*';
+        const ConsoleColor obstacleColor = ConsoleColor.Green;
 
-        public struct position
+        class Player
         {
             public int x;
             public int y;
+            public ConsoleColor color;
+
+            public Player(int x, int y, ConsoleColor color)
+            {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+            }
         }
 
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
             char [,] level = new char[WIDTH, HEIGHT];
-            position coords = new position();
 
-            coords.x = 1;
-            coords.y = 4;
+
+            Player player = new Player(1, 4, ConsoleColor.Red);
 
             buildLevel(ref level);
-            printLevel(level, coords.x, coords.y);
+            printLevel(level, player.x, player.y);
 
-            char key = Console.ReadKey(true).KeyChar;
+            addElement(ref level, PLAYER, player.x, player.y, player.color);
+            addElement(ref level, '|', 4, 4, obstacleColor);
+            addElement(ref level, '=', 3, 3, obstacleColor);
 
-            addElement(ref level, '|', 4, 4);
+            ConsoleKey key = Console.ReadKey(true).Key;
 
-            while (key != 'x')
+            while (key != ConsoleKey.X)
             {
-                if (key == 'd')
+                if (key == ConsoleKey.D || key == ConsoleKey.RightArrow)
                 {
-                    goRight(ref level, ref coords.x, coords.y);
+                    goRight(ref level, ref player.x, player.y);
                 }
-                if (key == 'a')
+                if (key == ConsoleKey.A || key == ConsoleKey.LeftArrow)
                 {
-                    goLeft(ref level, ref coords.x, coords.y);
+                    goLeft(ref level, ref player.x, player.y);
                 }
-                if (key == 'w')
+                if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
                 {
-                    goUp(ref level, coords.x, ref coords.y);
+                    goUp(ref level, player.x, ref player.y);
                 }
-                if (key == 's')
+                if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
                 {
-                    goDown(ref level, coords.x, ref coords.y);
+                    goDown(ref level, player.x, ref player.y);
                 }
-                key = Console.ReadKey(true).KeyChar;
+                key = Console.ReadKey(true).Key;
             }
         }
 
-        static void addElement(ref char[,] level, char element, int x, int y)
+        static void addElement(ref char[,] level, char element, int x, int y, ConsoleColor color)
         {
             level[x, y] = element;
+            Console.ForegroundColor = color;
             Console.SetCursorPosition(x, y);
             Console.Write(element);
         }
@@ -88,7 +99,7 @@ namespace Scroller
 
         static void goRight(ref char[,] level, ref int x, int y)
         {
-            if (x < WIDTH - 2)
+            if (x < WIDTH - 2 && !checkObstacle(level, x + 1, y))
             {
                 x++;
                 level[x - 1, y] = ' ';
@@ -104,7 +115,7 @@ namespace Scroller
 
         static void goLeft(ref char[,] level, ref int x, int y)
         {
-            if (x > 1)
+            if (x > 1 && !checkObstacle(level, x - 1, y))
             {
                 x--;
                 level[x + 1, y] = ' ';
@@ -120,7 +131,7 @@ namespace Scroller
 
         static void goUp(ref char[,] level, int x, ref int y)
         {
-            if(y > 1)
+            if(y > 1 && !checkObstacle(level, x, y - 1))
             {
                 y--;
                 level[x, y + 1] = ' ';
@@ -136,7 +147,7 @@ namespace Scroller
 
         static void goDown(ref char[,] level, int x, ref int y)
         {
-            if (y < HEIGHT - 2)
+            if (y < HEIGHT - 2 && !checkObstacle(level, x, y + 1))
             {
                 y++;
                 level[x, y - 1] = ' ';
@@ -160,6 +171,18 @@ namespace Scroller
                 }
                 Console.Write('\n');
             } 
+        }
+
+        static bool checkObstacle(char[,] level, int x, int y)
+        {
+            if (level[x, y] == '|' || level[x,y] == '-' || level[x, y] == '_' || level[x, y] == '=')
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
