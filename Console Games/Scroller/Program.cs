@@ -9,7 +9,7 @@ namespace Scroller
     class Program
     {
         const int WIDTH = 64;
-        const int HEIGHT = 6;
+        const int HEIGHT = 7;
         const char PLAYER = '*';
         const ConsoleColor obstacleColor = ConsoleColor.Green;
 
@@ -33,14 +33,30 @@ namespace Scroller
             char [,] level = new char[WIDTH, HEIGHT];
 
 
-            Player player = new Player(1, 4, ConsoleColor.Red);
+            Player player = new Player(1, HEIGHT - 2, ConsoleColor.Red);
 
             buildLevel(ref level);
             printLevel(level, player.x, player.y);
 
             addElement(ref level, PLAYER, player.x, player.y, player.color);
+            addElement(ref level, '|', 2, 5, obstacleColor);
+            addElement(ref level, '|', 2, 4, obstacleColor);
+            addElement(ref level, '|', 2, 3, obstacleColor);
+            addElement(ref level, '|', 2, 2, obstacleColor);
+
+            addElement(ref level, '|', 4, 2, obstacleColor);
             addElement(ref level, '|', 4, 4, obstacleColor);
-            addElement(ref level, '=', 3, 3, obstacleColor);
+            addElement(ref level, '|', 4, 1, obstacleColor);
+
+            addElement(ref level, '=', 5, 4, obstacleColor);
+            addElement(ref level, '=', 6, 4, obstacleColor);
+            addElement(ref level, '=', 7, 4, obstacleColor);
+
+            addElement(ref level, '=', 5, 2, obstacleColor);
+            addElement(ref level, '|', 6, 2, obstacleColor);
+
+            addElement(ref level, '|', 8, 1, obstacleColor);
+            addElement(ref level, '|', 8, 2, obstacleColor);
 
             ConsoleKey key = Console.ReadKey(true).Key;
 
