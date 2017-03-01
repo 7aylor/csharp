@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,14 +19,26 @@ namespace Tournament_Fighter
 
         public void addNPCToLocation(NPC npc)
         {
-            this.characters.Add(npc);
+            characters.Add(npc);
+        }
+
+        public void removeNPCFromLocation(NPC npc)
+        {
+            characters.RemoveAt(characters.IndexOf(npc));
         }
 
         public void printNPCsInLocation()
         {
-            foreach(NPC c in characters)
+            if(characters.Count > 0)
             {
-                Console.WriteLine(c.Name);
+                foreach (NPC c in characters)
+                {
+                    Console.WriteLine(c.Name);
+                }
+            }
+            else
+            {
+                Console.WriteLine("No one is at " + this.name);
             }
         }
     }
@@ -35,22 +48,62 @@ namespace Tournament_Fighter
         //{ Steak, Stew, Potato, Porridge, Grog, Wine, Ale, Tea, Coffee }
         List<Consumable> menu = new List<Consumable>();
 
+        /// <summary>
+        /// Tavern Class Base Constructor
+        /// </summary>
+        /// <param name="name"></param>
         public Tavern(string name) : base(name)
         {
             this.name = name;
+            foreach (ConsumableType item in Enum.GetValues(typeof(ConsumableType)))
+            {
+                switch (item)
+                {
+                    case ConsumableType.Ale:
+                        menu.Add(GameConsumables.Ale);
+                        break;
+                    case ConsumableType.Coffee:
+                        menu.Add(GameConsumables.Coffee);
+                        break;
+                    case ConsumableType.Grog:
+                        menu.Add(GameConsumables.Grog);
+                        break;
+                    case ConsumableType.Porridge:
+                        menu.Add(GameConsumables.Porridge);
+                        break;
+                    case ConsumableType.Potato:
+                        menu.Add(GameConsumables.Potato);
+                        break;
+                    case ConsumableType.Steak:
+                        menu.Add(GameConsumables.Steak);
+                        break;
+                    case ConsumableType.Stew:
+                        menu.Add(GameConsumables.Stew);
+                        break;
+                    case ConsumableType.Tea:
+                        menu.Add(GameConsumables.Tea);
+                        break;
+                    case ConsumableType.Wine:
+                        menu.Add(GameConsumables.Wine);
+                        break;
+                }
+            }
         }
 
         public void addMenuItem(Consumable c)
         {
-            this.menu.Add(c);
+            menu.Add(c);
         }
 
         public void printMenu()
         {
-
+            foreach(Consumable item in menu)
+            {
+                Console.WriteLine(item.Name);
+            }
         }
 
-        public void startGamling()
+        public void startGambling()
         {
 
         }

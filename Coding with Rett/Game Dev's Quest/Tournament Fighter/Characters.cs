@@ -16,7 +16,11 @@ namespace Tournament_Fighter
         string Name
         {
             get;
-            set;
+        }
+
+        string Occupation
+        {
+            get;
         }
 
         int Health
@@ -68,6 +72,7 @@ namespace Tournament_Fighter
     class NPC : INPC
     {
         string name;
+        string occupation;
         int health;
         int speed;
         int strength;
@@ -78,9 +83,10 @@ namespace Tournament_Fighter
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        public NPC(string name, PlayerType type)
+        public NPC(string name, string occupation, PlayerType type)
         {
             this.name = name;
+            this.occupation = occupation;
             this.type = type;
         }
 
@@ -107,12 +113,15 @@ namespace Tournament_Fighter
             {
                 return this.name;
             }
-            set
-            {
-                this.name = value;
-            }
         }
 
+        public string Occupation
+        {
+            get
+            {
+                return this.occupation;
+            }
+        }
 
         public int Health
         {

@@ -6,26 +6,27 @@ using System.Threading.Tasks;
 
 namespace Tournament_Fighter
 {
-    enum ConsumableType { Steak, Stew, Potato, Porridge, Grog, Wine, Ale, Tea, Coffee }
-    enum WeaponType { Bow, Axe, Sword, Spear, Knife, Hammer, Mace }
-    enum ArmorType { Shield, PaddedArmor, LeatherArmor, ChainMail, ScaleArmor, PlateArmor }
     
     class Consumable
     {
         ConsumableType name;
+        BuffType buffType;
+        BuffType deBuffType;
         int buff;
         int debuff;
         int cost;
 
-        public Consumable(ConsumableType name, int buff, int debuff, int cost)
+        public Consumable(ConsumableType name, BuffType buffType, BuffType deBuffType, int buff, int debuff, int cost)
         {
             this.name = name;
+            this.buffType = buffType;
+            this.deBuffType = deBuffType;
             this.buff = buff;
             this.debuff = debuff;
             this.cost = cost;
         }
 
-        ConsumableType Name
+        public ConsumableType Name
         {
             get
             {
@@ -33,7 +34,15 @@ namespace Tournament_Fighter
             }
         }
 
-        int Buff
+        public BuffType BuffType
+        {
+            get
+            {
+                return this.buffType;
+            }
+        }
+
+        public int Buff
         {
             get
             {
@@ -41,7 +50,7 @@ namespace Tournament_Fighter
             }
         }
 
-        int Debuff
+        public int Debuff
         {
             get
             {
@@ -49,7 +58,7 @@ namespace Tournament_Fighter
             }
         }
 
-        int Cost
+        public int Cost
         {
             get
             {
