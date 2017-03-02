@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Scroller
@@ -9,8 +10,9 @@ namespace Scroller
     class Program
     {
         const int WIDTH = 64;
-        const int HEIGHT = 7;
-        const char PLAYER = '*';
+        const int HEIGHT = 16;
+        const char PLAYER = 'D';
+        const char APPLE = '*';
         const ConsoleColor obstacleColor = ConsoleColor.Green;
 
         class Player
@@ -18,47 +20,56 @@ namespace Scroller
             public int x;
             public int y;
             public ConsoleColor color;
+            public int length;
 
             public Player(int x, int y, ConsoleColor color)
             {
                 this.x = x;
                 this.y = y;
                 this.color = color;
+                this.length = 1;
             }
+
+            public void eat()
+            {
+                this.length++;
+            }
+        }
+
+        class Apple
+        {
+            public int x;
+            public int y;
+            public ConsoleColor color;
+            Random locX = new Random();
+            Random locY = new Random();
+
+            public Apple(int x, int y, ConsoleColor color)
+            {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+            }
+
+
+
         }
 
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
-            char [,] level = new char[WIDTH, HEIGHT];
-
+            char[,] level = new char[WIDTH, HEIGHT];
 
             Player player = new Player(1, HEIGHT - 2, ConsoleColor.Red);
 
             buildLevel(ref level);
             printLevel(level, player.x, player.y);
+            addElement(ref level, APPLE, 10, 10, ConsoleColor.Green);
 
-            addElement(ref level, PLAYER, player.x, player.y, player.color);
-            addElement(ref level, '|', 2, 5, obstacleColor);
-            addElement(ref level, '|', 2, 4, obstacleColor);
-            addElement(ref level, '|', 2, 3, obstacleColor);
-            addElement(ref level, '|', 2, 2, obstacleColor);
-
-            addElement(ref level, '|', 4, 2, obstacleColor);
-            addElement(ref level, '|', 4, 4, obstacleColor);
-            addElement(ref level, '|', 4, 1, obstacleColor);
-
-            addElement(ref level, '=', 5, 4, obstacleColor);
-            addElement(ref level, '=', 6, 4, obstacleColor);
-            addElement(ref level, '=', 7, 4, obstacleColor);
-
-            addElement(ref level, '=', 5, 2, obstacleColor);
-            addElement(ref level, '|', 6, 2, obstacleColor);
-
-            addElement(ref level, '|', 8, 1, obstacleColor);
-            addElement(ref level, '|', 8, 2, obstacleColor);
+            Timer t = new Timer(callBackTimer, null, 0, 1000);
 
             ConsoleKey key = Console.ReadKey(true).Key;
+            #region //presses
 
             while (key != ConsoleKey.X)
             {
@@ -78,8 +89,16 @@ namespace Scroller
                 {
                     goDown(ref level, player.x, ref player.y);
                 }
+
+                if (player.x == 10 && player.y == 10)
+                {
+                    player.eat();
+                }
+
                 key = Console.ReadKey(true).Key;
             }
+
+            #endregion
         }
 
         static void addElement(ref char[,] level, char element, int x, int y, ConsoleColor color)
@@ -147,7 +166,7 @@ namespace Scroller
 
         static void goUp(ref char[,] level, int x, ref int y)
         {
-            if(y > 1 && !checkObstacle(level, x, y - 1))
+            if (y > 1 && !checkObstacle(level, x, y - 1))
             {
                 y--;
                 level[x, y + 1] = ' ';
@@ -181,17 +200,17 @@ namespace Scroller
         {
             for (int i = 0; i < HEIGHT; i++)
             {
-                for(int j = 0; j < WIDTH; j++)
+                for (int j = 0; j < WIDTH; j++)
                 {
                     Console.Write(level[j, i]);
                 }
                 Console.Write('\n');
-            } 
+            }
         }
 
         static bool checkObstacle(char[,] level, int x, int y)
         {
-            if (level[x, y] == '|' || level[x,y] == '-' || level[x, y] == '_' || level[x, y] == '=')
+            if (level[x, y] == '|' || level[x, y] == '-' || level[x, y] == '_' || level[x, y] == '=')
             {
                 return true;
             }
@@ -199,6 +218,11 @@ namespace Scroller
             {
                 return false;
             }
+        }
+
+        static void callBackTimer(Object o)
+        {
+            Console.WriteLine(DateTime.Now);
         }
     }
 }
