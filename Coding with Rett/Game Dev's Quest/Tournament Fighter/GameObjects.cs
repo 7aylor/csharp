@@ -6,17 +6,23 @@ using System.Threading.Tasks;
 
 namespace Tournament_Fighter
 {
+    #region//enums
     enum ConsumableType { Steak, Stew, Potato, Porridge, Grog, Wine, Ale, Tea, Coffee }
     enum WeaponType { Bow, Axe, Sword, Spear, Knife, Hammer, Mace }
     enum ArmorType { Shield, PaddedArmor, LeatherArmor, ChainMail, ScaleArmor, PlateArmor }
     enum BuffType { Health, Speed, Strength, None }
+    enum RankType { Challenger, Champion, }
+    #endregion
 
     static class GameCharacters
     {
+        //Player
+        //public static Player player = new Player("No Name", 100, 5, 7, 10, 1, )
+
         //Fighters
-        public static NPC Duncan = new NPC("Duncan", PlayerType.Fighter, 100, 5, 7);
-        public static NPC Grayson = new NPC("Grayson", PlayerType.Fighter, 100, 5, 7);
-        public static NPC Saigo = new NPC("Saigo", PlayerType.Fighter, 100, 5, 7);
+        public static NPC Duncan = new NPC("Duncan", PlayerType.Fighter);
+        public static NPC Grayson = new NPC("Grayson", PlayerType.Fighter);
+        public static NPC Saigo = new NPC("Saigo", PlayerType.Fighter);
 
         //Villagers
         public static NPC Paul = new NPC("Paul", "Bartender", PlayerType.Villager);
@@ -49,5 +55,10 @@ namespace Tournament_Fighter
         //Beverage
         public static Consumable Tea = new Consumable(ConsumableType.Tea, BuffType.Speed, BuffType.None, 1, 0, 3);
         public static Consumable Coffee = new Consumable(ConsumableType.Coffee, BuffType.Speed, BuffType.None, 4, 0, 10);
+    }
+
+    static class GameWeapons
+    {
+
     }
 }
