@@ -1,81 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Tournament_Fighter
 {
     enum PlayerType { Villager, Fighter, Player };
 
     /// <summary>
-    /// INPC Interface
-    /// </summary>
-    interface INPC
-    {
-        string Name
-        {
-            get;
-        }
-
-        string Occupation
-        {
-            get;
-        }
-
-        int Health
-        {
-            get;
-            set;
-        }
-
-        int Speed
-        {
-            get;
-            set;
-        }
-
-        int Strength
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
-    /// IPlayer interface, inherits from INPC interface
-    /// </summary>
-    interface IPlayer : INPC
-    {
-        int Gold
-        {
-            get;
-            set;
-        }
-
-        int Rank
-        {
-            get;
-            set;
-        }
-
-        int ActionPoints
-        {
-            get;
-            set;
-        }
-    }
-
-    /// <summary>
     /// NPC Class
     /// </summary>
-    class NPC : INPC
+    class NPC
     {
         string name;
         string occupation;
         int health;
         int speed;
         int strength;
+        int defense;
         PlayerType type;
 
         /// <summary>
@@ -97,13 +39,14 @@ namespace Tournament_Fighter
         /// <param name="health"></param>
         /// <param name="speed"></param>
         /// <param name="strength"></param>
-        public NPC(string name, PlayerType type, int health, int speed, int strength)
+        public NPC(string name, PlayerType type)
         {
             this.name = name;
             this.type = type;
-            this.health = health;
-            this.speed = speed;
-            this.strength = strength;
+            this.speed = 7;
+            this.strength = 7;
+            this.defense = 7;
+            this.initStats();
         }
 
         #region //getters and setters
@@ -112,6 +55,10 @@ namespace Tournament_Fighter
             get
             {
                 return this.name;
+            }
+            set
+            {
+                this.name = value;
             }
         }
 
@@ -158,26 +105,86 @@ namespace Tournament_Fighter
                 this.strength = value; 
             }
         }
+
+        public int Defense
+        {
+            get
+            {
+                return this.defense;
+            }
+            set
+            {
+                this.defense = value;
+            }
+        }
         #endregion
 
         //methods
+        public void setHealthFromMaxStat()
+        {
+            int max = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                if (this.speed > max)
+                {
+                    max = this.speed;
+                }
+                if (this.strength > max)
+                {
+                    max = this.strength;
+                }
+                if (this.defense > max)
+                {
+                    max = this.defense;
+                }
+            }
+
+            this.health = 50 + (max * 5);
+        }
+
+        public void initStats()
+        {
+            Random rand = new Random();
+            int randomNum = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                Thread.Sleep(1);
+                randomNum = rand.Next(3);
+                if(randomNum == 0 && this.defense > 1)
+                {
+                    this.strength++;
+                    this.defense--;
+                }
+                if (randomNum == 1 && this.strength > 1)
+                {
+                    this.speed++;
+                    this.strength--;
+                }
+                if (randomNum == 2 && this.speed > 1)
+                {
+                    this.defense++;
+                    this.speed--;
+                }
+            }
+            this.setHealthFromMaxStat();
+        }
     }
 
     /// <summary>
     /// Player Class, inherits from NPC
     /// </summary>
-    class Player : NPC, IPlayer
+    class Player : NPC
     {
         int gold;
-        int rank;
+        int rank; //come back to this
         int actionPoints;
 
-        public Player(string name, PlayerType type ,int health, int speed, int strength, int gold, int rank, int actionPoints) 
-            : base(name, type, health, speed, strength)
+        public Player(string name, PlayerType type) : base(name, type)
         {
-            this.gold = gold;
-            this.rank = rank;
-            this.actionPoints = actionPoints;
+            this.gold = 10;
+            this.rank = 1;
+            this.actionPoints = 10;
         }
 
         public int Gold
@@ -215,6 +222,8 @@ namespace Tournament_Fighter
                 this.actionPoints = value;
             }
         }
+
+        //Method for player to choose stats
     }
 
 }
