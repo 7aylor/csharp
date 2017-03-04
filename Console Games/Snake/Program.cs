@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,11 +19,15 @@ namespace Scroller
         {
             int x;
             int y;
-            Direction direction;
-            char symbol = 'D';
-            ConsoleColor color;
+            int maxDifficult = 5;
+            int difficulty = 1;
             int length;
+            Direction direction;
+            char symbol = 'O';
+            ConsoleColor color;
+            bool alive = true;
             Random randomDirection = new Random();
+
 
             public Player(int x, int y, ConsoleColor color)
             {
@@ -72,6 +77,13 @@ namespace Scroller
                     this.y = value;
                 }
             }
+            public int Difficulty
+            {
+                get
+                {
+                    return this.difficulty;
+                }
+            }
             public Direction Direction
             {
                 get
@@ -108,12 +120,105 @@ namespace Scroller
                     this.length = value;
                 }
             }
+
+            public bool Alive
+            {
+                get
+                {
+                    return this.alive;
+                }
+                set
+                {
+                    this.alive = value;
+                }
+            }
             #endregion
 
-            public void eat()
+            public void checkCollision()
             {
-                this.length++;
+                //length++;
             }
+
+            public void movePlayer()
+            {
+                if (direction == Direction.up)
+                {
+                    y--;
+                }
+                else if (direction == Direction.down)
+                {
+                    y++;
+                }
+                else if (direction == Direction.left)
+                {
+                    x--;
+                }
+                else if (direction == Direction.right)
+                {
+                    x++;
+                }
+            } 
+
+            public void increaseDifficulty()
+            {
+                if(difficulty != maxDifficult)
+                {
+                    difficulty++;
+                }
+            }
+
+            public void printPlayer()
+            {
+                if(direction == Direction.up)
+                {
+                    Console.SetCursorPosition(x, y + 1);
+                    Console.Write(' ');
+                }
+                if (direction == Direction.down)
+                {
+                    Console.SetCursorPosition(x, y - 1);
+                    Console.Write(' ');
+                }
+                if (direction == Direction.left)
+                {
+                    Console.SetCursorPosition(x + 1, y);
+                    Console.Write(' ');
+                }
+                if (direction == Direction.right)
+                {
+                    Console.SetCursorPosition(x - 1, y);
+                    Console.Write(' ');
+                }
+                Console.SetCursorPosition(x, y);
+                Console.ForegroundColor = color;
+                Console.Write(symbol);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            public void checkDirectionChange()
+            {
+                if (Console.KeyAvailable)
+                {
+                    ConsoleKey key = Console.ReadKey(true).Key;
+                    if (key == ConsoleKey.D || key == ConsoleKey.RightArrow)
+                    {
+                        direction = Direction.right;
+                    }
+                    else if (key == ConsoleKey.A || key == ConsoleKey.LeftArrow)
+                    {
+                        direction = Direction.left;
+                    }
+                    else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
+                    {
+                        direction = Direction.up;
+                    }
+                    else if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
+                    {
+                        direction = Direction.down;
+                    }
+                }
+            }
+
         }
 
         class Apple
@@ -179,6 +284,15 @@ namespace Scroller
             {
                 this.x = locX.Next(0, WIDTH);
                 this.y = locY.Next(0, HEIGHT);
+                printApple();
+            }
+
+            public void printApple()
+            {
+                Console.SetCursorPosition(x, y);
+                Console.ForegroundColor = color;
+                Console.Write(symbol);
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
 
@@ -257,14 +371,34 @@ namespace Scroller
             level.addElement(player.Symbol, player.X, player.Y, player.Color);
             level.addElement(apple.Symbol, apple.X, apple.Y, apple.Color);
 
-            level.printLevel(player, apple);
 
             //buildLevel(ref level);
             //printLevel(level, player.x, player.y);
             //addElement(ref level, APPLE, 10, 10, ConsoleColor.Green);
             //addElement(ref level, APPLE, 10, 10, ConsoleColor.Green);
 
-            //Timer t = new Timer(callBackTimer(player, apple, null, 0, 1000);
+            //Timer t = new Timer(callBackTimer, player, 0, 1000);
+
+            level.printLevel(player, apple);
+            //player.increaseDifficulty();
+
+
+            while (player.Alive)
+            {
+                apple.printApple();
+                player.printPlayer();
+                player.checkCollision();
+                player.checkDirectionChange();
+                player.movePlayer();
+                if(player.Direction == Direction.up || player.Direction == Direction.down)
+                {
+                    Thread.Sleep(200 - (player.Difficulty * 10));
+                }
+                else
+                {
+                    Thread.Sleep(150 - (player.Difficulty * 20));
+                }
+            }
 
             ConsoleKey key = Console.ReadKey(true).Key;
             #region //presses
@@ -296,7 +430,8 @@ namespace Scroller
                 key = Console.ReadKey(true).Key;
             }
 
-            #endregion
+        #endregion
+        #region//oldcode
         /*
         static void goRight(ref char[,] level, ref int x, int y)
         {
@@ -374,25 +509,7 @@ namespace Scroller
             }
         }
         */
-        static void callBackTimer(Player player, Apple apple)
-        {
-            if(player.Direction == Direction.up)
-            {
-                player.Y--;
-            }
-            else if (player.Direction == Direction.down)
-            {
-                player.Y++;
-            }
-            else if (player.Direction == Direction.left)
-            {
-                player.X--;
-            }
-            else if (player.Direction == Direction.right)
-            {
-                player.X++;
-            }
-        }
+        #endregion
 
     }
 }
