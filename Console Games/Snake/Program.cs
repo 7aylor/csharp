@@ -20,8 +20,9 @@ namespace Scroller
             int x;
             int y;
             int maxDifficult = 5;
-            int difficulty = 1;
+            int difficulty = 3;
             int length;
+            int score = 0;
             Direction direction;
             char symbol = 'O';
             ConsoleColor color;
@@ -53,6 +54,8 @@ namespace Scroller
                         direction = Direction.left;
                         break;
                 }
+
+                //displayScore();
             }
             #region//getters and setters
             public int X
@@ -82,6 +85,13 @@ namespace Scroller
                 get
                 {
                     return this.difficulty;
+                }
+            }
+            public int Score
+            {
+                get
+                {
+                    return this.score;
                 }
             }
             public Direction Direction
@@ -134,9 +144,36 @@ namespace Scroller
             }
             #endregion
 
-            public void checkCollision()
+            public void eatApple()
             {
-                //length++;
+                length++;
+                score += 10;
+                displayScore();
+            }
+
+            public void displayScore()
+            {
+                Console.SetCursorPosition(0, HEIGHT + 1);
+                Console.Write("Score: " + score);
+            }
+
+            public void checkCollision(Level level, Apple apple)
+            {
+
+                if(level.LevelArray[x,y] != ' ')
+                {
+                    if(level.LevelArray[x,y] == apple.Symbol)
+                    {
+                        this.eatApple();
+                        apple.spawnApple(level);
+                    }
+                    if(level.LevelArray[this.x, this.y] == '|' || level.LevelArray[this.x, this.y] == '=' 
+                       || level.LevelArray[this.x, this.y] == symbol)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You lose");
+                    }
+                }
             }
 
             public void movePlayer()
@@ -280,10 +317,11 @@ namespace Scroller
             }
             #endregion
 
-            public void spawnApple()
+            public void spawnApple(Level level)
             {
                 this.x = locX.Next(0, WIDTH);
                 this.y = locY.Next(0, HEIGHT);
+                level.LevelArray[x, y] = this.Symbol;
                 printApple();
             }
 
@@ -320,6 +358,14 @@ namespace Scroller
                 for (int i = 1; i < WIDTH - 1; i++)
                 {
                     level[i, HEIGHT - 1] = '=';
+                }
+            }
+
+            public char[,] LevelArray
+            {
+                get
+                {
+                    return this.level;
                 }
             }
 
@@ -387,7 +433,7 @@ namespace Scroller
             {
                 apple.printApple();
                 player.printPlayer();
-                player.checkCollision();
+                player.checkCollision(level, apple);
                 player.checkDirectionChange();
                 player.movePlayer();
                 if(player.Direction == Direction.up || player.Direction == Direction.down)
