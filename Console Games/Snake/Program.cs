@@ -52,10 +52,8 @@ namespace Scroller
 
         class Player
         {
-            Coord coord;
             int maxDifficult = 5;
             int difficulty = 3;
-            int length;
             int maxLength = 20;
             int score = 0;
             bool alive = true;
@@ -67,10 +65,9 @@ namespace Scroller
 
             public Player(int x, int y, ConsoleColor color)
             {
-                coord = new Coord(x, y);
+                Coord coord = new Coord(x, y);
                 body.Add(coord);
                 this.color = color;
-                this.length = 1;
 
                 int randResult = randomDirection.Next(4);
 
@@ -97,22 +94,22 @@ namespace Scroller
             {
                 get
                 {
-                    return this.coord.X;
+                    return body[0].X;
                 }
                 set
                 {
-                    this.coord.X = value;
+                    body[0].X = value;
                 }
             }
             public int Y
             {
                 get
                 {
-                    return this.coord.Y;
+                    return body[0].Y;
                 }
                 set
                 {
-                    this.coord.Y = value;
+                    body[0].Y = value;
                 }
             }
             public int Difficulty
@@ -154,17 +151,6 @@ namespace Scroller
                     this.color = value;
                 }
             }
-            public int Length
-            {
-                get
-                {
-                    return this.length;
-                }
-                set
-                {
-                    this.length = value;
-                }
-            }
 
             public bool Alive
             {
@@ -179,12 +165,35 @@ namespace Scroller
             }
             #endregion
 
-            public void eatApple()
+            void eatApple()
             {
-                if(length != maxLength)
+                if(body.Count != maxLength)
                 {
-                    length++;
-                    body.Add(new Coord(coord.X, coord.Y));
+                    Coord temp = body.Last();
+                    if (direction == Direction.up)
+                    {
+                        temp.Y--;
+                        body.Add(temp);
+                        temp = null;
+                    }
+                    else if (direction == Direction.down)
+                    {
+                        temp.Y++;
+                        body.Add(temp);
+                        temp = null;
+                    }
+                    else if (direction == Direction.left)
+                    {
+                        temp.X--;
+                        body.Add(temp);
+                        temp = null;
+                    }
+                    else if (direction == Direction.right)
+                    {
+                        temp.X++;
+                        body.Add(temp);
+                        temp = null;
+                    }
                 }
                 score += 10;
                 displayScore();
@@ -198,15 +207,15 @@ namespace Scroller
 
             public void checkCollision(Level level, Apple apple)
             {
-                if(level.LevelArray[coord.X, coord.Y] != ' ')
+                if(level.LevelArray[body[0].X, body[0].Y] != ' ')
                 {
-                    if(level.LevelArray[coord.X, coord.Y] == apple.Symbol)
+                    if(level.LevelArray[body[0].X, body[0].Y] == apple.Symbol)
                     {
                         this.eatApple();
                         apple.spawnApple(level);
                     }
-                    if (level.LevelArray[coord.X, coord.Y] == '|' || level.LevelArray[coord.X, coord.Y] == '=')
-                    //   || level.LevelArray[coord.X, coord.Y] == symbol)
+                    if (level.LevelArray[body[0].X, body[0].Y] == '|' || level.LevelArray[body[0].X, body[0].Y] == '=')
+                    //   || level.LevelArray[body[0].X, body[0].Y] == symbol)
                     {
                         Console.Clear();
                         alive = false;
@@ -215,39 +224,34 @@ namespace Scroller
                 }
             }
 
-            public void movePlayer()
+            void movePlayer()
             {
+                Coord temp = body[0];
                 if (direction == Direction.up)
                 {
-                    coord.Y--;
-                    foreach(Coord c in body)
-                    {
-                        c.Y--;
-                    }
+                    temp.Y--;
                 }
                 else if (direction == Direction.down)
                 {
-                    coord.Y++;
-                    foreach (Coord c in body)
-                    {
-                        c.Y++;
-                    }
+                    temp.Y++;
                 }
                 else if (direction == Direction.left)
                 {
-                    coord.X--;
-                    foreach (Coord c in body)
-                    {
-                        c.X--;
-                    }
+                    temp.X--;
                 }
                 else if (direction == Direction.right)
                 {
-                    coord.X++;
-                    foreach (Coord c in body)
+                    temp.X++;
+                }
+                for (int i = 0; i < body.Count; i++)
+                {
+                    body[i] = temp;
+                    if(i < body.Count - 1)
                     {
-                        c.X++;
+                        temp = body[i + 1];
                     }
+                    Console.SetCursorPosition(0, 24 + i);
+                    Console.WriteLine(body[i].X + " " + body[i].Y);
                 }
             } 
 
@@ -261,41 +265,23 @@ namespace Scroller
 
             public void printPlayer()
             {
-                if(direction == Direction.up)
-                {
-                    Coord temp;
-                    temp = body.Last();
-                    Console.SetCursorPosition(temp.X, temp.Y + 1);
-                    Console.Write(' ');
-                    temp = null;
-                }
-                if (direction == Direction.down)
-                {
-                    Coord temp;
-                    temp = body.Last();
-                    Console.SetCursorPosition(temp.X, temp.Y - 1);
-                    Console.Write(' ');
-                    temp = null;
-                }
-                if (direction == Direction.left)
-                {
-                    Coord temp;
-                    temp = body.Last();
-                    Console.SetCursorPosition(temp.X + 1, temp.Y);
-                    Console.Write(' ');
-                    temp = null;
-                }
-                if (direction == Direction.right)
-                {
-                    Coord temp;
-                    temp = body.Last();
-                    Console.SetCursorPosition(temp.X - 1, temp.Y);
-                    Console.Write(' ');
-                    temp = null;
-                }
-                Console.SetCursorPosition(coord.X, coord.Y);
+                Coord temp;
+                temp = body.Last();
+                Console.SetCursorPosition(0, 28);
+                Console.Write("Length: " + body.Count);
+                Console.SetCursorPosition(0, 29);
+                Console.Write("X: " + body[0].X + "   Y: " + body[0].Y);
+                Console.SetCursorPosition(0, 30);
+                Console.Write("X: " + temp.X + "   Y: " + temp.Y);
+                Console.SetCursorPosition(temp.X, temp.Y);
+                Console.Write(' ');
+                movePlayer();
                 Console.ForegroundColor = color;
-                Console.Write(symbol);
+                foreach (Coord c in body)
+                {
+                    Console.SetCursorPosition(c.X, c.Y);
+                    Console.Write(symbol);
+                }
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
@@ -498,12 +484,13 @@ namespace Scroller
 
             while (player.Alive)
             {
-                apple.printApple();
-                player.printPlayer();
                 player.checkCollision(level, apple);
                 player.checkDirectionChange();
-                player.movePlayer();
-                if(player.Direction == Direction.up || player.Direction == Direction.down)
+                apple.printApple();
+                player.printPlayer();
+                //player.movePlayer();
+                //player.printPlayer();
+                if (player.Direction == Direction.up || player.Direction == Direction.down)
                 {
                     Thread.Sleep(500 - (player.Difficulty * 10));
                 }
@@ -514,116 +501,7 @@ namespace Scroller
             }
 
             ConsoleKey key = Console.ReadKey(true).Key;
-            #region //presses
-            /*
-            while (key != ConsoleKey.X)
-            {
-                if (key == ConsoleKey.D || key == ConsoleKey.RightArrow)
-                {
-                    goRight(ref level, ref player.x, player.y);
-                }
-                if (key == ConsoleKey.A || key == ConsoleKey.LeftArrow)
-                {
-                    goLeft(ref level, ref player.x, player.y);
-                }
-                if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
-                {
-                    goUp(ref level, player.x, ref player.y);
-                }
-                if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
-                {
-                    goDown(ref level, player.x, ref player.y);
-                }
-
-                if (player.x == 10 && player.y == 10)
-                {
-                    player.eat();
-                }
-                */
-                key = Console.ReadKey(true).Key;
             }
-
-        #endregion
-        #region//oldcode
-        /*
-        static void goRight(ref char[,] level, ref int x, int y)
-        {
-            if (x < WIDTH - 2 && !checkObstacle(level, x + 1, y))
-            {
-                x++;
-                level[x - 1, y] = ' ';
-                Console.SetCursorPosition(x - 1, y);
-                Console.Write(' ');
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                level[x, y] = PLAYER;
-                Console.SetCursorPosition(x, y);
-                Console.Write(PLAYER);
-            }
-        }
-
-        static void goLeft(ref char[,] level, ref int x, int y)
-        {
-            if (x > 1 && !checkObstacle(level, x - 1, y))
-            {
-                x--;
-                level[x + 1, y] = ' ';
-                Console.SetCursorPosition(x + 1, y);
-                Console.Write(' ');
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                level[x, y] = PLAYER;
-                Console.SetCursorPosition(x, y);
-                Console.Write(PLAYER);
-            }
-        }
-
-        static void goUp(ref char[,] level, int x, ref int y)
-        {
-            if (y > 1 && !checkObstacle(level, x, y - 1))
-            {
-                y--;
-                level[x, y + 1] = ' ';
-                Console.SetCursorPosition(x, y + 1);
-                Console.Write(' ');
-
-                Console.ForegroundColor = ConsoleColor.Red;
-                level[x, y] = PLAYER;
-                Console.SetCursorPosition(x, y);
-                Console.Write(PLAYER);
-            }
-        }
-
-        static void goDown(ref char[,] level, int x, ref int y)
-        {
-            if (y < HEIGHT - 2 && !checkObstacle(level, x, y + 1))
-            {
-                y++;
-                level[x, y - 1] = ' ';
-                Console.SetCursorPosition(x, y - 1);
-                Console.Write(' ');
-
-                level[x, y] = PLAYER;
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.SetCursorPosition(x, y);
-                Console.Write(PLAYER);
-            }
-        }
-
-        static bool checkObstacle(char[,] level, int x, int y)
-        {
-            if (level[x, y] == '|' || level[x, y] == '-' || level[x, y] == '_' || level[x, y] == '=')
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        */
-        #endregion
-
     }
 }
 
