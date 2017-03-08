@@ -15,15 +15,14 @@ namespace Tournament_Fighter
             //Console.WriteLine("\t\tWelcome to Tournament Fighter!\n\n");
             //Console.WriteLine("\t\t\n\n");
 
+            GameCharacters.player.initPlayer();
 
             //Player Creation
 
             //Console.WriteLine("State your name: ");
             //string name = Console.ReadLine();
 
-            Player player = new Player("Poop", PlayerType.Player);
-
-
+            /*
             Console.WriteLine(GameCharacters.Duncan.Name + " Strength: " + GameCharacters.Duncan.Strength);
             Console.WriteLine(GameCharacters.Duncan.Name + " Speed: " + GameCharacters.Duncan.Speed);
             Console.WriteLine(GameCharacters.Duncan.Name + " Defense: " + GameCharacters.Duncan.Defense);

@@ -14,10 +14,13 @@ namespace Tournament_Fighter
     enum RankType { Challenger, Champion, }
     #endregion
 
+    /// <summary>
+    /// Holds initialized character objects
+    /// </summary>
     static class GameCharacters
     {
         //Player
-        //public static Player player = new Player("No Name", 100, 5, 7, 10, 1, )
+        public static Player player = new Player("No Name", PlayerType.Player);
 
         //Fighters
         public static NPC Duncan = new NPC("Duncan", PlayerType.Fighter);
@@ -33,12 +36,18 @@ namespace Tournament_Fighter
 
     }
 
+    /// <summary>
+    /// Holds initialized Locations objects
+    /// </summary>
     static class GameLocations
     {
         public static Tavern tavern = new Tavern("Bucky's Big Gulps");
 
     }
 
+    /// <summary>
+    /// Holds initialized Consumable objects
+    /// </summary>
     static class GameConsumables
     {
         //Food
@@ -57,6 +66,9 @@ namespace Tournament_Fighter
         public static Consumable Coffee = new Consumable(ConsumableType.Coffee, BuffType.Speed, BuffType.None, 4, 0, 10);
     }
 
+    /// <summary>
+    /// Holds initialized Weapon objects
+    /// </summary>
     static class GameWeapons
     {
 
