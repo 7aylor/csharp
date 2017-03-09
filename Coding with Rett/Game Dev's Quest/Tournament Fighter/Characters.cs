@@ -276,51 +276,71 @@ namespace Tournament_Fighter
             printStats();
 
             //Question 1
-            Console.WriteLine("You see a civilian being robbed. Do you:\n");
-            Console.WriteLine("a) Apprehend the robber?"); //strength
-            Console.WriteLine("b) Lay a cunning trap for the robber?"); //speed
-            Console.WriteLine("c) Give the victim money from your own purse?\n"); //defense
-            Console.Write(">");
+            printQuestionsToBuildStats("You see a civilian being robbed. Do you:", 
+                                       "a) Apprehend the robber?",
+                                       "b) Lay a cunning trap for the robber?", 
+                                       "c) Give the victim money from your own purse?");
 
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
-
-            //check user input (Can abstract this into a function later)***
-            while(playerChoice != 'a' && playerChoice != 'A' && playerChoice != 'b' && playerChoice != 'B'
-                  && playerChoice != 'c' && playerChoice != 'C')
-            {
-                Console.Write("\nInvalid input. Please try again: ");
-                playerChoice = Console.ReadKey().KeyChar;
-            }
+            //make sure user inputs a, b, or c
+            checkInputOnBuildPlayer(ref playerChoice);
+            //balance the stats
             buildPlayerStats(playerChoice);
 
             //Question 2
-            Console.WriteLine("Your village is under attack, which weapon do you grab first?\n");
-            Console.WriteLine("a) A Broadsword to crush your enemies"); //strength
-            Console.WriteLine("b) A Bow to kill from a distance"); //speed
-            Console.WriteLine("c) A Spear to keep your foe at bay\n"); //defense
-            Console.Write(">");
+            printQuestionsToBuildStats("Your village is under attack, which weapon do you grab first?",
+                                       "a) A Broadsword to crush your enemies", 
+                                       "b) A Bow to kill from a distance",
+                                       "c) A Spear to keep your foe at bay");
 
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
-
-            //check user input (Can abstract this into a function later)***
-            while (playerChoice != 'a' && playerChoice != 'A' && playerChoice != 'b' && playerChoice != 'B'
-                  && playerChoice != 'c' && playerChoice != 'C')
-            {
-                Console.Write("\nInvalid input. Please try again: ");
-                playerChoice = Console.ReadKey().KeyChar;
-            }
+            //make sure user inputs a, b, or c
+            checkInputOnBuildPlayer(ref playerChoice);
+            //balance the stats
             buildPlayerStats(playerChoice);
 
             //Question 3
-            Console.Write("");
+            printQuestionsToBuildStats("A local merchant accuses you of stealing from his shop. He sent for the " +
+                                       "guards to settle the matter. Do you:", 
+                                       "a) A weapon as nice as this rightfully belongs to one who can weild it. It's not stealing if its yours", 
+                                       "b) Make a break for the nearest exit", 
+                                       "c) Wait for the guards to peacefully clear up this misunderstanding");
+
+            //get character from user
+            playerChoice = Console.ReadKey().KeyChar;
+            //make sure user inputs a, b, or c
+            checkInputOnBuildPlayer(ref playerChoice);
+            //balance the stats
+            buildPlayerStats(playerChoice);
 
             //Question 4
-            Console.Write("");
+            printQuestionsToBuildStats("You've acquired a freshly baked sweet cake, but a local scoundrel has cornered you. " +
+                                       "He wants it for himself. What do you do?", 
+                                       "a) You throw it to the ground, crushing it under your heel. If you can't have it, no one will.",
+                                       "b) Stuff it in your mouth before he can stop you.", 
+                                       "c) Offer to split it with him. After all, it's only a sweet cake.");
+
+            //get character from user
+            playerChoice = Console.ReadKey().KeyChar;
+            //make sure user inputs a, b, or c
+            checkInputOnBuildPlayer(ref playerChoice);
+            //balance the stats
+            buildPlayerStats(playerChoice);
 
             //Question 5
-            Console.Write("");
+            printQuestionsToBuildStats("You see an attractive person in the courtyard. How do you get their attention?",
+                                       "a) You find the heaviest thing you can carry and walk it past, making sure they catch your backside.", 
+                                       "b) You challenge your mates to a footrace putting the finish line right past your spark",
+                                       "c) Slowly take a seat near them and attempt at making intellectual conversation.");
+
+            //get character from user
+            playerChoice = Console.ReadKey().KeyChar;
+            //make sure user inputs a, b, or c
+            checkInputOnBuildPlayer(ref playerChoice);
+            //balance the stats
+            buildPlayerStats(playerChoice);
         }
 
         /// <summary>
@@ -356,9 +376,31 @@ namespace Tournament_Fighter
         /// </summary>
         public void printStats()
         {
+            Console.Clear();
             Console.SetCursorPosition(0, 0);
             Console.Write("Strength: " + Strength + "\tSpeed: " + Speed + "\tDefense: " + Defense + "\n");
         }
+        
+        private void checkInputOnBuildPlayer(ref char playerChoice)
+        {
+            //check user input (Can abstract this into a function later)
+            while (playerChoice != 'a' && playerChoice != 'A' && playerChoice != 'b' && playerChoice != 'B'
+                  && playerChoice != 'c' && playerChoice != 'C')
+            {
+                Console.Write("\nInvalid input. Please try again: ");
+                playerChoice = Console.ReadKey().KeyChar;
+            }
+        }
+
+        private void printQuestionsToBuildStats(string question, string answerA, string answerB, string answerC)
+        {
+            Console.WriteLine("\n" + question + "\n");
+            Console.WriteLine(answerA); //strength
+            Console.WriteLine(answerB); //speed
+            Console.WriteLine(answerC + "\n"); //defense
+            Console.Write(">");
+        }
+        
     }
 
 }
