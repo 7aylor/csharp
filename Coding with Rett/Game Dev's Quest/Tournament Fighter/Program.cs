@@ -10,11 +10,11 @@ namespace Tournament_Fighter
     {
         static void Main(string[] args)
         {
+            Game.play();
             //Welcome player
             //Console.WriteLine("\t\tWelcome to Tournament Fighter!\n\n");
             //Console.WriteLine("\t\t\n\n");
 
-            GameCharacters.player.initPlayer();
 
             //Player Creation
 
@@ -48,5 +48,6 @@ namespace Tournament_Fighter
             */
             Console.ReadKey();
         }
+
     }
 }
