@@ -20,7 +20,7 @@ namespace Scroller
             int x;
             int y;
 
-            public Coord(int x, int y)
+            public Coord(int x, int y, Direction coordDir)
             {
                 this.x = x;
                 this.y = y;
@@ -65,8 +65,6 @@ namespace Scroller
 
             public Player(int x, int y, ConsoleColor color)
             {
-                Coord coord = new Coord(x, y);
-                body.Add(coord);
                 this.color = color;
 
                 int randResult = randomDirection.Next(4);
@@ -86,6 +84,9 @@ namespace Scroller
                         direction = Direction.left;
                         break;
                 }
+
+                Coord coord = new Coord(x, y, this.direction);
+                body.Add(coord);
 
                 //displayScore();
             }
@@ -167,33 +168,30 @@ namespace Scroller
 
             void eatApple()
             {
-                if(body.Count != maxLength)
+                if(body.Count < maxLength)
                 {
                     Coord temp = body.Last();
                     if (direction == Direction.up)
                     {
                         temp.Y--;
                         body.Add(temp);
-                        temp = null;
                     }
                     else if (direction == Direction.down)
                     {
                         temp.Y++;
                         body.Add(temp);
-                        temp = null;
                     }
                     else if (direction == Direction.left)
                     {
                         temp.X--;
                         body.Add(temp);
-                        temp = null;
                     }
                     else if (direction == Direction.right)
                     {
                         temp.X++;
                         body.Add(temp);
-                        temp = null;
                     }
+                    temp = null;
                 }
                 score += 10;
                 displayScore();
@@ -267,12 +265,7 @@ namespace Scroller
             {
                 Coord temp;
                 temp = body.Last();
-                Console.SetCursorPosition(0, 28);
-                Console.Write("Length: " + body.Count);
-                Console.SetCursorPosition(0, 29);
-                Console.Write("X: " + body[0].X + "   Y: " + body[0].Y);
-                Console.SetCursorPosition(0, 30);
-                Console.Write("X: " + temp.X + "   Y: " + temp.Y);
+
                 Console.SetCursorPosition(temp.X, temp.Y);
                 Console.Write(' ');
                 movePlayer();
@@ -492,11 +485,11 @@ namespace Scroller
                 //player.printPlayer();
                 if (player.Direction == Direction.up || player.Direction == Direction.down)
                 {
-                    Thread.Sleep(500 - (player.Difficulty * 10));
+                    Thread.Sleep(200 - (player.Difficulty * 10));
                 }
                 else
                 {
-                    Thread.Sleep(500 - (player.Difficulty * 20));
+                    Thread.Sleep(200 - (player.Difficulty * 20));
                 }
             }
 
