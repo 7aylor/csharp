@@ -20,7 +20,7 @@ namespace Scroller
             int x;
             int y;
 
-            public Coord(int x, int y, Direction coordDir)
+            public Coord(int x, int y)
             {
                 this.x = x;
                 this.y = y;
@@ -63,6 +63,12 @@ namespace Scroller
             ConsoleColor color;
             Random randomDirection = new Random();
 
+            /// <summary>
+            /// Default contructor for player object. Creates the player and a random direction
+            /// </summary>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="color"></param>
             public Player(int x, int y, ConsoleColor color)
             {
                 this.color = color;
@@ -84,11 +90,7 @@ namespace Scroller
                         direction = Direction.left;
                         break;
                 }
-
-                Coord coord = new Coord(x, y, this.direction);
-                body.Add(coord);
-
-                //displayScore();
+                body.Add(new Coord(x, y));
             }
             #region//getters and setters
             public int X
@@ -170,7 +172,7 @@ namespace Scroller
             {
                 if(body.Count < maxLength)
                 {
-                    Coord temp = body.Last();
+                    Coord temp = new Coord(body.Last().X, body.Last().Y);
                     if (direction == Direction.up)
                     {
                         temp.Y--;
@@ -224,32 +226,33 @@ namespace Scroller
 
             void movePlayer()
             {
-                Coord temp = body[0];
+                Coord temp = new Coord(body[0].X, body[0].Y);
                 if (direction == Direction.up)
                 {
-                    temp.Y--;
+                    body[0].Y--;
                 }
                 else if (direction == Direction.down)
                 {
-                    temp.Y++;
+                    body[0].Y++;
                 }
                 else if (direction == Direction.left)
                 {
-                    temp.X--;
+                    body[0].X--;
                 }
                 else if (direction == Direction.right)
                 {
-                    temp.X++;
+                    body[0].X++;
                 }
-                for (int i = 0; i < body.Count; i++)
+                for (int i = 1; i < body.Count; i++)
                 {
                     body[i] = temp;
-                    if(i < body.Count - 1)
+                    if (i < body.Count - 1)
                     {
-                        temp = body[i + 1];
+                        temp.Y = body[i + 1].Y;
+                        temp.X = body[i + 1].X;
                     }
                     Console.SetCursorPosition(0, 24 + i);
-                    Console.WriteLine(body[i].X + " " + body[i].Y);
+                    Console.WriteLine(body[i].X + " " + body[i].Y + " Count: " + body.Count);
                 }
             } 
 
@@ -263,10 +266,7 @@ namespace Scroller
 
             public void printPlayer()
             {
-                Coord temp;
-                temp = body.Last();
-
-                Console.SetCursorPosition(temp.X, temp.Y);
+                Console.SetCursorPosition(body.Last().X, body.Last().Y);
                 Console.Write(' ');
                 movePlayer();
                 Console.ForegroundColor = color;
