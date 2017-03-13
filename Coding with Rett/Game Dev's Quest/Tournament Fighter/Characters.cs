@@ -392,6 +392,13 @@ namespace Tournament_Fighter
             }
         }
 
+        /// <summary>
+        /// Print questions, helper function to initPlayer
+        /// </summary>
+        /// <param name="question"></param>
+        /// <param name="answerA"></param>
+        /// <param name="answerB"></param>
+        /// <param name="answerC"></param>
         private void printQuestionsToBuildStats(string question, string answerA, string answerB, string answerC)
         {
             Console.WriteLine("\n" + question + "\n");
