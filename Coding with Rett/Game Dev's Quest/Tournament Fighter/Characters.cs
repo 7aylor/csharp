@@ -86,8 +86,8 @@ namespace Tournament_Fighter
                 this.health = value;
             }
         }
-
-        public int Speed
+        //virtual so Player subclass can override
+        public virtual int Speed
         {
             get
             {
@@ -98,8 +98,8 @@ namespace Tournament_Fighter
                 this.speed = value;
             }
         }
-
-        public int Strength
+        //virtual so Player subclass can override
+        public virtual int Strength
         {
             get
             {
@@ -110,8 +110,8 @@ namespace Tournament_Fighter
                 this.strength = value; 
             }
         }
-
-        public int Defense
+        //virtual so Player subclass can override
+        public virtual int Defense
         {
             get
             {
@@ -225,6 +225,43 @@ namespace Tournament_Fighter
         }
 
         #region //getters and setters
+        public override int Speed
+        {
+            get
+            {
+                return base.Speed;
+            }
+            set
+            {
+                base.Speed = value;
+                printStats();
+            }
+        }
+        public override int Strength
+        {
+            get
+            {
+                return base.Strength;
+            }
+            set
+            {
+                base.Strength = value;
+                printStats();
+            }
+        }
+        public override int Defense
+        {
+            get
+            {
+                return base.Defense;
+            }
+            set
+            {
+                base.Defense = value;
+                printStats();
+            }
+        }
+
         public int Gold
         {
             get
@@ -234,6 +271,7 @@ namespace Tournament_Fighter
             set
             {
                 this.gold = value;
+                printStats();
             }
         }
 
@@ -246,6 +284,7 @@ namespace Tournament_Fighter
             set
             {
                 this.rank = value;
+                printStats();
             }
         }
 
@@ -258,6 +297,7 @@ namespace Tournament_Fighter
             set
             {
                 this.actionPoints = value;
+                printStats();
             }
         }
         #endregion
@@ -284,7 +324,8 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            checkInputOnBuildPlayer(ref playerChoice);
+            char[] abc = new char[] { 'a', 'A', 'b', 'B', 'c', 'C' };
+            Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
 
@@ -297,7 +338,7 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            checkInputOnBuildPlayer(ref playerChoice);
+            Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
 
@@ -311,7 +352,7 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            checkInputOnBuildPlayer(ref playerChoice);
+            Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
 
@@ -325,7 +366,7 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            checkInputOnBuildPlayer(ref playerChoice);
+            Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
 
@@ -338,7 +379,7 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            checkInputOnBuildPlayer(ref playerChoice);
+            Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
         }
@@ -376,20 +417,20 @@ namespace Tournament_Fighter
         /// </summary>
         public void printStats()
         {
-            Console.Clear();
+            Helper.ClearLine(0, 0);
+            Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(0, 0);
-            Console.Write("Strength: " + Strength + "\tSpeed: " + Speed + "\tDefense: " + Defense + "\n");
-        }
-        
-        private void checkInputOnBuildPlayer(ref char playerChoice)
-        {
-            //check user input (Can abstract this into a function later)
-            while (playerChoice != 'a' && playerChoice != 'A' && playerChoice != 'b' && playerChoice != 'B'
-                  && playerChoice != 'c' && playerChoice != 'C')
-            {
-                Console.Write("\nInvalid input. Please try again: ");
-                playerChoice = Console.ReadKey().KeyChar;
-            }
+            Console.Write("Strength: " + Strength);
+            Console.SetCursorPosition(17, 0);
+            Console.Write("Speed: " + Speed);
+            Console.SetCursorPosition(34, 0);
+            Console.Write("Defense: " + Defense);
+            Console.SetCursorPosition(51, 0);
+            Console.Write("Gold: " + gold);
+            Console.SetCursorPosition(64, 0);
+            Console.Write("Action Points: " + actionPoints);
+            Console.WriteLine("\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         /// <summary>

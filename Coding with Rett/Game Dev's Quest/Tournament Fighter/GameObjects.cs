@@ -25,6 +25,7 @@ namespace Tournament_Fighter
         public static NPC Duncan = new NPC("Duncan", PlayerType.Fighter);
         public static NPC Grayson = new NPC("Grayson", PlayerType.Fighter);
         public static NPC Saigo = new NPC("Saigo", PlayerType.Fighter);
+        public static NPC SmilinDonnie = new NPC("Smilin' Donnie", PlayerType.Fighter);
 
         //Villagers
         public static NPC Paul = new NPC("Paul", "Bartender", PlayerType.Villager);
