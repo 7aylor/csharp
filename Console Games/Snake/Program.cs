@@ -264,16 +264,18 @@ namespace Scroller
                 }
             }
 
-            public void printPlayer()
+            public void printPlayer(Level level)
             {
                 Console.SetCursorPosition(body.Last().X, body.Last().Y);
                 Console.Write(' ');
+                level.addElement(' ', body.Last().X, body.Last().Y, ConsoleColor.White);
                 movePlayer();
                 Console.ForegroundColor = color;
                 foreach (Coord c in body)
                 {
                     Console.SetCursorPosition(c.X, c.Y);
                     Console.Write(symbol);
+                    level.addElement(symbol, c.X, c.Y, color);
                 }
                 Console.ForegroundColor = ConsoleColor.White;
             }
@@ -283,19 +285,19 @@ namespace Scroller
                 if (Console.KeyAvailable)
                 {
                     ConsoleKey key = Console.ReadKey(true).Key;
-                    if (key == ConsoleKey.D || key == ConsoleKey.RightArrow)
+                    if ((key == ConsoleKey.D || key == ConsoleKey.RightArrow) && (direction != Direction.left))
                     {
                         direction = Direction.right;
                     }
-                    else if (key == ConsoleKey.A || key == ConsoleKey.LeftArrow)
+                    else if ((key == ConsoleKey.A || key == ConsoleKey.LeftArrow) && (direction != Direction.right))
                     {
                         direction = Direction.left;
                     }
-                    else if (key == ConsoleKey.W || key == ConsoleKey.UpArrow)
+                    else if ((key == ConsoleKey.W || key == ConsoleKey.UpArrow) && (direction != Direction.down))
                     {
                         direction = Direction.up;
                     }
-                    else if (key == ConsoleKey.S || key == ConsoleKey.DownArrow)
+                    else if ((key == ConsoleKey.S || key == ConsoleKey.DownArrow) && (direction != Direction.up))
                     {
                         direction = Direction.down;
                     }
@@ -480,7 +482,7 @@ namespace Scroller
                 player.checkCollision(level, apple);
                 player.checkDirectionChange();
                 apple.printApple();
-                player.printPlayer();
+                player.printPlayer(level);
                 //player.movePlayer();
                 //player.printPlayer();
                 if (player.Direction == Direction.up || player.Direction == Direction.down)
