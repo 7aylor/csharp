@@ -23,9 +23,9 @@ namespace Tournament_Fighter
             //Console.CursorVisible = false;
 
             //#######WORK ON TRANSITIONS#######
-            //printTitleScreen();
-            //printIntroStory();
-            //GameCharacters.player.initPlayer();
+            printTitleScreen();
+            printIntroStory();
+            GameCharacters.player.initPlayer();
             tutorialBattle();
         }
 
@@ -34,17 +34,71 @@ namespace Tournament_Fighter
         /// </summary>
         static void printTitleScreen()
         {
+            ConsoleColor defaultColor = ConsoleColor.Gray;
+            ConsoleColor flag = ConsoleColor.Red;
+            ConsoleColor roof = ConsoleColor.Yellow;
+
             Console.WriteLine("\t      Welcome to Tournament Fighter!\n");
-            Console.WriteLine("\t\t               T~~");
+            Console.Write("\t\t               ");
+            Console.ForegroundColor = flag;
+            Console.WriteLine("T~~");
+            Console.ForegroundColor = defaultColor;
             Console.WriteLine("\t\t               |");
             Console.WriteLine("\t\t              /\"\\");
-            Console.WriteLine("\t\t      T~~     |'| T~~");
-            Console.WriteLine("\t\t  T~~ |    T~ WWWW|");
-            Console.WriteLine("\t\t  |  /\"\\   |  |  |/\\T~~");
-            Console.WriteLine("\t\t /\"\\ WWW / \"\\ |' |WW|");
-            Console.WriteLine("\t\tWWWWW/\\| /   \\|'/\\|/\"\\");
-            Console.WriteLine("\t\t|   /__\\/]WWW[\\/__\\WWWW");
-            Console.WriteLine("\t\t|\"  WWWW'|I_I|'WWWW'  |");
+            Console.Write("\t\t      ");
+            Console.ForegroundColor = flag;
+            Console.Write("T~~");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("     |'| ");
+            Console.ForegroundColor = flag;
+            Console.WriteLine("T~~");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("\t\t  ");
+            Console.ForegroundColor = flag;
+            Console.Write("T~~");
+            Console.ForegroundColor = defaultColor;
+            Console.Write(" |    ");
+            Console.ForegroundColor = flag;
+            Console.Write("T~");
+            Console.ForegroundColor = roof;
+            Console.Write(" WWWW");
+            Console.ForegroundColor = defaultColor;
+            Console.WriteLine("|");
+            Console.Write("\t\t  |  /\"\\   |  |  |/\\");
+            Console.ForegroundColor = flag;
+            Console.WriteLine("T~~");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("\t\t /\"\\ ");
+            Console.ForegroundColor = roof;
+            Console.Write("WWW");
+            Console.ForegroundColor = defaultColor;
+            Console.Write(" / \"\\ |' |");
+            Console.ForegroundColor = roof;
+            Console.Write("WW");
+            Console.ForegroundColor = defaultColor;
+            Console.WriteLine("|");
+            Console.Write("\t\t");
+            Console.ForegroundColor = roof;
+            Console.Write("WWWWW");
+            Console.ForegroundColor = defaultColor;
+            Console.WriteLine("/\\| /   \\|'/\\|/\"\\");
+            Console.Write("\t\t|   /__\\/]");
+            Console.ForegroundColor = roof;
+            Console.Write("WWW");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("[\\/__\\");
+            Console.ForegroundColor = roof;
+            Console.WriteLine("WWWW");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("\t\t|\"  ");
+            Console.ForegroundColor = roof;
+            Console.Write("WWWW");
+            Console.ForegroundColor = defaultColor;
+            Console.Write("'|I_I|'");
+            Console.ForegroundColor = roof;
+            Console.Write("WWWW");
+            Console.ForegroundColor = defaultColor;
+            Console.WriteLine("'  |");
             Console.WriteLine("\t\t|   |' |/  -  \\|' |'  |");
             Console.WriteLine("\t\t|'  |  |LI=H=LI|' |   |");
             Console.WriteLine("\t\t|   |' | |[_]| |  |'  |");
@@ -65,7 +119,10 @@ namespace Tournament_Fighter
             slowTyper("King Ragnar’s gate begins to take shape over the treetops in\nthe " + 
                               "distance while you daydream of times past…");
 
-            Console.WriteLine("\n\n                                       |>>>");
+            Console.Write("\n\n                                       |");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine(">>>");
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("                                       |");
             Console.WriteLine("                                   _  _|_  _");
             Console.WriteLine("                                  |;|_|;|_|;|");
@@ -75,9 +132,15 @@ namespace Tournament_Fighter
             Console.WriteLine("                                    ||:   |       \\,/");
             Console.WriteLine("                                    ||: , |            /`\\");
             Console.WriteLine("                                    ||:   |");
-            Console.WriteLine("     __                            _||_   |");
+            Console.Write("     ");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("__");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("                            _||_   |");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("--`~    '--~~__            __ ----~    ~`---,              ___");
             Console.WriteLine("                ~---__ ,--~'                  ~~----_____-~'   `~");
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.ReadKey();
         }
 
@@ -86,9 +149,14 @@ namespace Tournament_Fighter
         /// </summary>
         static void tutorialBattle()
         {
+            //yes and no characters used to check user input
             char[] yn = new char[] { 'y', 'Y', 'n', 'N' };
+
+            //clear the screen and print stats at top
             Console.Clear();
             GameCharacters.player.printStats();
+
+            //Story
             slowTyper("You're pulled from your daydream when a booming voice yells:");
             slowTyper("@\t\"They's a toll f'dis here gate.\"", dialogueColor);
             slowTyper("Sliding from the shadows of the gate is a shrewd figure. You know him to be" +
@@ -99,12 +167,16 @@ namespace Tournament_Fighter
             slowTyper("@\t\"You'onna pay tha fee or am I gonna 'ave to carve you up some?\"", dialogueColor);
             Console.Write("Pay 1 gold? (y/n) >");
 
+            //get player input and check to make sure its y, Y, n, or N
             char playerChoice = Console.ReadKey().KeyChar;
             Helper.checkInput(ref playerChoice, yn);
 
+            //if they chose yes, remove 1 gold from player and continue
             if(playerChoice == 'y' || playerChoice == 'Y')
             {
                 Console.Clear();
+
+                //using the Gold setter prints the updated stats at top of screen
                 GameCharacters.player.Gold -= 1;
 
                 slowTyper("\t\"You ain't gettin' through wit'is chump change. Empty yer purse.\"", dialogueColor);
@@ -112,7 +184,8 @@ namespace Tournament_Fighter
                 playerChoice = Console.ReadKey().KeyChar;
                 Helper.checkInput(ref playerChoice, yn);
 
-                if(playerChoice == 'y' || playerChoice == 'Y')
+                //if they chose yes, remove 3 gold from player and continue
+                if (playerChoice == 'y' || playerChoice == 'Y')
                 {
                     Console.Clear();
                     GameCharacters.player.Gold -= 3;
@@ -121,18 +194,41 @@ namespace Tournament_Fighter
                     playerChoice = Console.ReadKey().KeyChar;
                     Helper.checkInput(ref playerChoice, yn);
 
-                    ///LEFT OFF HERE. CONTINUE TO FIGHT AFTER DIALOGUE
-                    slowTyper("\t\"\"", dialogueColor);
-
-                    
+                    //if they chose yes, remove 6 gold from player and continue
+                    if (playerChoice == 'y' || playerChoice == 'Y')
+                    {
+                        Console.Clear();
+                        GameCharacters.player.Gold -= 6;
+                        slowTyper("\t\"How I'mapposed ta build me wall wit'is?\"", dialogueColor);
+                    }
+                    //no more gold removed and fighting will commence
+                    else
+                    {
+                        Console.Clear();
+                        GameCharacters.player.printStats();
+                        slowTyper("\t\"It was either cake or death, mate, and we're fresh outa cake.\"", dialogueColor);
+                    }
+                }
+                //no more gold removed and fighting will commence
+                else
+                {
+                    Console.Clear();
+                    GameCharacters.player.printStats();
+                    slowTyper("\t\"Keep your silver then, mate, your gonna need it to cross the River \n\tStyx.\"", dialogueColor);
                 }
             }
+            //no gold removed and fighting will commence
             else
             {
-
+                Console.Clear();
+                GameCharacters.player.printStats();
+                slowTyper("\t\"Not gonna pay, eh? We'll see about'at.\"", dialogueColor);
             }
 
-            //Console.ReadKey(true);
+            slowTyper("Smilin' Donnie unsheathes a nasty looking blade, barely giving you time to think.");
+
+            //FIGHT FUNCTION
+
         }
 
         /// <summary>

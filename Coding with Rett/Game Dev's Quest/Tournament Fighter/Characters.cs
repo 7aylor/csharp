@@ -201,6 +201,7 @@ namespace Tournament_Fighter
             //take these numbers and initialize the health for our object
             this.setHealthFromMaxStat();
         }
+
     }
 
     /// <summary>
@@ -309,6 +310,8 @@ namespace Tournament_Fighter
         /// </summary>
         public void initPlayer()
         {
+            Console.Clear();
+
             //used to save the user's input after answering a question
             char playerChoice;
 
@@ -357,7 +360,7 @@ namespace Tournament_Fighter
             buildPlayerStats(playerChoice);
 
             //Question 4
-            printQuestionsToBuildStats("You've acquired a freshly baked sweet cake, but a local scoundrel has cornered you. " +
+            printQuestionsToBuildStats("You've acquired a freshly baked sweet cake, but a local scoundrel has cornered \nyou. " +
                                        "He wants it for himself. What do you do?", 
                                        "a) You throw it to the ground, crushing it under your heel. If you can't have it, no one will.",
                                        "b) Stuff it in your mouth before he can stop you.", 
@@ -409,6 +412,9 @@ namespace Tournament_Fighter
                 Defense++;
                 Speed--;
             }
+
+            Console.Clear();
+
             printStats();
         }
 
@@ -420,14 +426,19 @@ namespace Tournament_Fighter
             Helper.ClearLine(0, 0);
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(0, 0);
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("Strength: " + Strength);
             Console.SetCursorPosition(17, 0);
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Speed: " + Speed);
             Console.SetCursorPosition(34, 0);
+            Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("Defense: " + Defense);
             Console.SetCursorPosition(51, 0);
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Gold: " + gold);
             Console.SetCursorPosition(64, 0);
+            Console.ForegroundColor = ConsoleColor.Magenta;
             Console.Write("Action Points: " + actionPoints);
             Console.WriteLine("\n");
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -442,7 +453,9 @@ namespace Tournament_Fighter
         /// <param name="answerC"></param>
         private void printQuestionsToBuildStats(string question, string answerA, string answerB, string answerC)
         {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("\n" + question + "\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(answerA); //strength
             Console.WriteLine(answerB); //speed
             Console.WriteLine(answerC + "\n"); //defense
