@@ -175,22 +175,22 @@ namespace Scroller
                     Coord temp = new Coord(body.Last().X, body.Last().Y);
                     if (direction == Direction.up)
                     {
-                        temp.Y--;
+                        temp.Y++;
                         body.Add(temp);
                     }
                     else if (direction == Direction.down)
                     {
-                        temp.Y++;
+                        temp.Y--;
                         body.Add(temp);
                     }
                     else if (direction == Direction.left)
                     {
-                        temp.X--;
+                        temp.X++;
                         body.Add(temp);
                     }
                     else if (direction == Direction.right)
                     {
-                        temp.X++;
+                        temp.X--;
                         body.Add(temp);
                     }
                     temp = null;
@@ -207,14 +207,15 @@ namespace Scroller
 
             public void checkCollision(Level level, Apple apple)
             {
-                if(level.LevelArray[body[0].X, body[0].Y] != ' ')
+                int head = body.Count - 1;
+                if (level.LevelArray[body[head].X, body[head].Y] != ' ')
                 {
-                    if(level.LevelArray[body[0].X, body[0].Y] == apple.Symbol)
+                    if(level.LevelArray[body[head].X, body[head].Y] == apple.Symbol)
                     {
                         this.eatApple();
                         apple.spawnApple(level);
                     }
-                    if (level.LevelArray[body[0].X, body[0].Y] == '|' || level.LevelArray[body[0].X, body[0].Y] == '=')
+                    if (level.LevelArray[body[head].X, body[head].Y] == '|' || level.LevelArray[body[head].X, body[head].Y] == '=')
                     //   || level.LevelArray[body[0].X, body[0].Y] == symbol)
                     {
                         Console.Clear();
@@ -226,7 +227,8 @@ namespace Scroller
 
             void movePlayer()
             {
-                Coord temp = new Coord(body[0].X, body[0].Y);
+                int head = body.Count - 1;
+                Coord temp = new Coord(body[head].X, body[head].Y);
                 if (direction == Direction.up)
                 {
                     body[0].Y--;
@@ -243,13 +245,13 @@ namespace Scroller
                 {
                     body[0].X++;
                 }
-                for (int i = 1; i < body.Count; i++)
+
+                for (int i = body.Count - 1; i > 0; i--)
                 {
                     body[i] = temp;
                     if (i < body.Count - 1)
                     {
-                        temp.Y = body[i + 1].Y;
-                        temp.X = body[i + 1].X;
+                        temp = body[i];
                     }
                     Console.SetCursorPosition(0, 24 + i);
                     Console.WriteLine(body[i].X + " " + body[i].Y + " Count: " + body.Count);
@@ -264,18 +266,19 @@ namespace Scroller
                 }
             }
 
-            public void printPlayer(Level level)
+            public void printPlayer(Level level, Apple apple)
             {
-                Console.SetCursorPosition(body.Last().X, body.Last().Y);
+                Console.SetCursorPosition(body[0].X, body[0].Y);
                 Console.Write(' ');
-                level.addElement(' ', body.Last().X, body.Last().Y, ConsoleColor.White);
+                //level.addElement(' ', body.Last().X, body.Last().Y, ConsoleColor.White);
                 movePlayer();
+                checkCollision(level, apple);
                 Console.ForegroundColor = color;
                 foreach (Coord c in body)
                 {
                     Console.SetCursorPosition(c.X, c.Y);
                     Console.Write(symbol);
-                    level.addElement(symbol, c.X, c.Y, color);
+                    //level.addElement(symbol, c.X, c.Y, color);
                 }
                 Console.ForegroundColor = ConsoleColor.White;
             }
@@ -401,7 +404,6 @@ namespace Scroller
                     level[WIDTH - 1, i] = '|';
                 }
 
-
                 //build bottom row
                 for (int i = 1; i < WIDTH - 1; i++)
                 {
@@ -479,10 +481,10 @@ namespace Scroller
 
             while (player.Alive)
             {
-                player.checkCollision(level, apple);
+                //player.checkCollision(level, apple);
                 player.checkDirectionChange();
                 apple.printApple();
-                player.printPlayer(level);
+                player.printPlayer(level, apple);
                 //player.movePlayer();
                 //player.printPlayer();
                 if (player.Direction == Direction.up || player.Direction == Direction.down)
