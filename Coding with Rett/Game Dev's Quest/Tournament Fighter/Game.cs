@@ -23,10 +23,11 @@ namespace Tournament_Fighter
             //Console.CursorVisible = false;
 
             //#######WORK ON TRANSITIONS#######
-            printTitleScreen();
-            printIntroStory();
+            //printTitleScreen();
+            //printIntroStory();
             GameCharacters.player.initPlayer();
-            tutorialBattle();
+            //tutorialBattle();
+            fight(GameCharacters.player, GameCharacters.SmilinDonnie);
         }
 
         /// <summary>
@@ -276,6 +277,17 @@ namespace Tournament_Fighter
             Console.WriteLine();
             Console.ReadKey(true);
             Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        static void fight(Player player, NPC enemy)
+        {
+            //print the enemy health and prompt to pick stat a b c
+            Console.WriteLine(player.Name + " Health Before: " + player.Health);
+            Console.WriteLine(enemy.Name + " Health Before: " + enemy.Health);
+            player.dealDamage(StatType.Speed, enemy);
+            enemy.dealDamage(StatType.Speed, player);
+            Console.WriteLine(player.Name + " Health: " + player.Health);
+            Console.WriteLine(enemy.Name + " Health: " + enemy.Health);
         }
     }
 }

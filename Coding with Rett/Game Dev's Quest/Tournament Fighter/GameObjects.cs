@@ -10,7 +10,8 @@ namespace Tournament_Fighter
     enum WeaponType { Bow, Axe, Sword, Spear, Knife, Hammer, Mace }
     enum ArmorType { Shield, PaddedArmor, LeatherArmor, ChainMail, ScaleArmor, PlateArmor }
     enum BuffType { Health, Speed, Strength, None }
-    enum RankType { Challenger, Champion, }
+    enum RankType { Challenger, Champion }
+    enum StatType { Strength, Speed, Defense}
     #endregion
 
     /// <summary>

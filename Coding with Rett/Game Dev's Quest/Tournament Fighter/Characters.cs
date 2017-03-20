@@ -7,6 +7,7 @@ namespace Tournament_Fighter
 {
     enum PlayerType { Villager, Fighter, Player };
 
+
     /// <summary>
     /// NPC Class
     /// </summary>
@@ -131,31 +132,11 @@ namespace Tournament_Fighter
         /// </summary>
         public void setHealthFromMaxStat()
         {
-            //Used to hold the current biggest stat
-            int max = 0;
-
-            //loop three times, once for each stat
-            for (int i = 0; i < 3; i++)
-            {
-                //if speed bigger than max, it is the biggest so set max equal to speed
-                if (this.speed > max)
-                {
-                    max = this.speed;
-                }
-                //if strength bigger than max, it is the biggest so set max equal to strength
-                if (this.strength > max)
-                {
-                    max = this.strength;
-                }
-                //if defense bigger than max, it is the biggest so set max equal to defense
-                if (this.defense > max)
-                {
-                    max = this.defense;
-                }
-            }
+            //calls getBiggestStat to find which stat has the most points
+            int biggestStat = getBiggestStatNumber();
 
             //set health to 50 then add max stat times five
-            this.health = 50 + (max * 5);
+            this.health = 50 + (biggestStat * 5);
         }
 
         /// <summary>
@@ -200,6 +181,149 @@ namespace Tournament_Fighter
 
             //take these numbers and initialize the health for our object
             this.setHealthFromMaxStat();
+        }
+
+        /// <summary>
+        /// Returns a stat type that is used in battle ie Strength, Speed, Defense
+        /// </summary>
+        /// <returns>Returns a StatType</returns>
+        public StatType pickBattleStat()
+        {
+            //random number, then pick a random between 0 and 3
+            Random statRange = new Random();
+            int random = statRange.Next(4);
+
+            //gets the largest stat of our NPC
+            StatType largestStat = getBiggestStat();
+
+            //Gives weight to the largest stat ie, if the largest is strength, it has 50% chance of being picked
+            //while other stats have 25% change of being picked.
+            if (largestStat == StatType.Strength)
+            {
+                if (random == 0 || random == 1)
+                {
+                    return StatType.Strength;
+                }
+                else if(random == 2)
+                {
+                    return StatType.Speed;
+                }
+                else
+                {
+                    return StatType.Defense;
+                }
+
+            }
+            else if (largestStat == StatType.Speed)
+            {
+                if (random == 0 || random == 1)
+                {
+                    return StatType.Speed;
+                }
+                else if (random == 2)
+                {
+                    return StatType.Strength;
+                }
+                else
+                {
+                    return StatType.Defense;
+                }
+            }
+            else
+            {
+                if (random == 0 || random == 1)
+                {
+                    return StatType.Defense;
+                }
+                else if (random == 2)
+                {
+                    return StatType.Speed;
+                }
+                else
+                {
+                    return StatType.Strength;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// pass in winning stat and enemy hero
+        /// </summary>
+        /// <param name="winningStat"></param>
+        /// <param name="enemy"></param>
+        public void dealDamage(StatType winningStat, NPC enemy)
+        {
+            //strength wins, remove strength stat from enemy health
+            if(winningStat == StatType.Strength)
+            {
+                enemy.health -= this.strength;
+            }
+            //speed wins, remove speed stat from enemy health
+            if (winningStat == StatType.Speed)
+            {
+                enemy.health -= this.speed;
+            }
+            //defense wins, remove defense stat from enemy health
+            if (winningStat == StatType.Defense)
+            {
+                enemy.health -= this.defense;
+            }
+        }
+
+        /// <summary>
+        /// Gets the biggest stat number, ie if Strength is biggest at 10, will return 10
+        /// </summary>
+        /// <returns></returns>
+        private int getBiggestStatNumber()
+        {
+            //Used to hold the current biggest stat
+            int max = 0;
+
+            //loop three times, once for each stat
+            for (int i = 0; i < 3; i++)
+            {
+                //if speed bigger than max, it is the biggest so set max equal to speed
+                if (this.speed > max)
+                {
+                    max = this.speed;
+                }
+                //if strength bigger than max, it is the biggest so set max equal to strength
+                if (this.strength > max)
+                {
+                    max = this.strength;
+                }
+                //if defense bigger than max, it is the biggest so set max equal to defense
+                if (this.defense > max)
+                {
+                    max = this.defense;
+                }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        /// Return 0 if Strength is the largest stat, 1 if Speed is largest stat, 2 if Defense is largest stat
+        /// </summary>
+        /// <returns></returns>
+        private StatType getBiggestStat()
+        {
+            //strength is biggest
+            if(this.strength >= this.speed && this.strength >= this.defense)
+            {
+                return StatType.Strength;
+            }
+            //speed is biggest
+            else if (this.speed >= this.strength && this.speed >= this.defense)
+            {
+                return StatType.Speed;
+            }
+            //defense is biggest
+            else
+            {
+                return StatType.Defense;
+            }
         }
 
     }
@@ -385,6 +509,8 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
+            //add player health
+            this.setHealthFromMaxStat();
         }
 
         /// <summary>
@@ -423,6 +549,7 @@ namespace Tournament_Fighter
         /// </summary>
         public void printStats()
         {
+            //##############ADD HEALTH TO STAT BAR
             Helper.ClearLine(0, 0);
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(0, 0);
