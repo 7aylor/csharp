@@ -151,7 +151,7 @@ namespace Tournament_Fighter
         static void tutorialBattle()
         {
             //yes and no characters used to check user input
-            char[] yn = new char[] { 'y', 'Y', 'n', 'N' };
+            char[] yn = new char[] { 'y', 'n' };
 
             //clear the screen and print stats at top
             Console.Clear();
@@ -173,7 +173,7 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, yn);
 
             //if they chose yes, remove 1 gold from player and continue
-            if(playerChoice == 'y' || playerChoice == 'Y')
+            if(playerChoice == 'y')
             {
                 Console.Clear();
 
@@ -186,7 +186,7 @@ namespace Tournament_Fighter
                 Helper.checkInput(ref playerChoice, yn);
 
                 //if they chose yes, remove 3 gold from player and continue
-                if (playerChoice == 'y' || playerChoice == 'Y')
+                if (playerChoice == 'y')
                 {
                     Console.Clear();
                     GameCharacters.player.Gold -= 3;
@@ -196,7 +196,7 @@ namespace Tournament_Fighter
                     Helper.checkInput(ref playerChoice, yn);
 
                     //if they chose yes, remove 6 gold from player and continue
-                    if (playerChoice == 'y' || playerChoice == 'Y')
+                    if (playerChoice == 'y')
                     {
                         Console.Clear();
                         GameCharacters.player.Gold -= 6;
@@ -282,12 +282,91 @@ namespace Tournament_Fighter
         static void fight(Player player, NPC enemy)
         {
             //print the enemy health and prompt to pick stat a b c
-            Console.WriteLine(player.Name + " Health Before: " + player.Health);
-            Console.WriteLine(enemy.Name + " Health Before: " + enemy.Health);
-            player.dealDamage(StatType.Speed, enemy);
-            enemy.dealDamage(StatType.Speed, player);
-            Console.WriteLine(player.Name + " Health: " + player.Health);
-            Console.WriteLine(enemy.Name + " Health: " + enemy.Health);
+            StatType enemyAttack = enemy.pickBattleStat();
+            StatType playerAttack = player.pickBattleStat(enemy);
+
+            Console.WriteLine(enemy.Name + " attacks with " + enemyAttack);
+            Console.WriteLine(player.Name + " attacks with " + playerAttack);
+            inflictDamageOnLoser(player, enemy, playerAttack, enemyAttack);
+            //Loop through all of this and clean it up.
+
+        }
+
+        /// <summary>
+        /// Calculates the winning stat and inflicts damage on the loser
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="enemy"></param>
+        /// <param name="playerAttack"></param>
+        /// <param name="enemyAttack"></param>
+        static void inflictDamageOnLoser(NPC player, NPC enemy, StatType playerAttack, StatType enemyAttack)
+        {
+            //enemy Strength
+            if (enemyAttack == StatType.Strength)
+            {
+                //both Strength
+                if (playerAttack == StatType.Strength)
+                {
+                    Console.WriteLine("It's a tie! No damage dealt");
+                }
+                //player Speed, enemy Strength
+                else if (playerAttack == StatType.Speed)
+                {
+                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
+                    enemy.Health -= player.Speed;
+                }
+                //player Defense, enemy Strength
+                else
+                {
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
+                    player.Health -= enemy.Strength;
+                }
+            }
+            //enemy Speed
+            else if (enemyAttack == StatType.Speed)
+            {
+                //player Strength, enemgy Speed
+                if (playerAttack == StatType.Strength)
+                {
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
+                    player.Health -= enemy.Strength;
+
+                }
+                //both Speed
+                else if (playerAttack == StatType.Speed)
+                {
+                    Console.WriteLine("It's a tie! No damage dealt");
+
+                }
+                //player Defense, enemy Speed
+                else
+                {
+                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
+                    enemy.Health -= player.Speed;
+                }
+            }
+            //enemy Defense
+            else
+            {
+                //player Strength, enemgy Defense
+                if (playerAttack == StatType.Strength)
+                {
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
+                    player.Health -= enemy.Strength;
+
+                }
+                //player Speed, enemy Defense
+                else if (playerAttack == StatType.Speed)
+                {
+                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
+                    enemy.Health -= player.Speed;
+                }
+                //both Defense
+                else
+                {
+                    Console.WriteLine("It's a tie! No damage dealt");
+                }
+            }
         }
     }
 }

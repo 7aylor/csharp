@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 using System.Threading;
 
 namespace Tournament_Fighter
@@ -248,30 +249,6 @@ namespace Tournament_Fighter
         }
 
         /// <summary>
-        /// pass in winning stat and enemy hero
-        /// </summary>
-        /// <param name="winningStat"></param>
-        /// <param name="enemy"></param>
-        public void dealDamage(StatType winningStat, NPC enemy)
-        {
-            //strength wins, remove strength stat from enemy health
-            if(winningStat == StatType.Strength)
-            {
-                enemy.health -= this.strength;
-            }
-            //speed wins, remove speed stat from enemy health
-            if (winningStat == StatType.Speed)
-            {
-                enemy.health -= this.speed;
-            }
-            //defense wins, remove defense stat from enemy health
-            if (winningStat == StatType.Defense)
-            {
-                enemy.health -= this.defense;
-            }
-        }
-
-        /// <summary>
         /// Gets the biggest stat number, ie if Strength is biggest at 10, will return 10
         /// </summary>
         /// <returns></returns>
@@ -451,7 +428,7 @@ namespace Tournament_Fighter
             //get character from user
             playerChoice = Console.ReadKey().KeyChar;
             //make sure user inputs a, b, or c
-            char[] abc = new char[] { 'a', 'A', 'b', 'B', 'c', 'C' };
+            char[] abc = new char[] { 'a', 'b', 'c' };
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
@@ -518,22 +495,22 @@ namespace Tournament_Fighter
         /// buildPlayerStats and balance stats based on choice.
         /// </summary>
         /// <param name="stat"></param>
-        protected void buildPlayerStats(char stat)
+        private void buildPlayerStats(char stat)
         {
             //if they chose a strength answer, increase strength, decrease defense
-            if(stat == 'a' || stat == 'A')
+            if(stat == 'a')
             {
                 Strength++;
                 Defense--;
             }
             //if they chose a speed answer, increase speed, decrease strength
-            else if(stat == 'b' || stat == 'B')
+            else if(stat == 'b')
             {
                 Speed++;
                 Strength--;
             }
             //if they chose a defense answer, increase defense, decrease speed
-            else if(stat == 'c' || stat == 'C')
+            else if(stat == 'c')
             {
                 Defense++;
                 Speed--;
@@ -587,6 +564,38 @@ namespace Tournament_Fighter
             Console.WriteLine(answerB); //speed
             Console.WriteLine(answerC + "\n"); //defense
             Console.Write(">");
+        }
+
+        /// <summary>
+        /// Prompt user to pick an attack type (Strength, Speed, Defensive)
+        /// </summary>
+        /// <param name="enemy">Used to print current enemy name</param>
+        /// <returns></returns>
+        public StatType pickBattleStat(NPC enemy)
+        {
+            char[] options = new char[] { 'a', 'b', 'c'};
+
+            Console.WriteLine("Pick an attack type:");
+            Console.WriteLine("a) Send a crushing blow toward " + enemy.Name + ", breaking their defense (Strength Attack)");
+            Console.WriteLine("b) Cut through " + enemy.Name + "'s Strength, catching them off guard with a quick strike (Speed Attack)");
+            Console.WriteLine("c) Turn " + enemy.Name + "'s quick attack against them (Defensive Attack)");
+
+            char choice = Console.ReadKey().KeyChar;
+            Helper.checkInput(ref choice, options);
+
+            if (choice == 'a')
+            {
+                return StatType.Strength;
+            }
+            else if(choice == 'b')
+            {
+                return StatType.Speed;
+            }
+            else
+            {
+                return StatType.Defense;
+            }
+            
         }
         
     }

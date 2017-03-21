@@ -28,6 +28,7 @@ namespace Tournament_Fighter
             //while we haven't passed the check
             while (!passedCheck)
             {
+                playerChoice = Char.ToLower(playerChoice);
                 //loop through all correct possible characters
                 for (int i = 0; i < chars.Length; i++)
                 {
