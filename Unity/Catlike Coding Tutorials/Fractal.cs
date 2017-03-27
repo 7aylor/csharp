@@ -8,10 +8,14 @@ public class Fractal : MonoBehaviour {
 
     public int maxDepth;
     private int depth;
-    public Mesh mesh;
     public Material material;
     public float childScale;
     private Material[,] materials;
+    public Mesh[] meshes;
+    public float spawnProbability;
+    public float maxRotationSpeed;
+    private float rotationSpeed;
+    public float maxTwist;
 
     private void InitializeMaterials()
     {
@@ -53,8 +57,10 @@ public class Fractal : MonoBehaviour {
         {
             InitializeMaterials();
         }
-        gameObject.AddComponent<MeshFilter>().mesh = mesh;
+        gameObject.AddComponent<MeshFilter>().mesh = meshes[Random.Range(0, meshes.Length)];
         gameObject.AddComponent<MeshRenderer>().material = materials[depth, Random.Range(0,2)];
+        rotationSpeed = Random.Range(-maxRotationSpeed, maxRotationSpeed);
+        transform.Rotate(Random.Range(-maxTwist, maxTwist), 0f, 0f);
         if(depth < maxDepth)
         {
             StartCoroutine(CreateChildren());
@@ -65,21 +71,32 @@ public class Fractal : MonoBehaviour {
     {
         for (int i = 0; i < childDirections.Length; i++)
         {
-            yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
-            new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+            if (Random.value < spawnProbability)
+            {
+                yield return new WaitForSeconds(Random.Range(0.1f, 0.5f));
+                new GameObject("Fractal Child").AddComponent<Fractal>().Initialize(this, i);
+            }
         }
     }
 
     private void Initialize(Fractal parent, int childIndex)
     {
-        mesh = parent.mesh;
+        meshes = parent.meshes;
         materials = parent.materials;
         maxDepth = parent.maxDepth;
         depth = parent.depth + 1;
         childScale = parent.childScale;
+        spawnProbability = parent.spawnProbability;
+        maxRotationSpeed = parent.maxRotationSpeed;
         transform.parent = parent.transform;
+        maxTwist = parent.maxTwist;
         transform.localScale = Vector3.one * childScale;
         transform.localPosition = childDirections[childIndex] * (0.5f + 0.5f * childScale);
         transform.localRotation = childOrientation[childIndex];
+    }
+
+    private void Update()
+    {
+        transform.Rotate(0f, rotationSpeed * Time.deltaTime, 0f);
     } 
 }
