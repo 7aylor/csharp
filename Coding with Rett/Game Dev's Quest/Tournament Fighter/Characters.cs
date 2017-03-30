@@ -8,7 +8,6 @@ namespace Tournament_Fighter
 {
     enum PlayerType { Villager, Fighter, Player };
 
-
     /// <summary>
     /// NPC Class
     /// </summary>
@@ -532,10 +531,10 @@ namespace Tournament_Fighter
             Console.SetCursorPosition(0, 0);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("Strength: " + Strength);
-            Console.SetCursorPosition(17, 0);
+            Console.SetCursorPosition(18, 0);
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Speed: " + Speed);
-            Console.SetCursorPosition(34, 0);
+            Console.SetCursorPosition(33, 0);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write("Defense: " + Defense);
             Console.SetCursorPosition(51, 0);
@@ -543,7 +542,11 @@ namespace Tournament_Fighter
             Console.Write("Gold: " + gold);
             Console.SetCursorPosition(64, 0);
             Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.Write("Action Points: " + actionPoints);
+            Console.Write("AP: " + actionPoints);
+            Console.WriteLine("\n");
+            Console.SetCursorPosition(74, 0);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("HP: " + Health);
             Console.WriteLine("\n");
             Console.ForegroundColor = ConsoleColor.Gray;
         }
@@ -575,12 +578,14 @@ namespace Tournament_Fighter
         {
             char[] options = new char[] { 'a', 'b', 'c'};
 
-            Console.WriteLine("Pick an attack type:");
-            Console.WriteLine("a) Send a crushing blow toward " + enemy.Name + ", breaking their defense (Strength Attack)");
-            Console.WriteLine("b) Cut through " + enemy.Name + "'s Strength, catching them off guard with a quick strike (Speed Attack)");
-            Console.WriteLine("c) Turn " + enemy.Name + "'s quick attack against them (Defensive Attack)");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine("Pick an attack type:\n");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("a) (Strength Attack) Send a crushing blow toward " + enemy.Name + ", breaking their \ndefense");
+            Console.WriteLine("b) (Speed Attack) Cut through " + enemy.Name + "'s Strength, catching them off guard with a quick strike");
+            Console.WriteLine("c) (Defensive Attack) Turn " + enemy.Name + "'s quick attack against them\n");
 
-            char choice = Console.ReadKey().KeyChar;
+            char choice = Console.ReadKey(true).KeyChar;
             Helper.checkInput(ref choice, options);
 
             if (choice == 'a')

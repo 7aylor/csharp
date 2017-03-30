@@ -17,6 +17,7 @@ namespace Tournament_Fighter
 
         public static void play()
         {
+            //#######Lock Console Window Size WE NEED TO FIGURE THIS OUT
             Console.SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
             Console.SetBufferSize(WINDOW_WIDTH, WINDOW_HEIGHT);
             //#######DISABLE MOUSE IN CONSOLE?#####
@@ -26,8 +27,7 @@ namespace Tournament_Fighter
             //printTitleScreen();
             //printIntroStory();
             GameCharacters.player.initPlayer();
-            //tutorialBattle();
-            fight(GameCharacters.player, GameCharacters.SmilinDonnie);
+            tutorialBattle();
         }
 
         /// <summary>
@@ -229,7 +229,15 @@ namespace Tournament_Fighter
             slowTyper("Smilin' Donnie unsheathes a nasty looking blade, barely giving you time to think.");
 
             //FIGHT FUNCTION
-
+            while(GameCharacters.SmilinDonnie.Health > 0 && GameCharacters.player.Health > 0)
+            {
+                Console.WriteLine();
+                fight(GameCharacters.player, GameCharacters.SmilinDonnie);
+                Console.WriteLine("Press any key to continue fighting");
+                Console.ReadKey(true);
+                Console.Clear();
+                GameCharacters.player.printStats();
+            }
         }
 
         /// <summary>
@@ -286,7 +294,7 @@ namespace Tournament_Fighter
             StatType playerAttack = player.pickBattleStat(enemy);
 
             Console.WriteLine(enemy.Name + " attacks with " + enemyAttack);
-            Console.WriteLine(player.Name + " attacks with " + playerAttack);
+            Console.WriteLine(player.Name + " attacks with " + playerAttack + "\n");
             inflictDamageOnLoser(player, enemy, playerAttack, enemyAttack);
             //Loop through all of this and clean it up.
 
@@ -309,26 +317,26 @@ namespace Tournament_Fighter
                 {
                     Console.WriteLine("It's a tie! No damage dealt");
                 }
-                //player Speed, enemy Strength
+                //player Speed, enemy Strength. Player beats Enemy. Speed beats Strength.
                 else if (playerAttack == StatType.Speed)
                 {
                     Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
                     enemy.Health -= player.Speed;
                 }
-                //player Defense, enemy Strength
+                //player Defense, enemy Strength. Enemy beats Player. Strength beats Defense.
                 else
                 {
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
                     player.Health -= enemy.Strength;
                 }
             }
             //enemy Speed
             else if (enemyAttack == StatType.Speed)
             {
-                //player Strength, enemgy Speed
+                //player Strength, enemy Speed. Enemy beats Player. Speed beats Strength.
                 if (playerAttack == StatType.Strength)
                 {
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
                     player.Health -= enemy.Strength;
 
                 }
@@ -338,7 +346,7 @@ namespace Tournament_Fighter
                     Console.WriteLine("It's a tie! No damage dealt");
 
                 }
-                //player Defense, enemy Speed
+                //player Defense, enemy Speed. Player beats Enemy. Defense beats Speed.
                 else
                 {
                     Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
@@ -348,18 +356,17 @@ namespace Tournament_Fighter
             //enemy Defense
             else
             {
-                //player Strength, enemgy Defense
+                //player Strength, enemy Defense. Player beats Enemy. Strength beats Defense.
                 if (playerAttack == StatType.Strength)
                 {
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + enemy.Name);
-                    player.Health -= enemy.Strength;
-
+                    Console.WriteLine(player.Name + " deals " + player.Defense + " damage to " + enemy.Name);
+                    enemy.Health -= player.Strength;
                 }
-                //player Speed, enemy Defense
+                //player Speed, enemy Defense. Enemy beats Player. Defense beats Speed.
                 else if (playerAttack == StatType.Speed)
                 {
-                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
-                    enemy.Health -= player.Speed;
+                    Console.WriteLine(enemy.Name + " deals " + enemy.Speed + " damage to " + player.Name);
+                    player.Health -= enemy.Speed;
                 }
                 //both Defense
                 else
