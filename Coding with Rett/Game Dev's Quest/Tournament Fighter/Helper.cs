@@ -46,6 +46,27 @@ namespace Tournament_Fighter
                     playerChoice = Console.ReadKey().KeyChar;
                 }
             }
+        }//end of check input
+
+        /// <summary>
+        /// Printers horizontal divider and alternates the colors
+        /// </summary>
+        public static void printDivider()
+        {
+            for (int i = 0; i < Game.WINDOW_WIDTH; i++)
+            {
+                if (i % 2 == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.Write("=");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write("=");
+                }
+            }
+            Console.WriteLine();
         }
     }
 }

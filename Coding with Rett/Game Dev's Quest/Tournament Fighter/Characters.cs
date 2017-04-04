@@ -135,8 +135,8 @@ namespace Tournament_Fighter
             //calls getBiggestStat to find which stat has the most points
             int biggestStat = getBiggestStatNumber();
 
-            //set health to 50 then add max stat times five
-            this.health = 50 + (biggestStat * 5);
+            //set health to 10 then add max stat times five
+            this.health = 10 + (biggestStat * 5);
         }
 
         /// <summary>
@@ -546,9 +546,9 @@ namespace Tournament_Fighter
             Console.WriteLine("\n");
             Console.SetCursorPosition(74, 0);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("HP: " + Health);
-            Console.WriteLine("\n");
+            Console.WriteLine("HP: " + Health);
             Console.ForegroundColor = ConsoleColor.Gray;
+            Helper.printDivider();
         }
 
         /// <summary>

@@ -14,6 +14,8 @@ namespace Tournament_Fighter
         public const int WINDOW_WIDTH = 81;
         public const int WINDOW_HEIGHT = 30;
         const ConsoleColor dialogueColor = ConsoleColor.Yellow;
+        const ConsoleColor PlayerHit = ConsoleColor.DarkGreen;
+        const ConsoleColor EnemyHit = ConsoleColor.DarkRed;
 
         public static void play()
         {
@@ -320,12 +322,14 @@ namespace Tournament_Fighter
                 //player Speed, enemy Strength. Player beats Enemy. Speed beats Strength.
                 else if (playerAttack == StatType.Speed)
                 {
+                    Console.ForegroundColor = PlayerHit;
                     Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
                     enemy.Health -= player.Speed;
                 }
                 //player Defense, enemy Strength. Enemy beats Player. Strength beats Defense.
                 else
                 {
+                    Console.ForegroundColor = EnemyHit;
                     Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
                     player.Health -= enemy.Strength;
                 }
@@ -336,6 +340,7 @@ namespace Tournament_Fighter
                 //player Strength, enemy Speed. Enemy beats Player. Speed beats Strength.
                 if (playerAttack == StatType.Strength)
                 {
+                    Console.ForegroundColor = EnemyHit;
                     Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
                     player.Health -= enemy.Strength;
 
@@ -349,6 +354,7 @@ namespace Tournament_Fighter
                 //player Defense, enemy Speed. Player beats Enemy. Defense beats Speed.
                 else
                 {
+                    Console.ForegroundColor = PlayerHit;
                     Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
                     enemy.Health -= player.Speed;
                 }
@@ -359,12 +365,14 @@ namespace Tournament_Fighter
                 //player Strength, enemy Defense. Player beats Enemy. Strength beats Defense.
                 if (playerAttack == StatType.Strength)
                 {
+                    Console.ForegroundColor = PlayerHit;
                     Console.WriteLine(player.Name + " deals " + player.Defense + " damage to " + enemy.Name);
                     enemy.Health -= player.Strength;
                 }
                 //player Speed, enemy Defense. Enemy beats Player. Defense beats Speed.
                 else if (playerAttack == StatType.Speed)
                 {
+                    Console.ForegroundColor = EnemyHit;
                     Console.WriteLine(enemy.Name + " deals " + enemy.Speed + " damage to " + player.Name);
                     player.Health -= enemy.Speed;
                 }
@@ -374,6 +382,7 @@ namespace Tournament_Fighter
                     Console.WriteLine("It's a tie! No damage dealt");
                 }
             }
-        }
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }//End of inflictDamage Method
     }
 }
