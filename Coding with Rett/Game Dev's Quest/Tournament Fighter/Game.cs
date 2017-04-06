@@ -11,11 +11,23 @@ namespace Tournament_Fighter
 
     static class Game
     {
+        //height and width of the console window
         public const int WINDOW_WIDTH = 81;
         public const int WINDOW_HEIGHT = 30;
+
+        //color of dialogue
         const ConsoleColor dialogueColor = ConsoleColor.Yellow;
+
+        //color when player hits enemy
         const ConsoleColor PlayerHit = ConsoleColor.DarkGreen;
+
+        //color when enemy hits player
         const ConsoleColor EnemyHit = ConsoleColor.DarkRed;
+
+        //defines the top position of the player navigation portion of the window
+        public const int PLAYER_NAV_HEIGHT = 18;
+
+        public const int PLAYER_NAME_MAX_LENGTH = 10;
 
         public static void play()
         {
@@ -155,9 +167,11 @@ namespace Tournament_Fighter
             //yes and no characters used to check user input
             char[] yn = new char[] { 'y', 'n' };
 
-            //clear the screen and print stats at top
+            //clear the screen and print stats at top and the player nav bar at the bottom
             Console.Clear();
             GameCharacters.player.printStats();
+            Helper.buildPlayerNav();
+            Console.SetCursorPosition(0, 3);
 
             //Story
             slowTyper("You're pulled from your daydream when a booming voice yells:");
@@ -168,7 +182,8 @@ namespace Tournament_Fighter
             slowTyper("@\t\"So wot'll it be\"", dialogueColor);
             slowTyper("he says, impatiently tapping his sword on the side of his leg.");
             slowTyper("@\t\"You'onna pay tha fee or am I gonna 'ave to carve you up some?\"", dialogueColor);
-            Console.Write("Pay 1 gold? (y/n) >");
+            Helper.buildPlayerNav();
+            Console.Write("Pay 1 gold? (y/n) \n\n>");
 
             //get player input and check to make sure its y, Y, n, or N
             char playerChoice = Console.ReadKey().KeyChar;
@@ -181,9 +196,12 @@ namespace Tournament_Fighter
 
                 //using the Gold setter prints the updated stats at top of screen
                 GameCharacters.player.Gold -= 1;
+                Helper.buildPlayerNav();
+                Console.SetCursorPosition(0, 3);
 
                 slowTyper("\t\"You ain't gettin' through wit'is chump change. Empty yer purse.\"", dialogueColor);
-                Console.Write("Pay 3 more gold? (y/n) >");
+                Helper.buildPlayerNav();
+                Console.Write("Pay 3 more gold? (y/n) \n\n>");
                 playerChoice = Console.ReadKey().KeyChar;
                 Helper.checkInput(ref playerChoice, yn);
 
@@ -192,8 +210,11 @@ namespace Tournament_Fighter
                 {
                     Console.Clear();
                     GameCharacters.player.Gold -= 3;
+                    Helper.buildPlayerNav();
+                    Console.SetCursorPosition(0, 3);
                     slowTyper("\t\"I've robbed hobos wit more money den'is.\"", dialogueColor);
-                    Console.Write("Pay 6 more gold? (y/n) >");
+                    Helper.buildPlayerNav();
+                    Console.Write("Pay 6 more gold? (y/n) \n\n>");
                     playerChoice = Console.ReadKey().KeyChar;
                     Helper.checkInput(ref playerChoice, yn);
 
@@ -202,6 +223,8 @@ namespace Tournament_Fighter
                     {
                         Console.Clear();
                         GameCharacters.player.Gold -= 6;
+                        Helper.buildPlayerNav();
+                        Console.SetCursorPosition(0, 3);
                         slowTyper("\t\"How I'mapposed ta build me wall wit'is?\"", dialogueColor);
                     }
                     //no more gold removed and fighting will commence
@@ -209,6 +232,8 @@ namespace Tournament_Fighter
                     {
                         Console.Clear();
                         GameCharacters.player.printStats();
+                        Helper.buildPlayerNav();
+                        Console.SetCursorPosition(0, 3);
                         slowTyper("\t\"It was either cake or death, mate, and we're fresh outa cake.\"", dialogueColor);
                     }
                 }
@@ -217,6 +242,8 @@ namespace Tournament_Fighter
                 {
                     Console.Clear();
                     GameCharacters.player.printStats();
+                    Helper.buildPlayerNav();
+                    Console.SetCursorPosition(0, 3);
                     slowTyper("\t\"Keep your silver then, mate, your gonna need it to cross the River \n\tStyx.\"", dialogueColor);
                 }
             }
@@ -225,10 +252,16 @@ namespace Tournament_Fighter
             {
                 Console.Clear();
                 GameCharacters.player.printStats();
+                Helper.buildPlayerNav();
+                Console.SetCursorPosition(0, 3);
                 slowTyper("\t\"Not gonna pay, eh? We'll see about'at.\"", dialogueColor);
             }
 
             slowTyper("Smilin' Donnie unsheathes a nasty looking blade, barely giving you time to think.");
+            Console.WriteLine("Press any key to begin fight...");
+            Console.ReadKey(true);
+            Console.Clear();
+            GameCharacters.player.printStats();
 
             //FIGHT FUNCTION
             while(GameCharacters.SmilinDonnie.Health > 0 && GameCharacters.player.Health > 0)
@@ -291,14 +324,21 @@ namespace Tournament_Fighter
 
         static void fight(Player player, NPC enemy)
         {
+
+            Helper.printHeroesInFightGameDisplay(player, enemy);
+
             //print the enemy health and prompt to pick stat a b c
             StatType enemyAttack = enemy.pickBattleStat();
             StatType playerAttack = player.pickBattleStat(enemy);
 
+            Helper.printActionsInFightGameDisplay(playerAttack, enemyAttack);
+
+            /*
+            Console.SetCursorPosition(0, 3);
             Console.WriteLine(enemy.Name + " attacks with " + enemyAttack);
             Console.WriteLine(player.Name + " attacks with " + playerAttack + "\n");
+            */
             inflictDamageOnLoser(player, enemy, playerAttack, enemyAttack);
-            //Loop through all of this and clean it up.
 
         }
 

@@ -431,6 +431,7 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
+            Console.SetCursorPosition(0, 3);
 
             //Question 2
             printQuestionsToBuildStats("Your village is under attack, which weapon do you grab first?",
@@ -444,10 +445,11 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
+            Console.SetCursorPosition(0, 3);
 
             //Question 3
             printQuestionsToBuildStats("A local merchant accuses you of stealing from his shop. He sent for the " +
-                                       "guards to settle the matter. Do you:", 
+                                       "guards tosettle the matter. Do you:", 
                                        "a) A weapon as nice as this rightfully belongs to one who can weild it. It's not stealing if its yours", 
                                        "b) Make a break for the nearest exit", 
                                        "c) Wait for the guards to peacefully clear up this misunderstanding");
@@ -458,6 +460,7 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
+            Console.SetCursorPosition(0, 3);
 
             //Question 4
             printQuestionsToBuildStats("You've acquired a freshly baked sweet cake, but a local scoundrel has cornered \nyou. " +
@@ -472,6 +475,7 @@ namespace Tournament_Fighter
             Helper.checkInput(ref playerChoice, abc);
             //balance the stats
             buildPlayerStats(playerChoice);
+            Console.SetCursorPosition(0, 3);
 
             //Question 5
             printQuestionsToBuildStats("You see an attractive person in the courtyard. How do you get their attention?",
@@ -518,6 +522,8 @@ namespace Tournament_Fighter
             Console.Clear();
 
             printStats();
+            Helper.buildPlayerNav();
+            
         }
 
         /// <summary>
@@ -561,7 +567,8 @@ namespace Tournament_Fighter
         private void printQuestionsToBuildStats(string question, string answerA, string answerB, string answerC)
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("\n" + question + "\n");
+            Console.WriteLine(question);
+            Helper.buildPlayerNav();
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(answerA); //strength
             Console.WriteLine(answerB); //speed
@@ -577,13 +584,21 @@ namespace Tournament_Fighter
         public StatType pickBattleStat(NPC enemy)
         {
             char[] options = new char[] { 'a', 'b', 'c'};
-
+            Helper.buildPlayerNav();
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("Pick an attack type:\n");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write("a) (Strength Attack)");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("a) (Strength Attack) Send a crushing blow toward " + enemy.Name + ", breaking their \ndefense");
-            Console.WriteLine("b) (Speed Attack) Cut through " + enemy.Name + "'s Strength, catching them off guard with a quick strike");
-            Console.WriteLine("c) (Defensive Attack) Turn " + enemy.Name + "'s quick attack against them\n");
+            Console.WriteLine(" Send a crushing blow toward " + enemy.Name + ", breaking their \ndefense");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("b) (Speed Attack)");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(" Cut through " + enemy.Name + "'s Strength, catching them off guard with a quick strike");
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("c) (Defensive Attack)");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(" Turn " + enemy.Name + "'s quick attack against them\n");
 
             char choice = Console.ReadKey(true).KeyChar;
             Helper.checkInput(ref choice, options);

@@ -42,6 +42,7 @@ namespace Tournament_Fighter
                 //if we made it through the loop and we haven't passed the check, invalid input
                 if (!passedCheck)
                 {
+                    Console.SetCursorPosition(0, Console.CursorTop - 1);
                     Console.Write("\ninvalid input. please try again: ");
                     playerChoice = Console.ReadKey().KeyChar;
                 }
@@ -67,6 +68,49 @@ namespace Tournament_Fighter
                 }
             }
             Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Sets position to top of player nav and prints a divider
+        /// </summary>
+        public static void buildPlayerNav()
+        {
+            Console.SetCursorPosition(0, Game.PLAYER_NAV_HEIGHT);
+            printDivider();
+        }
+
+        /// <summary>
+        /// Sets the positions in the Game Display for the player and enemy, then prints healths
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="enemy"></param>
+        public static void printHeroesInFightGameDisplay(NPC player, NPC enemy)
+        {
+            Console.SetCursorPosition(0, 3);
+            Console.Write(enemy.Name);
+            Console.SetCursorPosition(0, 4);
+            Console.Write("Health: " + enemy.Health);
+            Console.SetCursorPosition(Game.WINDOW_WIDTH - Game.PLAYER_NAME_MAX_LENGTH, 3);
+            Console.Write(player.Name);
+            String printPlayerHealth = "Health: " + player.Health;
+            Console.SetCursorPosition(Game.WINDOW_WIDTH - printPlayerHealth.Length, 4);
+            Console.Write(printPlayerHealth);
+        }
+
+        /// <summary>
+        /// Prints the action the hero chooses in the fight
+        /// </summary>
+        /// <param name="playerAttack"></param>
+        /// <param name="enemyAttack"></param>
+        public static void printActionsInFightGameDisplay(StatType playerAttack, StatType enemyAttack)
+        {
+            Console.SetCursorPosition(0, 8);
+            Console.Write("Attack Type: " + enemyAttack);
+            Console.SetCursorPosition(0, 8);
+
+            string printPlayerAttack = "Attack Type: " + playerAttack;
+            Console.SetCursorPosition(Game.WINDOW_WIDTH - printPlayerAttack.Length, 8);
+            Console.Write(printPlayerAttack);
         }
     }
 }
