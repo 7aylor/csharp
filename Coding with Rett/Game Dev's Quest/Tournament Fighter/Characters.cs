@@ -55,6 +55,19 @@ namespace Tournament_Fighter
             }
         }
 
+        public NPC(string name, PlayerType type, int strength, int speed, int defense)
+        {
+            this.name = name;
+            this.type = type;
+            this.strength = strength;
+            this.speed = speed;
+            this.defense = defense;
+            if (type == PlayerType.Fighter)
+            {
+                this.initStats();
+            }
+        }
+
         #region //getters and setters
         public string Name
         {
@@ -84,7 +97,14 @@ namespace Tournament_Fighter
             }
             set
             {
-                this.health = value;
+                if(this.health <= 0)
+                {
+                    this.health = 0;
+                }
+                else
+                {
+                    this.health = value;
+                }                
             }
         }
         //virtual so Player subclass can override
@@ -135,8 +155,16 @@ namespace Tournament_Fighter
             //calls getBiggestStat to find which stat has the most points
             int biggestStat = getBiggestStatNumber();
 
-            //set health to 10 then add max stat times five
-            this.health = 10 + (biggestStat * 5);
+            //if player, health is 3 times the biggest stat
+            if(this.type == PlayerType.Player)
+            {
+                this.health = biggestStat * 3;
+            }
+            //otherwise, health is twice as big as biggest stat
+            else
+            {
+                this.health = biggestStat * 2;
+            }
         }
 
         /// <summary>
@@ -535,13 +563,13 @@ namespace Tournament_Fighter
             Helper.ClearLine(0, 0);
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(0, 0);
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = GameConstants.STRENGTH_COLOR;
             Console.Write("Strength: " + Strength);
             Console.SetCursorPosition(18, 0);
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = GameConstants.SPEED_COLOR;
             Console.Write("Speed: " + Speed);
             Console.SetCursorPosition(33, 0);
-            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.ForegroundColor = GameConstants.DEFENSE_COLOR;
             Console.Write("Defense: " + Defense);
             Console.SetCursorPosition(51, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -574,6 +602,11 @@ namespace Tournament_Fighter
             Console.WriteLine(answerB); //speed
             Console.WriteLine(answerC + "\n"); //defense
             Console.Write(">");
+        }
+
+        public void pickName()
+        {
+            Console.WriteLine("");
         }
 
         /// <summary>

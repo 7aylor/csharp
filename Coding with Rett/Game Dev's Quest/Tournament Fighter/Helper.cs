@@ -54,7 +54,7 @@ namespace Tournament_Fighter
         /// </summary>
         public static void printDivider()
         {
-            for (int i = 0; i < Game.WINDOW_WIDTH; i++)
+            for (int i = 0; i < GameConstants.WINDOW_WIDTH; i++)
             {
                 if (i % 2 == 0)
                 {
@@ -75,7 +75,7 @@ namespace Tournament_Fighter
         /// </summary>
         public static void buildPlayerNav()
         {
-            Console.SetCursorPosition(0, Game.PLAYER_NAV_HEIGHT);
+            Console.SetCursorPosition(0, GameConstants.PLAYER_NAV_HEIGHT);
             printDivider();
         }
 
@@ -89,11 +89,15 @@ namespace Tournament_Fighter
             Console.SetCursorPosition(0, 3);
             Console.Write(enemy.Name);
             Console.SetCursorPosition(0, 4);
-            Console.Write("Health: " + enemy.Health);
-            Console.SetCursorPosition(Game.WINDOW_WIDTH - Game.PLAYER_NAME_MAX_LENGTH, 3);
+            Console.WriteLine("Health: " + enemy.Health);
+            Console.WriteLine("Strength: " + enemy.Strength);
+            Console.WriteLine("Speed: " + enemy.Speed);
+            Console.WriteLine("Defense: " + enemy.Defense);
+
+            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - GameConstants.PLAYER_NAME_MAX_LENGTH, 3);
             Console.Write(player.Name);
             String printPlayerHealth = "Health: " + player.Health;
-            Console.SetCursorPosition(Game.WINDOW_WIDTH - printPlayerHealth.Length, 4);
+            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - printPlayerHealth.Length, 4);
             Console.Write(printPlayerHealth);
         }
 
@@ -105,12 +109,44 @@ namespace Tournament_Fighter
         public static void printActionsInFightGameDisplay(StatType playerAttack, StatType enemyAttack)
         {
             Console.SetCursorPosition(0, 8);
-            Console.Write("Attack Type: " + enemyAttack);
+            Console.Write("Attack Type: ");
+
+            switch (enemyAttack)
+            {
+                case StatType.Defense:
+                    Console.ForegroundColor = GameConstants.DEFENSE_COLOR;
+                    break;
+                case StatType.Speed:
+                    Console.ForegroundColor = GameConstants.SPEED_COLOR;
+                    break;
+                case StatType.Strength:
+                    Console.ForegroundColor = GameConstants.STRENGTH_COLOR;
+                    break;
+            }
+
+            Console.Write(enemyAttack);
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.SetCursorPosition(0, 8);
 
             string printPlayerAttack = "Attack Type: " + playerAttack;
-            Console.SetCursorPosition(Game.WINDOW_WIDTH - printPlayerAttack.Length, 8);
-            Console.Write(printPlayerAttack);
+            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - printPlayerAttack.Length, 8);
+            Console.Write("Attack Type: ");
+
+            switch (playerAttack)
+            {
+                case StatType.Defense:
+                    Console.ForegroundColor = GameConstants.DEFENSE_COLOR;
+                    break;
+                case StatType.Speed:
+                    Console.ForegroundColor = GameConstants.SPEED_COLOR;
+                    break;
+                case StatType.Strength:
+                    Console.ForegroundColor = GameConstants.STRENGTH_COLOR;
+                    break;
+            }
+            Console.Write(playerAttack);
+            Console.ForegroundColor = ConsoleColor.Gray;
+
         }
     }
 }

@@ -11,37 +11,22 @@ namespace Tournament_Fighter
 
     static class Game
     {
-        //height and width of the console window
-        public const int WINDOW_WIDTH = 81;
-        public const int WINDOW_HEIGHT = 30;
-
-        //color of dialogue
-        const ConsoleColor dialogueColor = ConsoleColor.Yellow;
-
-        //color when player hits enemy
-        const ConsoleColor PlayerHit = ConsoleColor.DarkGreen;
-
-        //color when enemy hits player
-        const ConsoleColor EnemyHit = ConsoleColor.DarkRed;
-
-        //defines the top position of the player navigation portion of the window
-        public const int PLAYER_NAV_HEIGHT = 18;
-
-        public const int PLAYER_NAME_MAX_LENGTH = 10;
 
         public static void play()
         {
             //#######Lock Console Window Size WE NEED TO FIGURE THIS OUT
-            Console.SetWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-            Console.SetBufferSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+            Console.SetWindowSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
+            Console.SetBufferSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
             //#######DISABLE MOUSE IN CONSOLE?#####
             //Console.CursorVisible = false;
 
-            //#######WORK ON TRANSITIONS#######
             //printTitleScreen();
             //printIntroStory();
-            GameCharacters.player.initPlayer();
-            tutorialBattle();
+            //GameCharacters.player.initPlayer();
+            //tutorialBattle();
+
+            //game loop will check number of days 
+
         }
 
         /// <summary>
@@ -53,14 +38,14 @@ namespace Tournament_Fighter
             ConsoleColor flag = ConsoleColor.Red;
             ConsoleColor roof = ConsoleColor.Yellow;
 
-            Console.WriteLine("\t      Welcome to Tournament Fighter!\n");
-            Console.Write("\t\t               ");
+            Console.WriteLine("\t\t         Welcome to Tournament Fighter!\n");
+            Console.Write("\t\t\t                  ");
             Console.ForegroundColor = flag;
             Console.WriteLine("T~~");
             Console.ForegroundColor = defaultColor;
-            Console.WriteLine("\t\t               |");
-            Console.WriteLine("\t\t              /\"\\");
-            Console.Write("\t\t      ");
+            Console.WriteLine("\t\t\t                  |");
+            Console.WriteLine("\t\t\t                 /\"\\");
+            Console.Write("\t\t\t         ");
             Console.ForegroundColor = flag;
             Console.Write("T~~");
             Console.ForegroundColor = defaultColor;
@@ -68,7 +53,7 @@ namespace Tournament_Fighter
             Console.ForegroundColor = flag;
             Console.WriteLine("T~~");
             Console.ForegroundColor = defaultColor;
-            Console.Write("\t\t  ");
+            Console.Write("\t\t\t     ");
             Console.ForegroundColor = flag;
             Console.Write("T~~");
             Console.ForegroundColor = defaultColor;
@@ -79,11 +64,11 @@ namespace Tournament_Fighter
             Console.Write(" WWWW");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine("|");
-            Console.Write("\t\t  |  /\"\\   |  |  |/\\");
+            Console.Write("\t\t\t     |  /\"\\   |  |  |/\\");
             Console.ForegroundColor = flag;
             Console.WriteLine("T~~");
             Console.ForegroundColor = defaultColor;
-            Console.Write("\t\t /\"\\ ");
+            Console.Write("\t\t\t    /\"\\ ");
             Console.ForegroundColor = roof;
             Console.Write("WWW");
             Console.ForegroundColor = defaultColor;
@@ -92,12 +77,12 @@ namespace Tournament_Fighter
             Console.Write("WW");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine("|");
-            Console.Write("\t\t");
+            Console.Write("\t\t\t   ");
             Console.ForegroundColor = roof;
             Console.Write("WWWWW");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine("/\\| /   \\|'/\\|/\"\\");
-            Console.Write("\t\t|   /__\\/]");
+            Console.Write("\t\t\t   |   /__\\/]");
             Console.ForegroundColor = roof;
             Console.Write("WWW");
             Console.ForegroundColor = defaultColor;
@@ -105,7 +90,7 @@ namespace Tournament_Fighter
             Console.ForegroundColor = roof;
             Console.WriteLine("WWWW");
             Console.ForegroundColor = defaultColor;
-            Console.Write("\t\t|\"  ");
+            Console.Write("\t\t\t   |\"  ");
             Console.ForegroundColor = roof;
             Console.Write("WWWW");
             Console.ForegroundColor = defaultColor;
@@ -114,13 +99,59 @@ namespace Tournament_Fighter
             Console.Write("WWWW");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine("'  |");
-            Console.WriteLine("\t\t|   |' |/  -  \\|' |'  |");
-            Console.WriteLine("\t\t|'  |  |LI=H=LI|' |   |");
-            Console.WriteLine("\t\t|   |' | |[_]| |  |'  |");
-            Console.WriteLine("\t\t|   |  |_|###|_|  |   |");
-            Console.WriteLine("\t\t'---'--'-/___\\-'--'---'");
-            Console.Write("\n\n\t  Press any key to begin your journey...");
-            Console.ReadKey();
+            Console.WriteLine("\t\t\t   |   |' |/  -  \\|' |'  |");
+            Console.WriteLine("\t\t\t   |'  |  |LI=H=LI|' |   |");
+            Console.WriteLine("\t\t\t   |   |' | |[_]| |  |'  |");
+            Console.WriteLine("\t\t\t   |   |  |_|###|_|  |   |");
+            Console.WriteLine("\t\t\t   '---'--'-/___\\-'--'---'\n\n");
+
+            /////This may need some editing
+            Console.Write("\t\tPlease enter your name to begin your journey: ");
+            string name = Console.ReadLine();
+            int currentLineHeight = Console.CursorTop;
+            int currentLineLeft = Console.CursorLeft;
+
+            while(name.Length > GameConstants.PLAYER_NAME_MAX_LENGTH)
+            {
+                Console.SetCursorPosition(currentLineLeft, currentLineHeight - 1);
+                Helper.ClearLine(currentLineLeft, currentLineHeight);
+                Console.Write("Please use a name under " + (GameConstants.PLAYER_NAME_MAX_LENGTH + 1) + " characters: ");
+                name = Console.ReadLine();
+            }
+            /*
+            
+            int count = 0;
+            int key = Console.ReadKey().KeyChar;
+            int startPosition = Console.CursorLeft;
+
+            while (key != ConsoleKey.Enter)
+            {
+                if (count < GameConstants.PLAYER_NAME_MAX_LENGTH)
+                {
+                    if ((key == ConsoleKey.Backspace || key == ConsoleKey.Delete) && count > 0)
+                    {
+                        count = 0;
+                        Helper.ClearLine(0, Console.CursorTop);
+                    }
+                    else if(key == ConsoleKey.A || key == ConsoleKey.B || key == ConsoleKey.C ||
+                            key == ConsoleKey.D || key == ConsoleKey.E || key == ConsoleKey.F ||
+                            key == ConsoleKey.G || key == ConsoleKey.H || key == ConsoleKey.I ||
+                            key == ConsoleKey.J || key == ConsoleKey.B || key == ConsoleKey.C ||
+                            )
+                    else
+                    {
+                        name += key;
+                        count++;
+                        key = Console.ReadKey().Key;
+                    }
+                }
+            }
+            //Console.Write("\n\n\t\t     Press any key to begin your journey...");
+            //Console.ReadKey();
+
+            */
+
+            GameCharacters.player.Name = name;
         }
 
         /// <summary>
@@ -175,13 +206,13 @@ namespace Tournament_Fighter
 
             //Story
             slowTyper("You're pulled from your daydream when a booming voice yells:");
-            slowTyper("@\t\"They's a toll f'dis here gate.\"", dialogueColor);
+            slowTyper("@\t\"They's a toll f'dis here gate.\"", GameConstants.DIALOGUE_COLOR);
             slowTyper("Sliding from the shadows of the gate is a shrewd figure. You know him to be" +
                       "\nSmilin' Donnie, a smalltime crook who likes to grab at women and put his name" +
                       "\non things.");
-            slowTyper("@\t\"So wot'll it be\"", dialogueColor);
+            slowTyper("@\t\"So wot'll it be\"", GameConstants.DIALOGUE_COLOR);
             slowTyper("he says, impatiently tapping his sword on the side of his leg.");
-            slowTyper("@\t\"You'onna pay tha fee or am I gonna 'ave to carve you up some?\"", dialogueColor);
+            slowTyper("@\t\"You'onna pay tha fee or am I gonna 'ave to carve you up some?\"", GameConstants.DIALOGUE_COLOR);
             Helper.buildPlayerNav();
             Console.Write("Pay 1 gold? (y/n) \n\n>");
 
@@ -199,7 +230,7 @@ namespace Tournament_Fighter
                 Helper.buildPlayerNav();
                 Console.SetCursorPosition(0, 3);
 
-                slowTyper("\t\"You ain't gettin' through wit'is chump change. Empty yer purse.\"", dialogueColor);
+                slowTyper("\t\"You ain't gettin' through wit'is chump change. Empty yer purse.\"", GameConstants.DIALOGUE_COLOR);
                 Helper.buildPlayerNav();
                 Console.Write("Pay 3 more gold? (y/n) \n\n>");
                 playerChoice = Console.ReadKey().KeyChar;
@@ -212,7 +243,7 @@ namespace Tournament_Fighter
                     GameCharacters.player.Gold -= 3;
                     Helper.buildPlayerNav();
                     Console.SetCursorPosition(0, 3);
-                    slowTyper("\t\"I've robbed hobos wit more money den'is.\"", dialogueColor);
+                    slowTyper("\t\"I've robbed hobos wit more money den'is.\"", GameConstants.DIALOGUE_COLOR);
                     Helper.buildPlayerNav();
                     Console.Write("Pay 6 more gold? (y/n) \n\n>");
                     playerChoice = Console.ReadKey().KeyChar;
@@ -225,7 +256,7 @@ namespace Tournament_Fighter
                         GameCharacters.player.Gold -= 6;
                         Helper.buildPlayerNav();
                         Console.SetCursorPosition(0, 3);
-                        slowTyper("\t\"How I'mapposed ta build me wall wit'is?\"", dialogueColor);
+                        slowTyper("\t\"How I'mapposed ta build me wall wit'is?\"", GameConstants.DIALOGUE_COLOR);
                     }
                     //no more gold removed and fighting will commence
                     else
@@ -234,7 +265,7 @@ namespace Tournament_Fighter
                         GameCharacters.player.printStats();
                         Helper.buildPlayerNav();
                         Console.SetCursorPosition(0, 3);
-                        slowTyper("\t\"It was either cake or death, mate, and we're fresh outa cake.\"", dialogueColor);
+                        slowTyper("\t\"It was either cake or death, mate, and we're fresh outa cake.\"", GameConstants.DIALOGUE_COLOR);
                     }
                 }
                 //no more gold removed and fighting will commence
@@ -244,7 +275,7 @@ namespace Tournament_Fighter
                     GameCharacters.player.printStats();
                     Helper.buildPlayerNav();
                     Console.SetCursorPosition(0, 3);
-                    slowTyper("\t\"Keep your silver then, mate, your gonna need it to cross the River \n\tStyx.\"", dialogueColor);
+                    slowTyper("\t\"Keep your silver then, mate, your gonna need it to cross the River \n\tStyx.\"", GameConstants.DIALOGUE_COLOR);
                 }
             }
             //no gold removed and fighting will commence
@@ -254,7 +285,7 @@ namespace Tournament_Fighter
                 GameCharacters.player.printStats();
                 Helper.buildPlayerNav();
                 Console.SetCursorPosition(0, 3);
-                slowTyper("\t\"Not gonna pay, eh? We'll see about'at.\"", dialogueColor);
+                slowTyper("\t\"Not gonna pay, eh? We'll see about'at.\"", GameConstants.DIALOGUE_COLOR);
             }
 
             slowTyper("Smilin' Donnie unsheathes a nasty looking blade, barely giving you time to think.");
@@ -264,15 +295,17 @@ namespace Tournament_Fighter
             GameCharacters.player.printStats();
 
             //FIGHT FUNCTION
-            while(GameCharacters.SmilinDonnie.Health > 0 && GameCharacters.player.Health > 0)
+            NPC winner = fight(GameCharacters.player, GameCharacters.SmilinDonnie);
+
+            if(winner == GameCharacters.player)
             {
-                Console.WriteLine();
-                fight(GameCharacters.player, GameCharacters.SmilinDonnie);
-                Console.WriteLine("Press any key to continue fighting");
-                Console.ReadKey(true);
-                Console.Clear();
-                GameCharacters.player.printStats();
+                Console.WriteLine(GameCharacters.player.Name + " Wins!");
             }
+            else
+            {
+                Console.WriteLine(GameCharacters.SmilinDonnie.Name + " Wins!");
+            }
+
         }
 
         /// <summary>
@@ -322,24 +355,39 @@ namespace Tournament_Fighter
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        static void fight(Player player, NPC enemy)
+        static NPC fight(Player player, NPC enemy)
         {
+            while (player.Health > 0 && enemy.Health > 0)
+            {
+                Console.WriteLine();
 
-            Helper.printHeroesInFightGameDisplay(player, enemy);
+                Helper.printHeroesInFightGameDisplay(player, enemy);
 
-            //print the enemy health and prompt to pick stat a b c
-            StatType enemyAttack = enemy.pickBattleStat();
-            StatType playerAttack = player.pickBattleStat(enemy);
+                //print the enemy health and prompt to pick stat a b c
+                StatType enemyAttack = enemy.pickBattleStat();
+                StatType playerAttack = player.pickBattleStat(enemy);
 
-            Helper.printActionsInFightGameDisplay(playerAttack, enemyAttack);
+                Helper.printActionsInFightGameDisplay(playerAttack, enemyAttack);
+                inflictDamageOnLoser(player, enemy, playerAttack, enemyAttack);
 
-            /*
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine(enemy.Name + " attacks with " + enemyAttack);
-            Console.WriteLine(player.Name + " attacks with " + playerAttack + "\n");
-            */
-            inflictDamageOnLoser(player, enemy, playerAttack, enemyAttack);
+                Console.SetCursorPosition(GameConstants.WINDOW_WIDTH / 4, GameConstants.PLAYER_NAV_HEIGHT - 2);
+                Console.WriteLine("Press any key to continue fighting...");
+                Console.ReadKey(true);
+                Console.Clear();
+                GameCharacters.player.printStats();
 
+                if(player.Health <= 0)
+                {
+                    return enemy;
+                }
+                else if(enemy.Health <= 0)
+                {
+                    return player;
+                }
+            }
+
+            //returns null if no winner (shouldn't ever get here)
+            return null;
         }
 
         /// <summary>
@@ -351,72 +399,83 @@ namespace Tournament_Fighter
         /// <param name="enemyAttack"></param>
         static void inflictDamageOnLoser(NPC player, NPC enemy, StatType playerAttack, StatType enemyAttack)
         {
-            //enemy Strength
+            //Thread.Sleep(1);
+            Random damage = new Random();
+            int dmg;
+
+            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH / 4, GameConstants.PLAYER_NAV_HEIGHT - 6);
+            //enemy strength
             if (enemyAttack == StatType.Strength)
             {
-                //both Strength
+                //both strength
                 if (playerAttack == StatType.Strength)
                 {
                     Console.WriteLine("It's a tie! No damage dealt");
                 }
-                //player Speed, enemy Strength. Player beats Enemy. Speed beats Strength.
+                //player speed, enemy strength. Player beats Enemy. speed beats strength.
                 else if (playerAttack == StatType.Speed)
                 {
-                    Console.ForegroundColor = PlayerHit;
-                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
-                    enemy.Health -= player.Speed;
+                    Console.ForegroundColor = GameConstants.PLAYER_HIT_COLOR;
+                    dmg = damage.Next(player.Speed < 7 ? 1 : player.Speed - 7, player.Speed + 1);
+                    Console.WriteLine(player.Name + " deals " + dmg + " damage to " + enemy.Name);
+                    enemy.Health -= dmg;
                 }
-                //player Defense, enemy Strength. Enemy beats Player. Strength beats Defense.
+                //player defense, enemy strength. Enemy beats Player. strength beats defense.
                 else
                 {
-                    Console.ForegroundColor = EnemyHit;
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
-                    player.Health -= enemy.Strength;
+                    Console.ForegroundColor = GameConstants.ENEMY_HIT_COLOR;
+                    dmg = damage.Next(enemy.Strength < 7 ? 1 : enemy.Strength - 7, enemy.Strength + 1);
+                    Console.WriteLine(enemy.Name + " deals " + dmg + " damage to " + player.Name);
+                    player.Health -= dmg;
                 }
             }
-            //enemy Speed
+            //enemy speed
             else if (enemyAttack == StatType.Speed)
             {
-                //player Strength, enemy Speed. Enemy beats Player. Speed beats Strength.
+                //player strength, enemy speed. Enemy beats Player. speed beats strength.
                 if (playerAttack == StatType.Strength)
                 {
-                    Console.ForegroundColor = EnemyHit;
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Defense + " damage to " + player.Name);
-                    player.Health -= enemy.Strength;
+                    Console.ForegroundColor = GameConstants.ENEMY_HIT_COLOR;
+                    dmg = damage.Next(enemy.Speed < 7 ? 1 : enemy.Speed - 7, enemy.Speed + 1);
+                    Console.WriteLine(enemy.Name + " deals " + dmg + " damage to " + player.Name);
+                    player.Health -= dmg;
 
                 }
-                //both Speed
+                //both speed
                 else if (playerAttack == StatType.Speed)
                 {
                     Console.WriteLine("It's a tie! No damage dealt");
 
                 }
-                //player Defense, enemy Speed. Player beats Enemy. Defense beats Speed.
+                //player defense, enemy speed. Player beats Enemy. defense beats speed.
                 else
                 {
-                    Console.ForegroundColor = PlayerHit;
-                    Console.WriteLine(player.Name + " deals " + player.Speed + " damage to " + enemy.Name);
-                    enemy.Health -= player.Speed;
+                    Console.ForegroundColor = GameConstants.PLAYER_HIT_COLOR;
+                    dmg = damage.Next(player.Defense < 7 ? 1 : player.Defense - 7, player.Defense + 1);
+                    Console.WriteLine(player.Name + " deals " + dmg + " damage to " + enemy.Name);
+                    enemy.Health -= dmg;
                 }
             }
-            //enemy Defense
+            //enemy defense
             else
             {
-                //player Strength, enemy Defense. Player beats Enemy. Strength beats Defense.
+                //player strength, enemy defense. Player beats Enemy. strength beats defense.
                 if (playerAttack == StatType.Strength)
                 {
-                    Console.ForegroundColor = PlayerHit;
-                    Console.WriteLine(player.Name + " deals " + player.Defense + " damage to " + enemy.Name);
-                    enemy.Health -= player.Strength;
+                    Console.ForegroundColor = GameConstants.PLAYER_HIT_COLOR;
+                    dmg = damage.Next(player.Strength < 7 ? 1 : player.Strength - 7, player.Strength + 1);
+                    Console.WriteLine(player.Name + " deals " + dmg + " damage to " + enemy.Name);
+                    enemy.Health -= dmg;
                 }
-                //player Speed, enemy Defense. Enemy beats Player. Defense beats Speed.
+                //player speed, enemy defense. Enemy beats Player. defense beats speed.
                 else if (playerAttack == StatType.Speed)
                 {
-                    Console.ForegroundColor = EnemyHit;
-                    Console.WriteLine(enemy.Name + " deals " + enemy.Speed + " damage to " + player.Name);
-                    player.Health -= enemy.Speed;
+                    Console.ForegroundColor = GameConstants.ENEMY_HIT_COLOR;
+                    dmg = damage.Next(enemy.Speed < 7 ? 1 : enemy.Speed - 7, enemy.Speed + 1);
+                    Console.WriteLine(enemy.Name + " deals " + dmg + " damage to " + player.Name);
+                    player.Health -= dmg;
                 }
-                //both Defense
+                //both defense
                 else
                 {
                     Console.WriteLine("It's a tie! No damage dealt");
