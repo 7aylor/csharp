@@ -74,4 +74,9 @@ namespace Tournament_Fighter
     {
 
     }
+
+    static class BlackJackDeck
+    {
+        public static DeckOfCards deck = new DeckOfCards();
+    }
 }

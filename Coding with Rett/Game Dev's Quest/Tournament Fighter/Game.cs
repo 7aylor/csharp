@@ -14,18 +14,31 @@ namespace Tournament_Fighter
         public static void play()
         {
             //#######Lock Console Window Size WE NEED TO FIGURE THIS OUT
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.SetWindowSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
             Console.SetBufferSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
+
             //#######DISABLE MOUSE IN CONSOLE?#####
             //Console.CursorVisible = false;
 
-            printTitleScreen();
-            printIntroStory();
-            GameCharacters.player.initPlayer();
-            tutorialBattle();
-            enterTheVillage();
+            //printTitleScreen();
+            //printIntroStory();
+            //GameCharacters.player.initPlayer();
+            //tutorialBattle();
+            //enterTheVillage();
+
+            //GameLocations.tavern.printTavernUI();
 
             //game loop will check number of days 
+
+            //BlackJackDeck.deck.deleteDeck();
+            Card one = BlackJackDeck.deck.drawTopCard();
+            one.printCard();
+            Card two = BlackJackDeck.deck.drawTopCard();
+            two.printCard();
+
+
+            Console.WriteLine("Deck Length: " + BlackJackDeck.deck.deck.Count);
 
         }
 
@@ -342,7 +355,7 @@ namespace Tournament_Fighter
         /// Writes characters with a pause in between. Allows you to choose a text color, or defaults to gray
         /// </summary>
         /// <param name="s"></param>
-        static void slowTyper(string s, ConsoleColor color=ConsoleColor.Gray)
+        public static void slowTyper(string s, ConsoleColor color=ConsoleColor.Gray)
         {
             int top = Console.CursorTop;
             int left = Console.CursorLeft;

@@ -149,6 +149,10 @@ namespace Tournament_Fighter
 
         }//end of printActionsInFightGameDisplay
 
+        /// <summary>
+        /// Clears the screen, prints the player stats, prints the player nav display,
+        /// then sets cursor to main display (0, 3)
+        /// </summary>
         public static void printCleanUI()
         {
             Console.Clear();
