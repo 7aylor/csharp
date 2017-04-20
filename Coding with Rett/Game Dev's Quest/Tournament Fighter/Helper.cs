@@ -94,7 +94,7 @@ namespace Tournament_Fighter
             Console.WriteLine("Speed: " + enemy.Speed);
             Console.WriteLine("Defense: " + enemy.Defense);
 
-            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - GameConstants.PLAYER_NAME_MAX_LENGTH, 3);
+            Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - player.Name.Length, 3);
             Console.Write(player.Name);
             String printPlayerHealth = "Health: " + player.Health;
             Console.SetCursorPosition(GameConstants.WINDOW_WIDTH - printPlayerHealth.Length, 4);
@@ -147,6 +147,18 @@ namespace Tournament_Fighter
             Console.Write(playerAttack);
             Console.ForegroundColor = ConsoleColor.Gray;
 
-        }
+        }//end of printActionsInFightGameDisplay
+
+        /// <summary>
+        /// Clears the screen, prints the player stats, prints the player nav display,
+        /// then sets cursor to main display (0, 3)
+        /// </summary>
+        public static void printCleanUI()
+        {
+            Console.Clear();
+            GameCharacters.player.printStats();
+            Helper.buildPlayerNav();
+            Console.SetCursorPosition(0, 3);
+        } 
     }
 }

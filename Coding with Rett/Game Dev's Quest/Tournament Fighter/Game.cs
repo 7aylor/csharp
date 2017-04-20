@@ -11,12 +11,13 @@ namespace Tournament_Fighter
 
     static class Game
     {
-
         public static void play()
         {
             //#######Lock Console Window Size WE NEED TO FIGURE THIS OUT
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
             Console.SetWindowSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
             Console.SetBufferSize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT);
+
             //#######DISABLE MOUSE IN CONSOLE?#####
             //Console.CursorVisible = false;
 
@@ -24,10 +25,24 @@ namespace Tournament_Fighter
             //printIntroStory();
             //GameCharacters.player.initPlayer();
             //tutorialBattle();
+            //enterTheVillage();
+
+            //GameLocations.tavern.printTavernUI();
 
             //game loop will check number of days 
 
+            //BlackJackDeck.deck.deleteDeck();
+            Card one = BlackJackDeck.deck.drawTopCard();
+            one.printCard();
+            Card two = BlackJackDeck.deck.drawTopCard();
+            two.printCard();
+
+
+            Console.WriteLine("Deck Length: " + BlackJackDeck.deck.deck.Count);
+
         }
+
+        #region //Storyline Functions
 
         /// <summary>
         /// Print title screen
@@ -111,11 +126,11 @@ namespace Tournament_Fighter
             int currentLineHeight = Console.CursorTop;
             int currentLineLeft = Console.CursorLeft;
 
-            while(name.Length > GameConstants.PLAYER_NAME_MAX_LENGTH)
+            while(name.Length > GameConstants.PLAYER_NAME_MAX_LENGTH || name.Length <= 0)
             {
                 Console.SetCursorPosition(currentLineLeft, currentLineHeight - 1);
                 Helper.ClearLine(currentLineLeft, currentLineHeight);
-                Console.Write("Please use a name under " + (GameConstants.PLAYER_NAME_MAX_LENGTH + 1) + " characters: ");
+                Console.Write("Please use a name with at least 1 character and under " + (GameConstants.PLAYER_NAME_MAX_LENGTH + 1) + " characters: ");
                 name = Console.ReadLine();
             }
             /*
@@ -191,7 +206,8 @@ namespace Tournament_Fighter
         }
 
         /// <summary>
-        /// After title screen, start intro battle
+        /// After title screen, start intro battle. Goes through entire first encounter with Smilin' Donnie
+        /// including a fight.
         /// </summary>
         static void tutorialBattle()
         {
@@ -199,10 +215,7 @@ namespace Tournament_Fighter
             char[] yn = new char[] { 'y', 'n' };
 
             //clear the screen and print stats at top and the player nav bar at the bottom
-            Console.Clear();
-            GameCharacters.player.printStats();
-            Helper.buildPlayerNav();
-            Console.SetCursorPosition(0, 3);
+            Helper.printCleanUI();
 
             //Story
             slowTyper("You're pulled from your daydream when a booming voice yells:");
@@ -245,15 +258,15 @@ namespace Tournament_Fighter
                     Console.SetCursorPosition(0, 3);
                     slowTyper("\t\"I've robbed hobos wit more money den'is.\"", GameConstants.DIALOGUE_COLOR);
                     Helper.buildPlayerNav();
-                    Console.Write("Pay 6 more gold? (y/n) \n\n>");
+                    Console.Write("Pay 5 more gold? (y/n) \n\n>");
                     playerChoice = Console.ReadKey().KeyChar;
                     Helper.checkInput(ref playerChoice, yn);
 
-                    //if they chose yes, remove 6 gold from player and continue
+                    //if they chose yes, remove 5 gold from player and continue
                     if (playerChoice == 'y')
                     {
                         Console.Clear();
-                        GameCharacters.player.Gold -= 6;
+                        GameCharacters.player.Gold -= 5;
                         Helper.buildPlayerNav();
                         Console.SetCursorPosition(0, 3);
                         slowTyper("\t\"How I'mapposed ta build me wall wit'is?\"", GameConstants.DIALOGUE_COLOR);
@@ -261,30 +274,21 @@ namespace Tournament_Fighter
                     //no more gold removed and fighting will commence
                     else
                     {
-                        Console.Clear();
-                        GameCharacters.player.printStats();
-                        Helper.buildPlayerNav();
-                        Console.SetCursorPosition(0, 3);
+                        Helper.printCleanUI();
                         slowTyper("\t\"It was either cake or death, mate, and we're fresh outa cake.\"", GameConstants.DIALOGUE_COLOR);
                     }
                 }
                 //no more gold removed and fighting will commence
                 else
                 {
-                    Console.Clear();
-                    GameCharacters.player.printStats();
-                    Helper.buildPlayerNav();
-                    Console.SetCursorPosition(0, 3);
+                    Helper.printCleanUI();
                     slowTyper("\t\"Keep your silver then, mate, your gonna need it to cross the River \n\tStyx.\"", GameConstants.DIALOGUE_COLOR);
                 }
             }
             //no gold removed and fighting will commence
             else
             {
-                Console.Clear();
-                GameCharacters.player.printStats();
-                Helper.buildPlayerNav();
-                Console.SetCursorPosition(0, 3);
+                Helper.printCleanUI();
                 slowTyper("\t\"Not gonna pay, eh? We'll see about'at.\"", GameConstants.DIALOGUE_COLOR);
             }
 
@@ -295,24 +299,63 @@ namespace Tournament_Fighter
             GameCharacters.player.printStats();
 
             //FIGHT FUNCTION
-            NPC winner = fight(GameCharacters.player, GameCharacters.SmilinDonnie);
+            NPC winner = fight(GameCharacters.player, GameCharacters.SmilinDonnie, 5);
 
+            //if you beat Smilin' Donnie, he runs away
             if(winner == GameCharacters.player)
             {
-                Console.WriteLine(GameCharacters.player.Name + " Wins!");
+                //clear the UI and print the winning message
+                Helper.printCleanUI();
+                slowTyper("No need fer blood mate, you keep ya monay.\n", GameConstants.DIALOGUE_COLOR);
+
+                //if Donnie hasn't taken any money
+                if(GameCharacters.player.Gold >= 10)
+                {
+                    //he drops 5 gold
+                    slowTyper("Smilin' Donnie runs away dropping gold along the way.\n");
+                    Console.WriteLine("You gain 5 gold.");
+                    GameCharacters.player.Gold += 5;
+                }
+                else
+                {
+                    //if the player has given money, he drops that money + 5
+                    slowTyper("Smilin' Donnie runs away tossing your coins on the ground. You realize he \ndropped more than he took.\n");
+                    int goldGained = 10 - GameCharacters.player.Gold + 5;
+
+                    Console.WriteLine("You gain " + goldGained + " gold.");
+                    GameCharacters.player.Gold += goldGained;
+                }
             }
+            //Donnie wins the fight
             else
             {
-                Console.WriteLine(GameCharacters.SmilinDonnie.Name + " Wins!");
+                //clear the UI and Donnie takes all of the money
+                GameCharacters.player.Health = 5;
+                Helper.printCleanUI();
+                slowTyper("You ain't even wirf da blood on me blade mate.\n", GameConstants.DIALOGUE_COLOR);
+                slowTyper("Smilin' Donnie takes all of your gold and makes down the road toward the village.\n");
+                Console.WriteLine("You lose " + GameCharacters.player.Gold + " gold.");
+                GameCharacters.player.Gold = 0;
             }
 
         }
 
         /// <summary>
-        /// Writes characters with a pause in between //
+        /// After the intro battle, enter the Village
+        /// </summary>
+        static void enterTheVillage()
+        {
+
+        }
+        #endregion
+
+        #region //Game Mechanic Functions
+
+        /// <summary>
+        /// Writes characters with a pause in between. Allows you to choose a text color, or defaults to gray
         /// </summary>
         /// <param name="s"></param>
-        static void slowTyper(string s, ConsoleColor color=ConsoleColor.Gray)
+        public static void slowTyper(string s, ConsoleColor color=ConsoleColor.Gray)
         {
             int top = Console.CursorTop;
             int left = Console.CursorLeft;
@@ -355,9 +398,18 @@ namespace Tournament_Fighter
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        static NPC fight(Player player, NPC enemy)
+        /// <summary>
+        /// Loops through a fight scene allowing the player to choose an attack against the enemy NPC. 
+        /// Takes the player and the enemy NPC as well as asking for a health limit that determines when
+        /// the battle is over. Returns the winning NPC object.
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="enemy"></param>
+        /// <param name="healthLimit"></param>
+        /// <returns></returns>
+        static NPC fight(Player player, NPC enemy, int healthLimit)
         {
-            while (player.Health > 0 && enemy.Health > 0)
+            while (player.Health > healthLimit && enemy.Health > healthLimit)
             {
                 Console.WriteLine();
 
@@ -376,11 +428,11 @@ namespace Tournament_Fighter
                 Console.Clear();
                 GameCharacters.player.printStats();
 
-                if(player.Health <= 0)
+                if(player.Health <= healthLimit)
                 {
                     return enemy;
                 }
-                else if(enemy.Health <= 0)
+                else if(enemy.Health <= healthLimit)
                 {
                     return player;
                 }
@@ -483,5 +535,15 @@ namespace Tournament_Fighter
             }
             Console.ForegroundColor = ConsoleColor.Gray;
         }//End of inflictDamage Method
+
+        /// <summary>
+        /// Controls the game play in the town
+        /// </summary>
+        static void gameLoop()
+        {
+
+        }
+
+        #endregion
     }
 }

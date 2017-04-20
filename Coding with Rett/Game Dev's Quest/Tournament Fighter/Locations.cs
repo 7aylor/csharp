@@ -76,6 +76,7 @@ namespace Tournament_Fighter
 
         /// <summary>
         /// Tavern Class Base Constructor, inherits from Location base class
+        /// Initializes menu items
         /// </summary>
         /// <param name="name"></param>
         public Tavern(string name) : base(name)
@@ -147,6 +148,22 @@ namespace Tournament_Fighter
         public void meetPeople()
         {
 
+        }
+
+        public void printTavernUI()
+        {
+            Helper.printCleanUI();
+            Console.WriteLine("Welcome to " + this.name + "!\n");
+            Console.WriteLine("The tavern is neat and orderly.");
+            Helper.buildPlayerNav();
+            Console.WriteLine("What would you like to do?\n");
+            Console.Write("1) See a menu\t\t2) See who's here\n");
+
+            Console.Write("3) Play the arcade\t4) Try your luck at blackjack\n\n");
+
+
+
+            //
         }
 
         //public void order

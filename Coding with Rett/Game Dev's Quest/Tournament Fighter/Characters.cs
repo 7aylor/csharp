@@ -97,14 +97,11 @@ namespace Tournament_Fighter
             }
             set
             {
-                if(this.health <= 0)
+                this.health = value;
+                if (this.health < 0)
                 {
                     this.health = 0;
                 }
-                else
-                {
-                    this.health = value;
-                }                
             }
         }
         //virtual so Player subclass can override
@@ -477,8 +474,8 @@ namespace Tournament_Fighter
 
             //Question 3
             printQuestionsToBuildStats("A local merchant accuses you of stealing from his shop. He sent for the " +
-                                       "guards tosettle the matter. Do you:", 
-                                       "a) A weapon as nice as this rightfully belongs to one who can weild it. It's not stealing if its yours", 
+                                       "guards tosettle the matter. What do you do?", 
+                                       "a) A weapon as nice as this rightfully belongs to one who can weild it. It's not stealing if it's yours.", 
                                        "b) Make a break for the nearest exit", 
                                        "c) Wait for the guards to peacefully clear up this misunderstanding");
 
