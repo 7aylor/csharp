@@ -32,13 +32,16 @@ namespace Tournament_Fighter
             //game loop will check number of days 
 
             //BlackJackDeck.deck.deleteDeck();
-            Card one = BlackJackDeck.deck.drawTopCard();
-            one.printCard();
-            Card two = BlackJackDeck.deck.drawTopCard();
-            two.printCard();
+            //Card one = BlackJackDeck.deck.drawTopCard();
+            //one.printCardFaceUp();
+            //Card two = BlackJackDeck.deck.drawTopCard();
+            //one.printCardFaceDown();
 
 
-            Console.WriteLine("Deck Length: " + BlackJackDeck.deck.deck.Count);
+            BlackJack.play();
+
+
+            //Console.WriteLine("Deck Length: " + BlackJackDeck.deck.deck.Count);
 
         }
 

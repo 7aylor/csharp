@@ -102,7 +102,7 @@ namespace Tournament_Fighter
         {
             foreach(Card card in deck)
             {
-                card.printCard();
+                card.printCardFaceUp();
             }
         }
 
@@ -206,7 +206,7 @@ namespace Tournament_Fighter
         /// <summary>
         /// prints the card to the console
         /// </summary>
-        public void printCard()
+        public void printCardFaceUp()
         {
             char spade = '\u2660';
             char heart = '\u2665';
@@ -236,7 +236,15 @@ namespace Tournament_Fighter
             }
             Console.BackgroundColor = ConsoleColor.Black;
             Console.ForegroundColor = ConsoleColor.Gray;
-            
+        }
+
+        public void printCardFaceDown()
+        {
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("\\/");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }
