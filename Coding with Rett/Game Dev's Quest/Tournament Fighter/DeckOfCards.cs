@@ -135,6 +135,8 @@ namespace Tournament_Fighter
 
     class Card
     {
+        //Keep track of x and y positions here instead of a struct
+        int cardValue;
         Suit suit;
         string card;
         ConsoleColor background;
@@ -151,44 +153,58 @@ namespace Tournament_Fighter
             
             switch (card)
             {
+                //Make sure to account for when ace is 1 or 11 *cardValue*
                 case Cards.Ace:
                     this.card = "A";
+                    this.cardValue = 1;
                     break;
                 case Cards.Two:
                     this.card = "2";
+                    this.cardValue = 2;
                     break;
                 case Cards.Three:
                     this.card = "3";
+                    this.cardValue = 3;
                     break;
                 case Cards.Four:
                     this.card = "4";
+                    this.cardValue = 4;
                     break;
                 case Cards.Five:
                     this.card = "5";
+                    this.cardValue = 5;
                     break;
                 case Cards.Six:
                     this.card = "6";
+                    this.cardValue = 6;
                     break;
                 case Cards.Seven:
                     this.card = "7";
+                    this.cardValue = 7;
                     break;
                 case Cards.Eight:
                     this.card = "8";
+                    this.cardValue = 8;
                     break;
                 case Cards.Nine:
                     this.card = "9";
+                    this.cardValue = 9;
                     break;
                 case Cards.Ten:
                     this.card = "10";
+                    this.cardValue = 10;
                     break;
                 case Cards.Jack:
                     this.card = "J";
+                    this.cardValue = 11;
                     break;
                 case Cards.Queen:
                     this.card = "Q";
+                    this.cardValue = 12;
                     break;
                 default:
                     this.card = "K";
+                    this.cardValue = 13;
                     break;
             }
 
@@ -200,6 +216,15 @@ namespace Tournament_Fighter
             else
             {
                 foreground = ConsoleColor.Red;
+            }
+        }
+
+        //getters
+        public int Value
+        {
+            get
+            {
+                return this.cardValue;
             }
         }
 

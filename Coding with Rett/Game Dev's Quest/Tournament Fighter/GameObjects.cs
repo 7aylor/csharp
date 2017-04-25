@@ -34,7 +34,7 @@ namespace Tournament_Fighter
         public static NPC Miriam = new NPC("Miriam", "Innkeeper", PlayerType.Villager);
         public static NPC Bernard = new NPC("Bernard", "Merchant" , PlayerType.Villager);
         public static NPC Bancroft = new NPC("Bancroft", "Merchant", PlayerType.Villager);
-        public static NPC Norm = new NPC("Norm", "Black Jack Dealer", PlayerType.Villager);
+        public static NPC Norm = new NPC("Norm", "Dealer", PlayerType.Villager);
 
     }
 

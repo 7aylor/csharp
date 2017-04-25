@@ -161,4 +161,26 @@ namespace Tournament_Fighter
             Console.SetCursorPosition(0, 3);
         } 
     }
+
+    /// <summary>
+    /// holds an x and y value, making a coordinate of the console
+    /// </summary>
+    public struct consoleCoords
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+
+        public consoleCoords(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public void setCoords(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+    }
 }
