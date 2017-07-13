@@ -21,11 +21,15 @@ namespace Tournament_Fighter
             //#######DISABLE MOUSE IN CONSOLE?#####
             //Console.CursorVisible = false;
 
-            //printTitleScreen();
-            //printIntroStory();
-            //GameCharacters.player.initPlayer();
-            //tutorialBattle();
-            //enterTheVillage();
+            /*###########GOOD CODE####################
+
+            printTitleScreen();
+            printIntroStory();
+            GameCharacters.player.initPlayer();
+            tutorialBattle();
+            enterTheVillage();
+
+            */
 
             //GameLocations.tavern.printTavernUI();
 

@@ -141,6 +141,10 @@ namespace Tournament_Fighter
         string card;
         ConsoleColor background;
         ConsoleColor foreground;
+        private const char spade = '\u2660';
+        private const char heart = '\u2665';
+        private const char diamond = '\u2666';
+        private const char club = '\u2663';
 
         /// <summary>
         /// Creates a card from the suit and card value
@@ -196,15 +200,15 @@ namespace Tournament_Fighter
                     break;
                 case Cards.Jack:
                     this.card = "J";
-                    this.cardValue = 11;
+                    this.cardValue = 10;
                     break;
                 case Cards.Queen:
                     this.card = "Q";
-                    this.cardValue = 12;
+                    this.cardValue = 10;
                     break;
                 default:
                     this.card = "K";
-                    this.cardValue = 13;
+                    this.cardValue = 10;
                     break;
             }
 
@@ -228,15 +232,19 @@ namespace Tournament_Fighter
             }
         }
 
+        public string CardType
+        {
+            get
+            {
+                return this.card;
+            }
+        }
+
         /// <summary>
         /// prints the card to the console
         /// </summary>
         public void printCardFaceUp()
         {
-            char spade = '\u2660';
-            char heart = '\u2665';
-            char diamond = '\u2666';
-            char club = '\u2663';
 
             Console.BackgroundColor = background;
             Console.ForegroundColor = foreground;
