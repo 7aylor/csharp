@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+
 
 namespace Tournament_Fighter
 {
+
     public static class BlackJack
     {
         static List<NPC> blackJackPlayers = new List<NPC>();
@@ -15,10 +18,10 @@ namespace Tournament_Fighter
         /// </summary>
         static public void play()
         {
-            //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units (Investigate the - 6)
-            initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 6, Console.WindowTop + 4);
+            //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. -2 is used to help center with name
+            initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2, Console.WindowTop + 4);
 
-            //initialize the player with card positions at the middle of the screen and down 16 units (Investigate the - 2)
+            //initialize the player with card positions at the middle of the screen and down 16 units. -2 is used to help center with name
             initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16);
 
             //call Deal
@@ -43,7 +46,12 @@ namespace Tournament_Fighter
 
             //print the deal
             printNewDeal();
-            playersChoice();
+
+            //GameCharacters.player.blackJackHand.CheckForBlackJack();
+            //GameCharacters.Norm.blackJackHand.CheckForBlackJack();
+
+
+            playersTurn();
         }
 
         /// <summary>
@@ -52,8 +60,7 @@ namespace Tournament_Fighter
         /// <param name="blackJackPlayer"></param>
         static void dealCard(NPC blackJackPlayer)
         {
-            blackJackPlayer.blackJackHand.Add(BlackJackDeck.deck.drawTopCard());
-            updatePlayerCardPos(blackJackPlayer);
+            blackJackPlayer.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard());
         }
 
         /// <summary>
@@ -70,21 +77,32 @@ namespace Tournament_Fighter
                 //if the player is the dealer
                 if (blackJackPlayers[i] == GameCharacters.Norm)
                 {
-                    //print Dealer - Norm and set the correction positions
+                    //build the string to hold Norm's Title in the play screen
                     string normsTitle = GameCharacters.Norm.Occupation + " - " + GameCharacters.Norm.Name;
-                    Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - (normsTitle.Length / 2),
-                                               GameCharacters.Norm.handCurrPos.Y - 1);
+
+                    //set net position of Norms name to account for occupation length and " - "
+                    GameCharacters.Norm.blackJackHand.namePos.X -= GameCharacters.Norm.Occupation.Length / 2 + 1;
+                    
+                    //print Dealer - Norm and set the correction positions
+                    Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.namePos.X, GameCharacters.Norm.blackJackHand.namePos.Y);
                     Console.WriteLine(normsTitle);
-                    Console.SetCursorPosition(GameCharacters.Norm.handCurrPos.X, GameCharacters.Norm.handCurrPos.Y);
+                    Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handCurrPos.X, GameCharacters.Norm.blackJackHand.handCurrPos.Y);
+                    
+                    //Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - (normsTitle.Length / 2),
+                    //                           GameCharacters.Norm.blackJackHand.handCurrPos.Y - 1);
+                    //Console.WriteLine(normsTitle);
+                    //Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handCurrPos.X, GameCharacters.Norm.blackJackHand.handCurrPos.Y);
 
                     //try to print the cards, assuming the hand has cards
                     try
                     {
                         //print the first card facedown
-                        GameCharacters.Norm.blackJackHand[0].printCardFaceDown();
+                        GameCharacters.Norm.blackJackHand.hand[0].printCardFaceDown();
+                        GameCharacters.Norm.blackJackHand.updatePlayerCardPos();
 
                         //print the second card faceup
-                        GameCharacters.Norm.blackJackHand[1].printCardFaceUp();
+                        GameCharacters.Norm.blackJackHand.hand[1].printCardFaceUp();
+                        GameCharacters.Norm.blackJackHand.updatePlayerCardPos();
                     }
                     //catch and print no cards if they have no cards
                     catch
@@ -96,50 +114,40 @@ namespace Tournament_Fighter
                 //if the player is the player of the game
                 if (blackJackPlayers[i] == GameCharacters.player)
                 {
-                    //set the cursor position and print the name of the player
-                    Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - (GameCharacters.player.Name.Length / 2),
-                                               GameCharacters.player.handCurrPos.Y - 1);
-                    Console.WriteLine(GameCharacters.player.Name);
-                    Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - 2, GameCharacters.player.handCurrPos.Y);
+                    //adjust the name position to account for " - score"
+                    GameCharacters.player.blackJackHand.namePos.X -=  2;
+
+                    Console.SetCursorPosition(GameCharacters.player.blackJackHand.namePos.X, GameCharacters.player.blackJackHand.namePos.Y);
+                    Console.WriteLine(GameCharacters.player.Name + " - " + GameCharacters.player.blackJackHand.HandValue);
+                    Console.SetCursorPosition(GameCharacters.player.blackJackHand.handCurrPos.X, GameCharacters.player.blackJackHand.handCurrPos.Y);
+
+
+                    //set the cursor position and print the name of the player and their current hand value
+                    //Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - (GameCharacters.player.Name.Length / 2),
+                    //                           GameCharacters.player.blackJackHand.handCurrPos.Y - 1);
+                    //Console.WriteLine(GameCharacters.player.Name + " - " + GameCharacters.player.blackJackHand.HandValue);
+                    //Console.SetCursorPosition((GameConstants.WINDOW_WIDTH / 2) - 2, GameCharacters.player.blackJackHand.handCurrPos.Y);
 
                     //try to print the cards, assuming the hand has cards
                     try
                     {
-                        GameCharacters.player.blackJackHand[0].printCardFaceUp();
-                        GameCharacters.player.blackJackHand[1].printCardFaceUp();
+                        GameCharacters.player.blackJackHand.hand[0].printCardFaceUp();
+                        GameCharacters.player.blackJackHand.updatePlayerCardPos();
+                        GameCharacters.player.blackJackHand.hand[1].printCardFaceUp();
+                        GameCharacters.player.blackJackHand.updatePlayerCardPos();
                     }
                     //catch and print no cards if they have no cards
                     catch
                     {
                         Console.Write("No cards in hand");
                     }
-                    
+
                 }
             }
 
         }
 
-        /// <summary>
-        /// Update the card position for a given player
-        /// </summary>
-        /// <param name="currentPlayer"></param>
-        static void updatePlayerCardPos(NPC currentPlayer)
-        {
-            //gets the last card dealt to the player
-            Card lastCard = currentPlayer.blackJackHand[currentPlayer.blackJackHand.Count - 1];
-
-            //if the card is a 10, we need an extra space for its suit (3 instead of 2)
-            if(lastCard.CardType == "10")
-            {
-                currentPlayer.handCurrPos.X += 3;
-            }
-            else
-            {
-                currentPlayer.handCurrPos.X += 2;
-            }
-        }
-
-        static void playersChoice()
+        static void playersTurn()
         {
             
             Helper.buildPlayerNav();
@@ -151,21 +159,35 @@ namespace Tournament_Fighter
             Console.WriteLine("a) Hit");
             Console.WriteLine("b) Stand");
 
+
             //If there is a split case or double down, take care of it here
-            if(GameCharacters.player.blackJackHand[0].CardType == GameCharacters.player.blackJackHand[1].CardType)
+            if(GameCharacters.player.blackJackHand.hand[0].CardName == GameCharacters.player.blackJackHand.hand[1].CardName)
             {
                 Console.WriteLine("c) Split");
                 options[2] = 'c';
                 //call split function here
             }
+            
 
             Console.Write("> ");
 
-            char playerChoice = Console.ReadKey().KeyChar;
+            while (true)
+            {
 
-            Helper.checkInput(ref playerChoice, options);
+                char playerChoice = Console.ReadKey().KeyChar;
 
+                Helper.checkInput(ref playerChoice, options);
 
+                if (playerChoice == 'a')
+                {
+                    Card newCard = BlackJackDeck.deck.drawTopCard();
+                    GameCharacters.player.blackJackHand.addCardToHand(newCard);
+                    Console.SetCursorPosition(GameCharacters.player.blackJackHand.handCurrPos.X, GameCharacters.player.blackJackHand.handCurrPos.Y);
+                    newCard.printCardFaceUp();
+                    GameCharacters.player.blackJackHand.updatePlayerCardPos();
+
+                }
+            }
         }
 
         static void endGame()
@@ -173,8 +195,8 @@ namespace Tournament_Fighter
             Helper.buildPlayerNav();
             Console.WriteLine("Press any key to flip dealer's card.");
             Console.ReadKey();
-            Console.SetCursorPosition(GameCharacters.Norm.handStartPos.X, GameCharacters.Norm.handStartPos.Y);
-            GameCharacters.Norm.blackJackHand[0].printCardFaceUp();
+            Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handStartPos.X, GameCharacters.Norm.blackJackHand.handStartPos.Y);
+            GameCharacters.Norm.blackJackHand.hand[0].printCardFaceUp();
         }
 
         /// <summary>
@@ -188,12 +210,145 @@ namespace Tournament_Fighter
             //add character to field of play but adding them to the blackJackPlayers list
             blackJackPlayers.Add(blackJackPlayer);
 
+            //creates the given player a blackjack hand
+            blackJackPlayer.blackJackHand = new BlackJackHand();
+
             //set the start position of the player's cards
-            blackJackPlayer.handStartPos.setCoords(handStartPosX, handStartPosY);
+            blackJackPlayer.blackJackHand.handStartPos.setCoords(handStartPosX, handStartPosY);
 
             //set the current position of the player's cards to the start position
-            blackJackPlayer.handCurrPos = blackJackPlayer.handStartPos;
+            blackJackPlayer.blackJackHand.handCurrPos = blackJackPlayer.blackJackHand.handStartPos;
+
+            //sets the name position x in the console to half the width - have the length of the player name
+            int nameX = (GameConstants.WINDOW_WIDTH / 2) - (blackJackPlayer.Name.Length / 2);
+
+            //sets the name position y to 1 above current position in the console, ie one position above the hand
+            int nameY = blackJackPlayer.blackJackHand.handStartPos.Y - 1;
+            blackJackPlayer.blackJackHand.namePos.setCoords(nameX, nameY);
         }
+
+    }
+
+    /// <summary>
+    /// A black jack hand
+    /// </summary>
+    public class BlackJackHand
+    {
+        //list of cards
+        public List<Card> hand;
+
+        //total value of hand
+        public int HandValue { get; set; }
+
+        //check if the hand has been doubled down
+        public bool DoubledDown { get; set; }
+
+        public int numAcesValuedEleven = 0;
+
+        //coordinates of the start and current hand positions
+        public consoleCoords handStartPos;
+        public consoleCoords handCurrPos;
+        public consoleCoords namePos;
+
+
+        /// <summary>
+        /// Default contructor. Creats an empty list of cards and sets default values
+        /// </summary>
+        public BlackJackHand()
+        {
+            hand = new List<Card>();
+            HandValue = 0;
+            handStartPos = new consoleCoords(0, 0);
+            handCurrPos = new consoleCoords(0, 0);
+            namePos = new consoleCoords(0, 0);
+            DoubledDown = false;
+        }
+
+        /// <summary>
+        /// Adds a card to the hand, updates card value
+        /// </summary>
+        /// <param name="card"></param>
+        public void addCardToHand(Card card)
+        {
+            hand.Add(card);
+            HandValue += card.Value;
+            if (isBust()){
+                //raise event to end the round
+            }
+        }
+
+        /// <summary>
+        /// Checks hand value to see if it's more than 21. Adjust the Ace value if needed
+        /// </summary>
+        /// <returns></returns>
+        public bool isBust()
+        {
+            //if there are no aces in the hand using value 11 and hand value is greater than 21
+            if (HandValue > 21 && numAcesValuedEleven == 0)
+            {
+                //we have busted
+                return true;
+            }
+            //if there hand value is greater than 21, but there are aces valued at 11
+            else if(HandValue > 21 && numAcesValuedEleven > 0)
+            {
+                //loop through cards
+                foreach(Card card in hand)
+                {
+                    //find the first ace with value 11
+                    if(card.CardName == "A" && card.Value == 11)
+                    {
+                        //make its value 1 and break out of the loop
+                        card.Value = 1;
+                        break;
+                    }
+                }
+
+                //decrease number of aces with value 11
+                numAcesValuedEleven--;
+
+                //subtract 10 from handvalue
+                HandValue -= 10;
+
+                //we haven't busted
+                return false;
+            }
+            else
+            {
+                //we don't have a value greater than 21
+                return false;
+            }
+        }
+
+        public void CheckForBlackJack()
+        {
+            if (hand.Count == 2 && (hand[0].Value == 10 && hand[1].CardName == "A")
+                               || (hand[1].Value == 10 && hand[0].CardName == "A"))
+            {
+                //print who the winner is
+            }
+        }
+
+        /// <summary>
+        /// Update the card position for a given player
+        /// </summary>
+        /// <param name="currentPlayer"></param>
+        public void updatePlayerCardPos()
+        {
+            //gets the last card dealt to the player
+            Card lastCard = hand[hand.Count - 1];
+
+            //if the card is a 10, we need an extra space for its suit (3 instead of 2)
+            if (lastCard.CardName == "10")
+            {
+                handCurrPos.X += 3;
+            }
+            else
+            {
+                handCurrPos.X += 2;
+            }
+        }
+
 
     }
 }

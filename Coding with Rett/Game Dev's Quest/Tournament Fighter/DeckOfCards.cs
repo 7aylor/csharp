@@ -7,8 +7,9 @@ using System.Threading;
 
 namespace Tournament_Fighter
 {
-    enum Suit { Spades, Hearts, Diamonds, Clubs }
-    enum Cards { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King }
+    public enum Suit { Spades, Hearts, Diamonds, Clubs }
+    public enum Cards { Ace, Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten, Jack, Queen, King }
+    public enum Type { Face, Number }
 
     class DeckOfCards
     {
@@ -133,12 +134,14 @@ namespace Tournament_Fighter
         }
     }
 
-    class Card
+    public class Card
     {
         //Keep track of x and y positions here instead of a struct
         int cardValue;
         Suit suit;
-        string card;
+        string cardName;
+        Type type;
+
         ConsoleColor background;
         ConsoleColor foreground;
         private const char spade = '\u2660';
@@ -157,58 +160,70 @@ namespace Tournament_Fighter
             
             switch (card)
             {
-                //Make sure to account for when ace is 1 or 11 *cardValue*
                 case Cards.Ace:
-                    this.card = "A";
-                    this.cardValue = 1;
+                    this.cardName = "A";
+                    this.cardValue = 11;
+                    this.type = Type.Number;
                     break;
                 case Cards.Two:
-                    this.card = "2";
+                    this.cardName = "2";
                     this.cardValue = 2;
+                    this.type = Type.Number;
                     break;
                 case Cards.Three:
-                    this.card = "3";
+                    this.cardName = "3";
                     this.cardValue = 3;
+                    this.type = Type.Number;
                     break;
                 case Cards.Four:
-                    this.card = "4";
+                    this.cardName = "4";
                     this.cardValue = 4;
+                    this.type = Type.Number;
                     break;
                 case Cards.Five:
-                    this.card = "5";
+                    this.cardName = "5";
                     this.cardValue = 5;
+                    this.type = Type.Number;
                     break;
                 case Cards.Six:
-                    this.card = "6";
+                    this.cardName = "6";
                     this.cardValue = 6;
+                    this.type = Type.Number;
                     break;
                 case Cards.Seven:
-                    this.card = "7";
+                    this.cardName = "7";
                     this.cardValue = 7;
+                    this.type = Type.Number;
                     break;
                 case Cards.Eight:
-                    this.card = "8";
+                    this.cardName = "8";
                     this.cardValue = 8;
+                    this.type = Type.Number;
                     break;
                 case Cards.Nine:
-                    this.card = "9";
+                    this.cardName = "9";
                     this.cardValue = 9;
+                    this.type = Type.Number;
                     break;
                 case Cards.Ten:
-                    this.card = "10";
+                    this.cardName = "10";
                     this.cardValue = 10;
+                    this.type = Type.Number;
                     break;
                 case Cards.Jack:
-                    this.card = "J";
+                    this.cardName = "J";
                     this.cardValue = 10;
+                    this.type = Type.Face;
                     break;
                 case Cards.Queen:
-                    this.card = "Q";
+                    this.cardName = "Q";
                     this.cardValue = 10;
+                    this.type = Type.Face;
                     break;
                 default:
-                    this.card = "K";
+                    this.cardName = "K";
                     this.cardValue = 10;
+                    this.type = Type.Face;
                     break;
             }
 
@@ -230,13 +245,17 @@ namespace Tournament_Fighter
             {
                 return this.cardValue;
             }
+            set
+            {
+                this.cardValue = value;
+            }
         }
 
-        public string CardType
+        public string CardName
         {
             get
             {
-                return this.card;
+                return this.cardName;
             }
         }
 
@@ -249,7 +268,7 @@ namespace Tournament_Fighter
             Console.BackgroundColor = background;
             Console.ForegroundColor = foreground;
 
-            Console.Write(this.card);
+            Console.Write(this.cardName);
             
             if (this.suit == Suit.Clubs)
             {
@@ -280,4 +299,6 @@ namespace Tournament_Fighter
             Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
+
+
 }
