@@ -18,11 +18,11 @@ namespace Tournament_Fighter
         /// </summary>
         static public void play()
         {
-            //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. -2 is used to help center with name
-            initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2, Console.WindowTop + 4);
+            //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. -6 is used to help center with name
+            initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 6, Console.WindowTop + 4);
 
-            //initialize the player with card positions at the middle of the screen and down 16 units. -2 is used to help center with name
-            initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16);
+            //initialize the player with card positions at the middle of the screen and down 16 units. -6 is used to help center with name
+            initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 6, 16);
 
             //call Deal
             deal();
@@ -33,15 +33,14 @@ namespace Tournament_Fighter
         /// </summary>
         static void deal()
         {
-            /*Testing splits
-            GameCharacters.player.blackJackHand.Add(new Card(Suit.Clubs, Cards.Eight));
-            GameCharacters.player.blackJackHand.Add(new Card(Suit.Hearts, Cards.Eight));
-            */
 
-            dealCard(GameCharacters.player);
+
+            GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Ace), GameCharacters.player.Name.Length);
+            //dealCard(GameCharacters.player);
             dealCard(GameCharacters.Norm);
 
-            dealCard(GameCharacters.player);
+            GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Ace), GameCharacters.player.Name.Length);
+            //dealCard(GameCharacters.player);
             dealCard(GameCharacters.Norm);
 
             //print the deal
@@ -60,7 +59,7 @@ namespace Tournament_Fighter
         /// <param name="blackJackPlayer"></param>
         static void dealCard(NPC blackJackPlayer)
         {
-            blackJackPlayer.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard());
+            blackJackPlayer.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard(), blackJackPlayer.Name.Length);
         }
 
         /// <summary>
@@ -171,21 +170,19 @@ namespace Tournament_Fighter
 
             Console.Write("> ");
 
-            while (true)
+
+            while (!GameCharacters.player.blackJackHand.Busted)
             {
-
-                char playerChoice = Console.ReadKey().KeyChar;
-
-                Helper.checkInput(ref playerChoice, options);
-
-                if (playerChoice == 'a')
+                if (GameCharacters.player.blackJackHand.HandValue <= 21)
                 {
-                    Card newCard = BlackJackDeck.deck.drawTopCard();
-                    GameCharacters.player.blackJackHand.addCardToHand(newCard);
-                    Console.SetCursorPosition(GameCharacters.player.blackJackHand.handCurrPos.X, GameCharacters.player.blackJackHand.handCurrPos.Y);
-                    newCard.printCardFaceUp();
-                    GameCharacters.player.blackJackHand.updatePlayerCardPos();
+                    char playerChoice = Console.ReadKey().KeyChar;
 
+                    Helper.checkInput(ref playerChoice, options);
+
+                    if (playerChoice == 'a')
+                    {
+                        GameCharacters.player.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard(), GameCharacters.player.Name.Length);
+                    }
                 }
             }
         }
@@ -243,7 +240,10 @@ namespace Tournament_Fighter
         //check if the hand has been doubled down
         public bool DoubledDown { get; set; }
 
+        //keeps track of number of Aces valued at 11
         public int numAcesValuedEleven = 0;
+
+        public bool Busted { get; set; }
 
         //coordinates of the start and current hand positions
         public consoleCoords handStartPos;
@@ -262,19 +262,56 @@ namespace Tournament_Fighter
             handCurrPos = new consoleCoords(0, 0);
             namePos = new consoleCoords(0, 0);
             DoubledDown = false;
+            Busted = false;
         }
 
         /// <summary>
         /// Adds a card to the hand, updates card value
         /// </summary>
         /// <param name="card"></param>
-        public void addCardToHand(Card card)
+        public void addCardToHand(Card card, int nameLength)
         {
-            hand.Add(card);
-            HandValue += card.Value;
-            if (isBust()){
-                //raise event to end the round
+            if(card.CardName == "A")
+            {
+                if(HandValue + card.Value > 21)
+                {
+
+                }
+                numAcesValuedEleven++;
             }
+
+            //add new card to hand
+            hand.Add(card);
+
+            //set the cursor position to print the new card
+            Console.SetCursorPosition(handCurrPos.X, handCurrPos.Y);
+
+            //print the new card
+            card.printCardFaceUp();
+
+            //update the card position
+            updatePlayerCardPos();
+
+            //update the card value
+            HandValue += card.Value;
+
+            //check for a bust
+            Busted = isBust();
+
+            //if hand hasn't busted
+            if (!Busted)
+            {
+                //print the new score
+                printUpdatedHandValue(namePos.X + nameLength + 3, namePos.Y);
+            }
+            //if hand has busted
+            else
+            {
+                //print the score and BUSTED
+                printUpdatedHandValue(namePos.X + nameLength + 3, namePos.Y);
+                Console.Write(" BUSTED");
+            }
+            
         }
 
         /// <summary>
@@ -283,9 +320,13 @@ namespace Tournament_Fighter
         /// <returns></returns>
         public bool isBust()
         {
+
+            Debug.Write("Called isBust()");
+
             //if there are no aces in the hand using value 11 and hand value is greater than 21
             if (HandValue > 21 && numAcesValuedEleven == 0)
             {
+                Debug.Write("busted");
                 //we have busted
                 return true;
             }
@@ -298,8 +339,14 @@ namespace Tournament_Fighter
                     //find the first ace with value 11
                     if(card.CardName == "A" && card.Value == 11)
                     {
+
+                        Debug.Write("Called Ace");
                         //make its value 1 and break out of the loop
                         card.Value = 1;
+
+                        //subtract 10 from handvalue
+                        HandValue -= 10;
+
                         break;
                     }
                 }
@@ -307,8 +354,7 @@ namespace Tournament_Fighter
                 //decrease number of aces with value 11
                 numAcesValuedEleven--;
 
-                //subtract 10 from handvalue
-                HandValue -= 10;
+                
 
                 //we haven't busted
                 return false;
@@ -349,6 +395,11 @@ namespace Tournament_Fighter
             }
         }
 
+        public void printUpdatedHandValue(int x, int y)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(HandValue);
+        }
 
     }
 }
