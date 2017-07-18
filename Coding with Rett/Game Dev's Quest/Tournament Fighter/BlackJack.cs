@@ -9,6 +9,7 @@ using System.Diagnostics;
 
 namespace Tournament_Fighter
 {
+    //make constants to keep track of choice positions on the console
 
     public static class BlackJack
     {
@@ -20,6 +21,9 @@ namespace Tournament_Fighter
         static public void play()
         {
 
+            GameCharacters.player.Name = "Testing the name!";
+            GameCharacters.player.Gold = 50;
+
             //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. - 2 is used to help center with name
             initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2, 
                 Console.WindowTop + 4, GameCharacters.Norm.Name.Length + GameCharacters.Norm.Occupation.Length, GameCharacters.Norm.Occupation.Length / 2, 0);
@@ -27,8 +31,43 @@ namespace Tournament_Fighter
             //initialize the player with card positions at the middle of the screen and down 16 units. -2 is used to help center with name
             initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16, 0, 0, 2);
 
+            //game loop should go here
+
+            //print a clean UI
+            Helper.printCleanUI();
+
+            //print the player's names
+            printPlayerName(GameCharacters.Norm);
+            printPlayerName(GameCharacters.player);
+
+            //make bets
+            placeBets();
+
             //call Deal
-            deal();
+            //deal();
+
+            //play turns
+            //playersTurn();
+            //dealersTurn();
+
+            //check for winner
+
+            //check to play again
+        }
+
+        static void placeBets()
+        {
+            bool checkNumWorked = false;
+            int bet = 0;
+            Console.SetCursorPosition(0, 20);
+            Console.WriteLine("Place your bet!");
+            Console.Write("> ");
+
+            while(checkNumWorked == false || bet > GameCharacters.player.Gold)
+            {
+                //Console.Write
+                checkNumWorked = Int32.TryParse(Console.ReadLine(), out bet);
+            }
         }
 
         /// <summary>
@@ -36,12 +75,6 @@ namespace Tournament_Fighter
         /// </summary>
         static void deal()
         {
-            //print a clean UI
-            Helper.printCleanUI();
-
-            //print the player's names
-            printPlayerName(GameCharacters.Norm);
-            printPlayerName(GameCharacters.player);
 
             //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Ace), GameCharacters.player.Name.Length, true);
             dealCard(GameCharacters.player, true, true);
@@ -50,9 +83,6 @@ namespace Tournament_Fighter
             //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Queen), GameCharacters.player.Name.Length, true);
             dealCard(GameCharacters.player, true, true);
             dealCard(GameCharacters.Norm, true, false);
-
-            playersTurn();
-            dealersTurn();
         }
 
         /// <summary>
@@ -100,22 +130,21 @@ namespace Tournament_Fighter
             char[] options = new char[4];
             options[0] = 'a';
             options[1] = 'b';
+            options[2] = 'c';
 
             Console.WriteLine("a) Hit");
             Console.WriteLine("b) Stand");
-
+            Console.WriteLine("c) Double Down");
 
             //If there is a split case or double down, take care of it here
             if(player.blackJackHand.hand[0].CardName == player.blackJackHand.hand[1].CardName)
             {
-                Console.WriteLine("c) Split");
-                options[2] = 'c';
+                Console.WriteLine("d) Split");
+                options[2] = 'd';
                 //call split function here
             }
-            
 
             Console.Write("> ");
-
 
             while (!player.blackJackHand.Busted && !player.blackJackHand.BlackJack && playerChoice != 'b')
             {
@@ -127,14 +156,19 @@ namespace Tournament_Fighter
 
                     if (playerChoice == 'a')
                     {
+                        printStatus(player.blackJackHand, "Hit");
                         GameCharacters.player.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard(), player.Name.Length, true, true);
                     }
                     else if(playerChoice == 'b')
                     {
+                        printStatus(player.blackJackHand, "Stay");
                         Console.SetCursorPosition(player.blackJackHand.statusPos.X, player.blackJackHand.statusPos.Y);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("Stay");
-                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    else if(playerChoice == 'c')
+                    {
+                        //deal with double down logic
+                        //need to remove the option if player hits, and breaks the loop if they double down
+                        //also need to double their bet
                     }
                 }
             }
@@ -158,11 +192,34 @@ namespace Tournament_Fighter
 
             norm.blackJackHand.printUpdatedHandValue(norm.Name.Length);
 
-            while (GameCharacters.Norm.blackJackHand.HandValue < 17)
+            while (norm.blackJackHand.HandValue < 17)
             {
                 Thread.Sleep(1000);
+                printStatus(norm.blackJackHand, "Hit");
                 dealCard(norm, true, true);
             }
+
+            if (!norm.blackJackHand.isBust())
+            {
+                printStatus(norm.blackJackHand, "Stay");
+            }
+        }
+
+        static void printStatus(BlackJackHand hand, string status)
+        {
+            Console.SetCursorPosition(hand.statusPos.X, hand.statusPos.Y);
+
+            if(status == "Hit")
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+            }
+            if(status == "Stay")
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+
+            Console.Write(status);
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         static void endGame()
@@ -209,7 +266,7 @@ namespace Tournament_Fighter
 
             //set the status Position
             blackJackPlayer.blackJackHand.statusPos.setCoords(blackJackPlayer.blackJackHand.namePos.X + 
-                                                            (blackJackPlayer.Name.Length / 2), nameY - 1);
+                                                            (blackJackPlayer.Name.Length / 2) + occupationOffset, nameY - 1);
         }
 
     }
