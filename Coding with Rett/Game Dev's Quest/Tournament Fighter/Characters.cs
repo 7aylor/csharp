@@ -20,9 +20,7 @@ namespace Tournament_Fighter
         int strength;
         int defense;
         PlayerType type;
-        public List<Card> blackJackHand = new List<Card>();
-        public consoleCoords handStartPos;
-        public consoleCoords handCurrPos;
+        public BlackJackHand blackJackHand;
 
         /// <summary>
         /// NPC Base constructor used mainly for villagers (non-fighters)
