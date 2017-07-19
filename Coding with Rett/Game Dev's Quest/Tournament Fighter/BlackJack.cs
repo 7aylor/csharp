@@ -13,6 +13,7 @@ namespace Tournament_Fighter
 
     public static class BlackJack
     {
+        //list that keeps track of the players
         static List<NPC> blackJackPlayers = new List<NPC>();
 
         /// <summary>
@@ -44,11 +45,11 @@ namespace Tournament_Fighter
             placeBets();
 
             //call Deal
-            //deal();
+            deal();
 
             //play turns
-            //playersTurn();
-            //dealersTurn();
+            playersTurn();
+            dealersTurn();
 
             //check for winner
 
@@ -58,16 +59,23 @@ namespace Tournament_Fighter
         static void placeBets()
         {
             bool checkNumWorked = false;
-            int bet = 0;
+            int bet = GameCharacters.player.blackJackHand.Bet;
             Console.SetCursorPosition(0, 20);
             Console.WriteLine("Place your bet!");
             Console.Write("> ");
+            checkNumWorked = Int32.TryParse(Console.ReadLine(), out bet);
 
-            while(checkNumWorked == false || bet > GameCharacters.player.Gold)
+            while (checkNumWorked == false || bet > GameCharacters.player.Gold || bet < 1)
             {
-                //Console.Write
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Helper.ClearLine(0, Console.CursorTop);
+                Console.Write("Please pick a number between 1 and " + GameCharacters.player.Gold + " > ");
                 checkNumWorked = Int32.TryParse(Console.ReadLine(), out bet);
             }
+
+            GameCharacters.player.blackJackHand.Bet = bet;
+            GameCharacters.player.Gold -= bet;
+            Helper.buildPlayerNav();
         }
 
         /// <summary>
@@ -132,6 +140,9 @@ namespace Tournament_Fighter
             options[1] = 'b';
             options[2] = 'c';
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("Bet: " + player.blackJackHand.Bet);
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine("a) Hit");
             Console.WriteLine("b) Stand");
             Console.WriteLine("c) Double Down");
@@ -302,6 +313,8 @@ namespace Tournament_Fighter
         public consoleCoords scorePos;
         public consoleCoords statusPos;
 
+        public int Bet { get; set; }
+
 
         /// <summary>
         /// Default contructor. Creats an empty list of cards and sets default values
@@ -317,6 +330,7 @@ namespace Tournament_Fighter
             Busted = false;
             BlackJack = false;
             statusPos = new consoleCoords(0, 0);
+            Bet = 0;
         }
 
         /// <summary>

@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Tournament_Fighter
 {
     class Helper
     {
-        public static void ClearLine(int width, int height)
+        public static void ClearLine(int x, int y)
         {
-            Console.SetCursorPosition(width, height);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(width, height);
+            Debug.Write("cleared line " + Console.CursorTop);
+            Console.SetCursorPosition(x, y);
+            Console.Write(new string(' ', GameConstants.WINDOW_WIDTH));
+            Console.SetCursorPosition(x, y);
         }
 
         /// <summary>
