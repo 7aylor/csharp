@@ -21,61 +21,98 @@ namespace Tournament_Fighter
         /// </summary>
         static public void play()
         {
-
+            //used for testing
             GameCharacters.player.Name = "Testing the name!";
             GameCharacters.player.Gold = 50;
 
-            //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. - 2 is used to help center with name
-            initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2, 
-                Console.WindowTop + 4, GameCharacters.Norm.Name.Length + GameCharacters.Norm.Occupation.Length, GameCharacters.Norm.Occupation.Length / 2, 0);
+            if(GameCharacters.player.Gold <= 0)
+            {
+                Helper.printCleanUI();
+                Console.Write("You don't have enough money to play Black Jack, you filthy beggar!");
+                Console.SetCursorPosition(0, 20);
+                Console.Write("To leave the table press any key...");
+                Console.ReadKey();
+                //return to previous game state (the tavern?)
+            }
+            else
+            {
+                //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. - 2 is used to help center with name
+                initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2,
+                    Console.WindowTop + 4, GameCharacters.Norm.Name.Length + GameCharacters.Norm.Occupation.Length, GameCharacters.Norm.Occupation.Length / 2, 0);
 
-            //initialize the player with card positions at the middle of the screen and down 16 units. -2 is used to help center with name
-            initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16, 0, 0, 2);
+                //initialize the player with card positions at the middle of the screen and down 16 units. -2 is used to help center with name
+                initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16, 0, 0, 2);
 
-            //game loop should go here
+                //game loop should go here
 
-            //print a clean UI
-            Helper.printCleanUI();
+                //print a clean UI
+                Helper.printCleanUI();
 
-            //print the player's names
-            printPlayerName(GameCharacters.Norm);
-            printPlayerName(GameCharacters.player);
+                //print the player's names
+                printPlayerName(GameCharacters.Norm);
+                printPlayerName(GameCharacters.player);
 
-            //make bets
-            placeBets();
+                //make bets
+                placeBets();
 
-            //call Deal
-            deal();
+                //call Deal
+                deal();
 
-            //play turns
-            playersTurn();
-            dealersTurn();
+                //check for blackjacks
 
-            //check for winner
 
-            //check to play again
+                //play turns
+                playersTurn();
+                dealersTurn();
+
+                //check for winner
+                checkWinner();
+
+                //check to play again
+            }
         }
 
+        /// <summary>
+        /// Player places bet and gold reflects that bet
+        /// </summary>
         static void placeBets()
         {
+            //used to check if user input is a number
             bool checkNumWorked = false;
+
+            //gets the bet of the player
             int bet = GameCharacters.player.blackJackHand.Bet;
+
+            //move cursor position to user input section
             Console.SetCursorPosition(0, 20);
             Console.WriteLine("Place your bet!");
             Console.Write("> ");
+
+            //try to parse the user input and set value of checkNumWorked based off of whether or not it succeeded
             checkNumWorked = Int32.TryParse(Console.ReadLine(), out bet);
 
+            //while the bet is an incorrect number
             while (checkNumWorked == false || bet > GameCharacters.player.Gold || bet < 1)
             {
+                //move cursor position back up to prompt line
                 Console.SetCursorPosition(0, Console.CursorTop - 1);
+
+                //clear the line and write the error message the get user input and try parse again
                 Helper.ClearLine(0, Console.CursorTop);
                 Console.Write("Please pick a number between 1 and " + GameCharacters.player.Gold + " > ");
                 checkNumWorked = Int32.TryParse(Console.ReadLine(), out bet);
             }
 
+            //reassign the bet to blackjackhand bet so it can be used later then subtract bet from gold
             GameCharacters.player.blackJackHand.Bet = bet;
             GameCharacters.player.Gold -= bet;
-            Helper.buildPlayerNav();
+
+            //reprint UI
+            Helper.printCleanUI();
+
+            //print the player's names
+            printPlayerName(GameCharacters.Norm);
+            printPlayerName(GameCharacters.player);
         }
 
         /// <summary>
@@ -129,20 +166,32 @@ namespace Tournament_Fighter
             }
         }
 
+        /// <summary>
+        /// Goes through the steps to playout the player's turn
+        /// </summary>
         static void playersTurn()
         {
+            //shorthand for player
             NPC player = GameCharacters.player;
+
+            //gets cursor down to bottom frame
             Helper.buildPlayerNav();
+
+            //blank player choice
             char playerChoice = ' ';
 
+            //possible options for the player
             char[] options = new char[4];
             options[0] = 'a';
             options[1] = 'b';
             options[2] = 'c';
 
+            //show chosen bet amount
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Bet: " + player.blackJackHand.Bet);
             Console.ForegroundColor = ConsoleColor.Gray;
+
+            //print options
             Console.WriteLine("a) Hit");
             Console.WriteLine("b) Stand");
             Console.WriteLine("c) Double Down");
@@ -155,10 +204,18 @@ namespace Tournament_Fighter
                 //call split function here
             }
 
+            //prompt user for input
             Console.Write("> ");
+
+            //store the current cursor position in console coordinate
+            consoleCoords playerInputPos = new consoleCoords(Console.CursorLeft, Console.CursorTop);
+
 
             while (!player.blackJackHand.Busted && !player.blackJackHand.BlackJack && playerChoice != 'b')
             {
+                Console.SetCursorPosition(playerInputPos.X, playerInputPos.Y);
+                Helper.ClearLine(0, playerInputPos.Y);
+                Console.Write("> ");
                 if (player.blackJackHand.HandValue <= 21)
                 {
                     playerChoice = Console.ReadKey().KeyChar;
@@ -216,6 +273,11 @@ namespace Tournament_Fighter
             }
         }
 
+        /// <summary>
+        /// Prints the status of whether the player has hit or stood
+        /// </summary>
+        /// <param name="hand"></param>
+        /// <param name="status"></param>
         static void printStatus(BlackJackHand hand, string status)
         {
             Console.SetCursorPosition(hand.statusPos.X, hand.statusPos.Y);
@@ -233,13 +295,32 @@ namespace Tournament_Fighter
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        static void endGame()
+        /// <summary>
+        /// Checks to see who has won their hand
+        /// </summary>
+        static void checkWinner()
         {
-            Helper.buildPlayerNav();
-            Console.WriteLine("Press any key to flip dealer's card.");
-            Console.ReadKey();
-            Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handStartPos.X, GameCharacters.Norm.blackJackHand.handStartPos.Y);
-            GameCharacters.Norm.blackJackHand.hand[0].printCardFaceUp();
+            if(GameCharacters.player.blackJackHand.HandValue > GameCharacters.Norm.blackJackHand.HandValue)
+            {
+                Console.SetCursorPosition(GameCharacters.player.blackJackHand.statusPos.X, GameCharacters.player.blackJackHand.statusPos.Y);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("Winner!");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+            else if(GameCharacters.player.blackJackHand.HandValue == GameCharacters.Norm.blackJackHand.HandValue)
+            {
+                Console.SetCursorPosition(GameCharacters.player.blackJackHand.statusPos.X, GameCharacters.player.blackJackHand.statusPos.Y);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("Push.");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+            else
+            {
+                Console.SetCursorPosition(GameCharacters.player.blackJackHand.statusPos.X, GameCharacters.player.blackJackHand.statusPos.Y);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Loser!");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
         }
 
         /// <summary>
@@ -305,14 +386,25 @@ namespace Tournament_Fighter
         //keeps track of if the hand is a blackjack
         public bool BlackJack { get; set; }
 
-        //coordinates of the start and current hand positions
+        //coordinates of the first card's position
         public consoleCoords handStartPos;
+
+        //keeps track of the position of the current card
         public consoleCoords handCurrPos;
+
+        //keeps track of the name's coordinate position
         public consoleCoords namePos;
+
+        //keeps track of the distance between the name of the player and the score
         public int gapFromNamePosToScorePos { get; set; }
+
+        //keeps track of the coordinates of the hand's score
         public consoleCoords scorePos;
+
+        //keeps track of the coordinates of the status (hit, stand, win, lose, etc.)
         public consoleCoords statusPos;
 
+        //keeps track of the bet for that had
         public int Bet { get; set; }
 
 
@@ -492,7 +584,6 @@ namespace Tournament_Fighter
         /// <param name="y"></param>
         public void printUpdatedHandValue(int nameLength)
         {
-            
             Console.SetCursorPosition(namePos.X + nameLength + gapFromNamePosToScorePos, namePos.Y);
             Console.Write(" - " + HandValue);
         }
