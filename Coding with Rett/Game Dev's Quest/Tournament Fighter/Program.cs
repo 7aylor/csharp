@@ -47,7 +47,7 @@ namespace Tournament_Fighter
             GameLocations.tavern.removeNPCFromLocation(GameCharacters.Nina);
             GameLocations.tavern.printNPCsInLocation();
             */
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
     }

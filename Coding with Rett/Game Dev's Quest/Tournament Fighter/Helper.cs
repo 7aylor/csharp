@@ -11,7 +11,6 @@ namespace Tournament_Fighter
     {
         public static void ClearLine(int x, int y)
         {
-            Debug.Write("cleared line " + Console.CursorTop);
             Console.SetCursorPosition(x, y);
             Console.Write(new string(' ', GameConstants.WINDOW_WIDTH));
             Console.SetCursorPosition(x, y);

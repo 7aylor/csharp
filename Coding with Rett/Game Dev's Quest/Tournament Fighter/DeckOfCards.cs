@@ -114,7 +114,7 @@ namespace Tournament_Fighter
         /// <returns></returns>
         public Card drawTopCard()
         {
-            Thread.Sleep(11);
+            Thread.Sleep(10);
             Random rand = new Random();
             int topCardIndex = rand.Next(0, deck.Count);
             Card topCard = deck[topCardIndex];

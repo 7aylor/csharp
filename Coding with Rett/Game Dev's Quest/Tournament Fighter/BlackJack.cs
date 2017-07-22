@@ -23,11 +23,11 @@ namespace Tournament_Fighter
         static public void play()
         {
             //used for testing
-            GameCharacters.player.Name = "Testing the name!";
+            GameCharacters.player.Name = "Rett";
             GameCharacters.player.Gold = 15;
 
             //make sure they have enough gold to play
-            if(GameCharacters.player.Gold <= 0)
+            if (GameCharacters.player.Gold <= 0)
             {
                 Helper.printCleanUI();
                 Console.Write("You don't have enough money to play Black Jack, you filthy beggar!");
@@ -38,8 +38,7 @@ namespace Tournament_Fighter
             }
             else
             {
-                
-
+                char continuePlay = 'y';
                 //initialize the dealer, Norm, with card positions at the middle of the console and down 4 units. - 2 is used to help center with name
                 initBlackJackPlayer(GameCharacters.Norm, (GameConstants.WINDOW_WIDTH / 2) - 2,
                     Console.WindowTop + 4, GameCharacters.Norm.Name.Length + GameCharacters.Norm.Occupation.Length, GameCharacters.Norm.Occupation.Length / 2, 0);
@@ -48,53 +47,67 @@ namespace Tournament_Fighter
                 initBlackJackPlayer(GameCharacters.player, (GameConstants.WINDOW_WIDTH / 2) - 2, 16, 0, 0, 2);
 
                 //game loop should go here
-
-                //print a clean UI
-                Helper.printCleanUI();
-
-                //print the player's names
-                printPlayerName(GameCharacters.Norm);
-                printPlayerName(GameCharacters.player);
-
-                //make bets
-                placeBets();
-
-                //call Deal
-                deal();
-
-                //check for blackjacks
-                if(GameCharacters.player.blackJackHand.CheckForBlackJack() || GameCharacters.Norm.blackJackHand.CheckForBlackJack())
+                while (continuePlay == 'y' || continuePlay == 'Y')
                 {
-                    //if the player has a blackjack, they win
-                    if(GameCharacters.player.blackJackHand.BlackJack)
-                    {
-                        //print the winner status
-                        printWinnerStatus(GameCharacters.player);
+                    //print a clean UI
+                    Helper.printCleanUI();
 
-                        //calculate winnings
-                        calculateWinnings();
-                    }
-                    else if(GameCharacters.Norm.blackJackHand.BlackJack && !GameCharacters.player.blackJackHand.BlackJack)
-                    {
-                        Thread.Sleep(1000); //research timers instead
-                        Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handStartPos.X, GameCharacters.Norm.blackJackHand.handStartPos.Y);
-                        GameCharacters.Norm.blackJackHand.hand[0].printCardFaceUp();
-                        printLoserStatus(GameCharacters.player);
-                    }
-                }
-                else
-                {
-                    bool busted = playersTurn();
-                    //play turns
-                    if (busted == false)
-                    {
-                        dealersTurn();
-                    }
-                    //check for winner
-                    checkWinner(busted);
-                }
+                    //print the player's names
+                    printPlayerName(GameCharacters.Norm);
+                    printPlayerName(GameCharacters.player);
 
-                //check to play again
+                    //make bets
+                    placeBets();
+
+                    //call Deal
+                    deal();
+
+                    //check for blackjacks
+                    if (GameCharacters.player.blackJackHand.CheckForBlackJack() || GameCharacters.Norm.blackJackHand.CheckForBlackJack())
+                    {
+                        dealtABlackJack();
+                    }
+                    else
+                    {
+                        doTurns();
+                    }
+
+                    //check to play again
+                    playAgain(ref continuePlay);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if the player wants to play again and clears hand
+        /// </summary>
+        /// <param name="continuePlay"></param>
+        static void playAgain(ref char continuePlay)
+        {
+            //clear the player input lines
+            Helper.ClearLine(0, 20);
+            Helper.ClearLine(0, 21);
+            Helper.ClearLine(0, 22);
+            Helper.ClearLine(0, 23);
+            Helper.ClearLine(0, 24);
+            Helper.ClearLine(0, 25);
+            Helper.ClearLine(0, 26);
+
+            //set the position to a good place
+            Console.SetCursorPosition(0, 20);
+
+            //prompt to play again and get the user's input
+            Console.Write("Play Again? (y/n)");
+            continuePlay = Console.ReadKey().KeyChar;
+
+            //check the user's input
+            Console.SetCursorPosition(0, Console.CursorTop + 1);
+            Helper.checkInput(ref continuePlay, new char[] { 'y', 'Y', 'n', 'Y' });
+
+            //loop through all players and clear their hands
+            foreach(NPC player in blackJackPlayers)
+            {
+                player.blackJackHand.clearHand();
             }
         }
 
@@ -147,14 +160,18 @@ namespace Tournament_Fighter
         static void deal()
         {
 
-            GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Ace), GameCharacters.player.Name.Length, true, true);
+            //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Ace), GameCharacters.player.Name.Length, true, true);
             //GameCharacters.Norm.blackJackHand.addCardToHand(new Card(Suit.Spades, Cards.Ace), GameCharacters.Norm.Name.Length, true, true);
-            //dealCard(GameCharacters.player, true, true);
+            //GameCharacters.Norm.blackJackHand.addCardToHand(new Card(Suit.Spades, Cards.Jack), GameCharacters.Norm.Name.Length, true, true);
+            //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Seven), GameCharacters.player.Name.Length, true, true);
+            dealCard(GameCharacters.player, true, true);
             dealCard(GameCharacters.Norm, false, false);
 
-            GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Queen), GameCharacters.player.Name.Length, true, true);
+            //GameCharacters.Norm.blackJackHand.addCardToHand(new Card(Suit.Spades, Cards.Five), GameCharacters.Norm.Name.Length, true, true);
+            //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.King), GameCharacters.player.Name.Length, true, true);
+            //GameCharacters.player.blackJackHand.addCardToHand(new Card(Suit.Clubs, Cards.Queen), GameCharacters.player.Name.Length, true, true);
             //GameCharacters.Norm.blackJackHand.addCardToHand(new Card(Suit.Diamonds, Cards.Queen), GameCharacters.Norm.Name.Length, true, true);
-            //dealCard(GameCharacters.player, true, true);
+            dealCard(GameCharacters.player, true, true);
             dealCard(GameCharacters.Norm, true, false);
         }
 
@@ -167,6 +184,48 @@ namespace Tournament_Fighter
         static void dealCard(NPC blackJackPlayer, bool printFaceUp, bool updateScore)
         {
             blackJackPlayer.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard(), blackJackPlayer.Name.Length, printFaceUp, updateScore);
+        }
+
+        /// <summary>
+        /// Carries out functionality if there is a blackjack
+        /// </summary>
+        static void dealtABlackJack()
+        {
+            //if the player has a blackjack, they win
+            if (GameCharacters.player.blackJackHand.BlackJack)
+            {
+                //print the winner status
+                printWinnerStatus(GameCharacters.player);
+
+                //calculate winnings
+                calculateWinnings();
+            }
+            else if (GameCharacters.Norm.blackJackHand.BlackJack && !GameCharacters.player.blackJackHand.BlackJack)
+            {
+                Thread.Sleep(1000); //research timers instead
+                Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handStartPos.X, GameCharacters.Norm.blackJackHand.handStartPos.Y);
+                GameCharacters.Norm.blackJackHand.hand[0].printCardFaceUp();
+                printLoserStatus(GameCharacters.player);
+            }
+        }
+
+        /// <summary>
+        /// Carries out player turns
+        /// </summary>
+        static void doTurns()
+        {
+            bool playerBusted = playersTurn();
+            bool dealerBusted = false;
+            //play turns
+            if (playerBusted == false)
+            {
+                dealerBusted = dealersTurn();
+            }
+
+            Debug.WriteLine("DealerBusted: " + dealerBusted);
+
+            //check for winner
+            checkWinner(playerBusted, dealerBusted);
         }
 
         /// <summary>
@@ -265,6 +324,16 @@ namespace Tournament_Fighter
                         //deal with double down logic
                         //need to remove the option if player hits, and breaks the loop if they double down
                         //also need to double their bet
+                        player.blackJackHand.Bet *= 2;
+                        printStatus(player.blackJackHand, "Doubled Down");
+                        GameCharacters.player.blackJackHand.addCardToHand(BlackJackDeck.deck.drawTopCard(), player.Name.Length, true, true);
+                        player.blackJackHand.DoubledDown = true;
+                        //check for a bust
+                        if (player.blackJackHand.isBust())
+                        {
+                            return true;
+                        }
+                        break;
                     }
                     //check for a bust
                     if (player.blackJackHand.isBust())
@@ -281,7 +350,7 @@ namespace Tournament_Fighter
         /// <summary>
         /// plays out the dealer's turn automatically
         /// </summary>
-        static void dealersTurn()
+        static bool dealersTurn()
         {
             //holds the norm object (shorter to type)
             NPC norm = GameCharacters.Norm;
@@ -296,6 +365,7 @@ namespace Tournament_Fighter
 
             norm.blackJackHand.printUpdatedHandValue(norm.Name.Length);
 
+            //Norm must hit on a hand value lower than 17
             while (norm.blackJackHand.HandValue < 17)
             {
                 Thread.Sleep(1000);
@@ -303,9 +373,16 @@ namespace Tournament_Fighter
                 dealCard(norm, true, true);
             }
 
+            //If Norm didn't bust, print stay and return false
             if (!norm.blackJackHand.isBust())
             {
                 printStatus(norm.blackJackHand, "Stay");
+                return false;
+            }
+            //otherwise he busted so return true
+            else
+            {
+                return true;
             }
         }
 
@@ -326,6 +403,10 @@ namespace Tournament_Fighter
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }
+            if(status == "Doubled Down")
+            {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
 
             Console.Write(status);
             Console.ForegroundColor = ConsoleColor.Gray;
@@ -335,18 +416,19 @@ namespace Tournament_Fighter
         /// Checks to see who has won their hand
         /// </summary>
         /// <param name="busted">Used to check if the hand is over 21</param>
-        static void checkWinner(bool busted)
+        static void checkWinner(bool playerBusted, bool dealerBusted)
         {
             //if player has a higher hand value
-            if(GameCharacters.player.blackJackHand.HandValue > GameCharacters.Norm.blackJackHand.HandValue && busted == false)
+            if((GameCharacters.player.blackJackHand.HandValue > GameCharacters.Norm.blackJackHand.HandValue && playerBusted == false) || dealerBusted)
             {
                 printWinnerStatus(GameCharacters.player);
                 calculateWinnings();
             }
             //if the player and Norm have the same hand value, print push
-            else if(GameCharacters.player.blackJackHand.HandValue == GameCharacters.Norm.blackJackHand.HandValue && busted == false)
+            else if(GameCharacters.player.blackJackHand.HandValue == GameCharacters.Norm.blackJackHand.HandValue && playerBusted == false)
             {
                 printPushStatus(GameCharacters.player);
+                GameCharacters.player.Gold += GameCharacters.player.blackJackHand.Bet;
             }
             else
             {
@@ -462,7 +544,7 @@ namespace Tournament_Fighter
         public bool DoubledDown { get; set; }
 
         //keeps track of number of Aces valued at 11
-        public int numAcesValuedEleven = 0;
+        public int numAcesValuedEleven;
 
         //keeps track of if the hand has busted
         public bool Busted { get; set; }
@@ -498,15 +580,11 @@ namespace Tournament_Fighter
         public BlackJackHand()
         {
             hand = new List<Card>();
-            HandValue = 0;
             handStartPos = new consoleCoords(0, 0);
-            handCurrPos = new consoleCoords(0, 0);
             namePos = new consoleCoords(0, 0);
-            DoubledDown = false;
-            Busted = false;
-            BlackJack = false;
             statusPos = new consoleCoords(0, 0);
-            Bet = 0;
+            gapFromNamePosToScorePos = 0;
+            clearHand();
         }
 
         /// <summary>
@@ -525,6 +603,9 @@ namespace Tournament_Fighter
 
             //add new card to hand
             hand.Add(card);
+
+            //Print card name to debug log
+            Debug.WriteLine(card.CardName);
 
             //update the card value
             HandValue += card.Value;
@@ -551,11 +632,8 @@ namespace Tournament_Fighter
             //check for a bust
             Busted = isBust();
 
-            Debug.WriteLine("added card");
-
             if(printUpdatedScore)
             {
-                Debug.WriteLine("Called print score");
                 //if hand hasn't busted
                 if (!Busted)
                 {
@@ -670,6 +748,29 @@ namespace Tournament_Fighter
         {
             Console.SetCursorPosition(namePos.X + nameLength + gapFromNamePosToScorePos, namePos.Y);
             Console.Write(" - " + HandValue);
+        }
+
+        /// <summary>
+        /// Removes all cards in the hand and sets the other values to defaults
+        /// </summary>
+        public void clearHand()
+        {
+            //puts our used cards back in the deck
+            foreach(Card card in hand)
+            {
+                BlackJackDeck.deck.deck.Add(card);
+            }
+            //clears the hand
+            hand.Clear();
+
+            //sets other properties back to default
+            handCurrPos = handStartPos;
+            HandValue = 0;
+            DoubledDown = false;
+            Busted = false;
+            BlackJack = false;
+            Bet = 0;
+            numAcesValuedEleven = 0;
         }
     }
 }
