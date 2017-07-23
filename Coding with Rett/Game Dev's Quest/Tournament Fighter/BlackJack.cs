@@ -200,9 +200,10 @@ namespace Tournament_Fighter
                 //calculate winnings
                 calculateWinnings();
             }
-            else if (GameCharacters.Norm.blackJackHand.BlackJack && !GameCharacters.player.blackJackHand.BlackJack)
+            else if (GameCharacters.Norm.blackJackHand.BlackJack && GameCharacters.player.blackJackHand.BlackJack == false)
             {
                 Thread.Sleep(1000); //research timers instead
+                Debug.WriteLine("Norm has a blackjack");
                 Console.SetCursorPosition(GameCharacters.Norm.blackJackHand.handStartPos.X, GameCharacters.Norm.blackJackHand.handStartPos.Y);
                 GameCharacters.Norm.blackJackHand.hand[0].printCardFaceUp();
                 printLoserStatus(GameCharacters.player);
@@ -758,8 +759,14 @@ namespace Tournament_Fighter
             //puts our used cards back in the deck
             foreach(Card card in hand)
             {
+                //if the card is an ace, set its value back to 11
+                if(card.CardName == "A")
+                {
+                    card.Value = 11;
+                }
                 BlackJackDeck.deck.deck.Add(card);
             }
+
             //clears the hand
             hand.Clear();
 
